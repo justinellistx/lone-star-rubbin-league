@@ -107,12 +107,18 @@ export function calculateIncidentPenalty(incidents) {
 
 /**
  * Calculate stage standings from race results
- * Drops worst N races and sums remaining points
- * @param {Array} raceResults - Array of race result objects per driver [{custId, name, finPos, incidents, ...}]
+ * Drops worst N races and sums remaining points.
+ * DNR (Did Not Race) results are injected as 0-point entries so they
+ * count as a driver's worst races and can be dropped.
+ *
+ * @param {Array} raceResults - Array of race result objects per driver [{custId, name, finPos, incidents, raceId, ...}]
  * @param {number} dropsAllowed - Number of worst races to drop (default: 3)
- * @returns {Array} Sorted standings [{custId, name, points, racePoints, bestRaces, droppedRaces}]
+ * @param {Array} allRaceIds - Optional array of all race IDs in the stage. When provided,
+ *   any race a driver did not enter gets a 0-point DNR entry injected automatically.
+ *   If omitted, behaviour is unchanged (only entered races are scored).
+ * @returns {Array} Sorted standings [{custId, name, points, racePoints, bestRaces, droppedRaces, dnrCount}]
  */
-export function calculateStageStandings(raceResults, dropsAllowed = 3) {
+export function calculateStageStandings(raceResults, dropsAllowed = 3, allRaceIds = null) {
   // Group results by driver
   const driverMap = {};
 
@@ -122,15 +128,53 @@ export function calculateStageStandings(raceResults, dropsAllowed = 3) {
         custId: result.custId,
         name: result.name,
         races: [],
+        enteredRaceIds: new Set(),
       };
     }
     driverMap[result.custId].races.push(result);
+    if (result.raceId) {
+      driverMap[result.custId].enteredRaceIds.add(result.raceId);
+    }
   });
+
+  // Inject 0-point DNR entries for races each driver missed
+  if (allRaceIds && allRaceIds.length > 0) {
+    Object.values(driverMap).forEach((driver) => {
+      allRaceIds.forEach((raceId) => {
+        if (!driver.enteredRaceIds.has(raceId)) {
+          driver.races.push({
+            custId: driver.custId,
+            name: driver.name,
+            raceId,
+            finPos: null,
+            incidents: 0,
+            bonuses: 0,
+            lapsLed: 0,
+            startPos: null,
+            isDNR: true,
+          });
+        }
+      });
+    });
+  }
 
   // Calculate points for each driver
   const standings = Object.values(driverMap)
     .map((driver) => {
+      let dnrCount = 0;
+
       const racePoints = driver.races.map((race) => {
+        // DNR races score 0 points across the board
+        if (race.isDNR) {
+          dnrCount++;
+          return {
+            race,
+            total: 0,
+            breakdown: { position: 0, bonus: 0, incidents: 0 },
+            isDNR: true,
+          };
+        }
+
         const positionPts = getPositionPoints(race.finPos);
         const bonusPts = race.bonuses || 0;
         const incidentPts = calculateIncidentPenalty(race.incidents || 0);
@@ -142,13 +186,14 @@ export function calculateStageStandings(raceResults, dropsAllowed = 3) {
             bonus: bonusPts,
             incidents: incidentPts,
           },
+          isDNR: false,
         };
       });
 
-      // Sort by points (ascending) to identify worst races
+      // Sort by points (ascending) to identify worst races — DNRs (0 pts) naturally sink to the bottom
       const sorted = [...racePoints].sort((a, b) => a.total - b.total);
 
-      // Drop worst races
+      // Drop worst races (DNRs will be dropped first since they score 0)
       const dropped = sorted.slice(0, dropsAllowed);
       const best = sorted.slice(dropsAllowed);
 
@@ -161,6 +206,7 @@ export function calculateStageStandings(raceResults, dropsAllowed = 3) {
         racePoints: racePoints.map((r) => r.total),
         bestRaces: best.length,
         droppedRaces: dropped.length,
+        dnrCount,
       };
     })
     .sort((a, b) => b.points - a.points);
