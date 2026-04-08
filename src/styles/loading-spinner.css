@@ -1,0 +1,180 @@
+/* Spinner Container */
+.spinner-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.spinner-container.fullpage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg-primary);
+  z-index: 9999;
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Racing Spinner */
+.racing-spinner {
+  position: relative;
+  display: inline-block;
+}
+
+/* Size variants */
+.racing-spinner.small {
+  width: 40px;
+  height: 40px;
+}
+
+.racing-spinner.medium {
+  width: 60px;
+  height: 60px;
+}
+
+.racing-spinner.large {
+  width: 80px;
+  height: 80px;
+}
+
+/* Spinner rings */
+.spinner-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 3px solid transparent;
+  border-radius: 50%;
+  border-top-color: var(--accent-yellow);
+  border-right-color: var(--accent-red);
+  animation: spin-ring 1.2s linear infinite;
+}
+
+.racing-spinner.small .spinner-ring {
+  border-width: 2px;
+}
+
+.racing-spinner.large .spinner-ring {
+  border-width: 4px;
+}
+
+.spinner-ring:nth-child(2) {
+  width: 80%;
+  height: 80%;
+  top: 10%;
+  left: 10%;
+  border-top-color: var(--accent-red);
+  border-right-color: var(--accent-yellow);
+  animation: spin-ring 1.5s linear infinite reverse;
+}
+
+.spinner-ring:nth-child(3) {
+  width: 60%;
+  height: 60%;
+  top: 20%;
+  left: 20%;
+  border-top-color: var(--accent-green);
+  border-right-color: var(--accent-red);
+  animation: spin-ring 1s linear infinite;
+}
+
+/* Spinner text (for fullpage) */
+.spinner-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent-yellow);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+.racing-spinner.small .spinner-text {
+  font-size: 0.75rem;
+}
+
+.racing-spinner.large .spinner-text {
+  font-size: 1.25rem;
+}
+
+/* Spinning animation */
+@keyframes spin-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Fullpage spinner text animation */
+@keyframes pulse-text {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.spinner-container.fullpage .spinner-text {
+  animation: pulse-text 1.5s ease-in-out infinite;
+}
+
+/* Loading states with text */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.loading-state-text {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.loading-state-subtext {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .spinner-container {
+    padding: 1rem;
+  }
+
+  .racing-spinner.medium {
+    width: 50px;
+    height: 50px;
+  }
+
+  .spinner-ring:nth-child(2) {
+    width: 75%;
+    height: 75%;
+    top: 12.5%;
+    left: 12.5%;
+  }
+
+  .spinner-ring:nth-child(3) {
+    width: 55%;
+    height: 55%;
+    top: 22.5%;
+    left: 22.5%;
+  }
+}

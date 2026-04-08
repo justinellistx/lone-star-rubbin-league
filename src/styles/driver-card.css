@@ -1,0 +1,205 @@
+/* Driver Card Link */
+.driver-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: all 0.3s ease;
+}
+
+.driver-card-link:hover {
+  transform: translateY(-4px);
+}
+
+/* Driver Card */
+.driver-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  min-height: 280px;
+}
+
+/* Yellow accent border on left */
+.driver-card-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background-color: var(--accent-yellow);
+  transition: width 0.3s ease;
+}
+
+.driver-card-link:hover .driver-card-accent {
+  width: 6px;
+}
+
+/* Header */
+.driver-card-header {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-left: 4px;
+}
+
+.driver-number-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, var(--accent-yellow), var(--accent-red));
+  color: #000;
+  font-weight: 900;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(245, 166, 35, 0.2);
+}
+
+.driver-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.driver-card-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.25rem 0;
+}
+
+.driver-card-team {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Stats Grid */
+.driver-card-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex: 1;
+  padding: 1rem;
+  background-color: var(--bg-tertiary);
+  border-radius: 0.375rem;
+  border: 1px solid var(--border-color);
+}
+
+.stat {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 0.375rem;
+  background-color: rgba(245, 166, 35, 0.1);
+  color: var(--accent-yellow);
+  flex-shrink: 0;
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+/* CTA */
+.driver-card-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background-color: rgba(245, 166, 35, 0.1);
+  border: 1px solid var(--accent-yellow);
+  border-radius: 0.375rem;
+  color: var(--accent-yellow);
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+}
+
+.driver-card-link:hover .driver-card-cta {
+  background-color: var(--accent-yellow);
+  color: #000;
+  gap: 0.75rem;
+}
+
+.cta-arrow {
+  transition: transform 0.3s ease;
+}
+
+.driver-card-link:hover .cta-arrow {
+  transform: translateX(4px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .driver-card {
+    min-height: auto;
+    padding: 1.25rem;
+  }
+
+  .driver-card-header {
+    margin-bottom: 1rem;
+  }
+
+  .driver-number-badge {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
+  }
+
+  .driver-card-name {
+    font-size: 1.125rem;
+  }
+
+  .driver-card-stats {
+    gap: 0.75rem;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .stat-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .stat-value {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .driver-card-stats {
+    grid-template-columns: 1fr;
+  }
+}
