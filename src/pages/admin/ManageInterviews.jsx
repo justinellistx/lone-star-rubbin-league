@@ -369,12 +369,10 @@ export default function ManageInterviews() {
         return;
       }
 
-      // Fetch standings — no RPC, build from race_results
-      let standingsData = null;
-
-      // Fallback: build standings from race_results
+      // Build drop-adjusted standings from race_results (worst 3 dropped)
+      const DROPS_ALLOWED = 3;
       let standings = [];
-      if (!standingsData) {
+      {
         const { data: results } = await supabase
           .from('race_results')
           .select('driver_id, total_points, finish_position, laps_led, incidents, start_position, drivers ( name, car_number, nickname )');
@@ -385,19 +383,23 @@ export default function ManageInterviews() {
             if (!driverTotals[key]) {
               driverTotals[key] = {
                 name: r.drivers?.name, car_number: r.drivers?.car_number,
-                nickname: r.drivers?.nickname, season_points: 0, wins: 0,
+                nickname: r.drivers?.nickname, racePoints: [], wins: 0,
                 best_finish: 99, races_run: 0,
               };
             }
-            driverTotals[key].season_points += r.total_points || 0;
+            driverTotals[key].racePoints.push(r.total_points || 0);
             driverTotals[key].races_run += 1;
             if (r.finish_position === 1) driverTotals[key].wins += 1;
             if (r.finish_position < driverTotals[key].best_finish) driverTotals[key].best_finish = r.finish_position;
           });
-          standings = Object.values(driverTotals).sort((a, b) => b.season_points - a.season_points);
+          standings = Object.values(driverTotals).map((d) => {
+            // Sort points ascending, drop worst N
+            const sorted = [...d.racePoints].sort((a, b) => a - b);
+            const kept = sorted.slice(Math.min(DROPS_ALLOWED, Math.max(0, sorted.length - 1)));
+            const season_points = kept.reduce((s, p) => s + p, 0);
+            return { ...d, season_points };
+          }).sort((a, b) => b.season_points - a.season_points);
         }
-      } else {
-        standings = standingsData;
       }
 
       let article;
