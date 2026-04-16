@@ -61,20 +61,14 @@ export default function Teams() {
     );
   }
 
-  // Build teams with drivers by matching teamStandings to standings
-  const teams = teamStandings.map((teamData) => {
-    const drivers = teamData.drivers
-      .map((driverId) => standings.find((d) => d.id === driverId))
-      .filter(Boolean);
-
-    return {
-      id: teamData.id,
-      name: teamData.name,
-      points: teamData.points,
-      combinedLapsLed: teamData.lapsLed || 0,
-      drivers,
-    };
-  });
+  // Build teams — teamStandings.drivers are already full driver standing objects
+  const teams = teamStandings.map((teamData) => ({
+    id: teamData.id,
+    name: teamData.name,
+    points: teamData.points,
+    combinedLapsLed: teamData.lapsLed || 0,
+    drivers: teamData.drivers || [],
+  }));
 
   return (
     <div className="bg-[#0a0a0f] min-h-screen py-12 px-4 md:px-8">
