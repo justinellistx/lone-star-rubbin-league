@@ -37,6 +37,7 @@ export default function Layout() {
     { label: 'Drivers', path: '/drivers' },
     { label: 'Schedule', path: '/schedule' },
     { label: 'News', path: '/news' },
+    { label: 'Interviews', path: '/interviews' },
   ];
 
   const moreLinks = [

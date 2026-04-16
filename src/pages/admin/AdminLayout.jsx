@@ -8,6 +8,7 @@ import {
   Users,
   Calendar,
   FileText,
+  Mic,
   Menu,
   X,
   Home,
@@ -81,6 +82,7 @@ export default function AdminLayout() {
     { icon: Users, label: 'Drivers', path: '/admin/drivers' },
     { icon: Calendar, label: 'Schedule', path: '/admin/schedule' },
     { icon: FileText, label: 'News', path: '/admin/news' },
+    { icon: Mic, label: 'Interviews', path: '/admin/interviews' },
   ];
 
   const isActive = (path) => location.pathname === path;

@@ -761,3 +761,127 @@ export async function submitPickemPicks(raceId, pickerId, picks) {
   if (insError) throw insError;
   return true;
 }
+
+// ── Interview Hooks ──
+
+/**
+ * Fetch all interview questions (with driver info), optionally filtered by schedule_id
+ */
+export function useInterviews(scheduleId) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      let query = supabase
+        .from('interview_questions')
+        .select('*, drivers ( id, name, car_number, nickname )')
+        .eq('published', true)
+        .order('created_at', { ascending: false });
+
+      if (scheduleId) query = query.eq('schedule_id', scheduleId);
+
+      const { data, error } = await query;
+      if (error) throw error;
+      setData(data);
+    } catch (err) {
+      setError(err.message);
+      setData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [scheduleId]);
+
+  return { data, loading, error, refresh: fetchData };
+}
+
+/**
+ * Fetch interview questions for a specific driver
+ */
+export function useDriverInterviews(driverId) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      if (!driverId) { setData(null); setLoading(false); return; }
+
+      const { data, error } = await supabase
+        .from('interview_questions')
+        .select('*, drivers ( id, name, car_number, nickname )')
+        .eq('driver_id', driverId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setData(data);
+    } catch (err) {
+      setError(err.message);
+      setData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [driverId]);
+
+  return { data, loading, error, refresh: fetchData };
+}
+
+/**
+ * Fetch ALL interview questions (admin — includes unpublished)
+ */
+export function useAllInterviews() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('interview_questions')
+        .select('*, drivers ( id, name, car_number, nickname )')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setData(data);
+    } catch (err) {
+      setError(err.message);
+      setData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  return { data, loading, error, refresh: fetchData };
+}
+
+/**
+ * Submit an interview answer (driver submits their response)
+ */
+export async function submitInterviewAnswer(questionId, answerText) {
+  const { error } = await supabase
+    .from('interview_questions')
+    .update({
+      answer_text: answerText,
+      answered_at: new Date().toISOString(),
+    })
+    .eq('id', questionId);
+
+  if (error) throw error;
+  return true;
+}

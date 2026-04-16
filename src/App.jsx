@@ -16,6 +16,7 @@ import WhatIf from './pages/WhatIf';
 import PowerRankings from './pages/PowerRankings';
 import News from './pages/News';
 import Pickem from './pages/Pickem';
+import Interviews from './pages/Interviews';
 import NotFound from './pages/NotFound';
 
 // Admin pages
@@ -26,6 +27,7 @@ import UploadRace from './pages/admin/UploadRace';
 import ManageDrivers from './pages/admin/ManageDrivers';
 import ManageSchedule from './pages/admin/ManageSchedule';
 import ManageNews from './pages/admin/ManageNews';
+import ManageInterviews from './pages/admin/ManageInterviews';
 
 function App() {
   return (
@@ -48,6 +50,7 @@ function App() {
         <Route path="/power-rankings" element={<PowerRankings />} />
         <Route path="/news" element={<News />} />
         <Route path="/pickem" element={<Pickem />} />
+        <Route path="/interviews" element={<Interviews />} />
         <Route path="*" element={<NotFound />} />
       </Route>
 
@@ -61,6 +64,7 @@ function App() {
         <Route path="drivers" element={<ManageDrivers />} />
         <Route path="schedule" element={<ManageSchedule />} />
         <Route path="news" element={<ManageNews />} />
+        <Route path="interviews" element={<ManageInterviews />} />
       </Route>
     </Routes>
   );
