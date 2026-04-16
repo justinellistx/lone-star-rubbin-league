@@ -7,7 +7,6 @@ import {
   Clock,
   Send,
   AlertCircle,
-  Lock,
   MessageSquare,
 } from 'lucide-react';
 import {
@@ -240,47 +239,16 @@ export default function InterviewRoom() {
           </div>
         )}
 
-        {/* ═══════════ PREVIOUS ANSWERS ═══════════ */}
+        {/* Previous answers — just a count confirmation, no content shown */}
         {answered.length > 0 && (
-          <div>
-            <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
-              <MessageSquare className="w-5 h-5 text-[#2ec4b6]" />
-              Your Previous Interviews ({answered.length})
-            </h2>
-            <p className="text-[#8a8a9a] text-sm mb-5">
-              These are published and visible to the league.
+          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-xl p-6 text-center">
+            <MessageSquare className="w-8 h-8 text-[#2ec4b6] mx-auto mb-2" />
+            <p className="text-white font-medium">
+              You've submitted {answered.length} interview{answered.length !== 1 ? 's' : ''} this season.
             </p>
-
-            <div className="space-y-3">
-              {answered.map((q) => {
-                const race = scheduleMap[q.schedule_id];
-                const colors = TYPE_COLORS[q.question_type];
-
-                return (
-                  <div
-                    key={q.id}
-                    className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-5"
-                  >
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className={`${colors.bg} text-white text-xs font-bold px-2 py-0.5 rounded`}>
-                        {TYPE_LABELS[q.question_type]}
-                      </span>
-                      <span className="text-[#8a8a9a] text-sm">
-                        Race {race?.race_number}: {race?.track_name}
-                      </span>
-                      <Lock className="w-3 h-3 text-[#2ec4b6] ml-auto" />
-                    </div>
-                    <p className="text-[#8a8a9a] text-sm italic mb-2">"{q.question_text}"</p>
-                    <p className="text-white">{q.answer_text}</p>
-                    {q.answered_at && (
-                      <p className="text-[#8a8a9a] text-xs mt-2">
-                        Submitted {new Date(q.answered_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                      </p>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+            <p className="text-[#8a8a9a] text-sm mt-1">
+              Your answers will appear in generated news stories on the News page.
+            </p>
           </div>
         )}
       </div>
