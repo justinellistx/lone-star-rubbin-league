@@ -27,7 +27,7 @@ export default function AdminLogin() {
       }
 
       if (data?.user) {
-        navigate('/admin/dashboard');
+        navigate('/admin');
       }
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');

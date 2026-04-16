@@ -160,6 +160,7 @@ function normalizeHeader(header) {
     average_lap_time: 'avgLapTime',
     fastest_lap_time: 'fastestLapTime',
     fast_lap: 'fastestLapNumber',
+    'fast_lap#': 'fastestLapNumber',
     laps_comp: 'lapsCompleted',
     inc: 'incidents',
   };
@@ -223,18 +224,19 @@ export function processRaceForUpload(parsed, raceId, driverMap) {
         driver_id: driverId,
         finish_position: result.finPos || null,
         start_position: result.startPos || null,
-        car_class: result.carClass || null,
+        car_name: result.car || result.carClass || null,
         car_number: result.carNumber || null,
+        car_id: result.carId || null,
         laps_completed: result.lapsCompleted || 0,
         laps_led: result.lapsLed || 0,
         incidents: result.incidents || 0,
-        dnf_reason: result.outReason || null,
+        out_reason: result.outReason || 'Running',
         qualify_time: result.qualifyTime || null,
-        avg_lap_time: result.avgLapTime || null,
+        average_lap_time: result.avgLapTime || null,
         fastest_lap_time: result.fastestLapTime || null,
         fastest_lap_number: result.fastestLapNumber || null,
         interval: result.interval || null,
-        created_at: new Date().toISOString(),
+        iracing_cust_id: result.custId || null,
       };
     })
     .filter((row) => row !== null);

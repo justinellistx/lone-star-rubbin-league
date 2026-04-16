@@ -76,8 +76,8 @@ export default function AdminLayout() {
   }
 
   const menuItems = [
-    { icon: BarChart3, label: 'Dashboard', path: '/admin/dashboard' },
-    { icon: Upload, label: 'Upload Race', path: '/admin/upload-race' },
+    { icon: BarChart3, label: 'Dashboard', path: '/admin' },
+    { icon: Upload, label: 'Upload Race', path: '/admin/upload' },
     { icon: Users, label: 'Drivers', path: '/admin/drivers' },
     { icon: Calendar, label: 'Schedule', path: '/admin/schedule' },
     { icon: FileText, label: 'News', path: '/admin/news' },

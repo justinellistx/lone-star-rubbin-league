@@ -9,71 +9,119 @@
 An ESPN-style iRacing league website for the **Lone Star Rubbin' League**, a competitive community racing series running a 36-race NASCAR-format season. The site serves as the central hub for league members to view standings, race results, driver stats, and news.
 
 **Owner/Admin:** Justin Ellis (justinellis@crossfitwillis.com)
+**Live Site:** https://iracing-league-hub.vercel.app
+**GitHub Repo:** justinellistx/lone-star-rubbin-league (PUBLIC)
+**Supabase Project ID:** awdzzzcbxeafakeilxfn
 
 ---
 
 ## League Structure
 
 - **Season:** 36 races, divided into 3 stages of 12 races each
-- **Stage 1:** Truck Series (currently in progress — 6 of 12 races completed)
+- **Stage 1:** Truck Series (currently in progress — 7 of 12 races completed)
 - **Stage 2:** Xfinity Series
 - **Stage 3:** Next Gen Cup Series
 - **iRacing League ID:** 11660
 - **League Name:** Lone Star Rubbin' (on iRacing)
 - **Season Name:** 2026 Lone Star Rubbin'
+- **Race night:** Thursdays (one week after the real NASCAR race)
 
-### Drivers (8 total)
-| Driver | Cust ID | Team |
-|--------|---------|------|
-| Justin Ellis4 | 1282481 | Justin+Nate |
-| Nathan Becker | 1423684 | Justin+Nate |
-| Blaine Karnes | 1265792 | Blaine+Terry |
-| Terry Domino | — | Blaine+Terry |
-| Nik Green2 | 369504 | Nik+Jordan |
-| Jordan Stancil | 1268870 | Nik+Jordan |
-| Ryan Ramsey | 369623 | Ryan+Sam |
-| Sam Kunnemann | 1444517 | Ryan+Sam |
+### Drivers (9 total)
+| Driver | Car # | Cust ID | Team | Driver UUID |
+|--------|-------|---------|------|-------------|
+| Justin Ellis4 | 5 | 1282481 | Justin+Nate | d1000000-...-000000000001 |
+| Nathan Becker | 21 | 1423684 | Justin+Nate | d1000000-...-000000000002 |
+| Blaine Carnes | 25 | 1265792 | Blaine+Terry | d1000000-...-000000000003 |
+| Terry Domino | 11 | — | Blaine+Terry | d1000000-...-000000000004 |
+| Nick Green2 | 88 | 369504 | Nick+Jordan | d1000000-...-000000000005 |
+| Jordan Stancil | 15 | 1268870 | Nick+Jordan | d1000000-...-000000000006 |
+| Ryan Ramsey | 10 | 369623 | Ryan+Sam+Ronald | d1000000-...-000000000007 |
+| Sam Kunnemann | 64 | 1444517 | Ryan+Sam+Ronald | d1000000-...-000000000008 |
+| Ronald Ramsey | 77 | — | Ryan+Sam+Ronald | d1000000-...-000000000009 |
 
-### Completed Races (Stage 1)
-1. Daytona - Feb 12, 2026
-2. EchoPark - Feb 26, 2026
-3. CODA - Mar 5, 2026
-4. Phoenix - Mar 12, 2026
-5. Las Vegas - Mar 19, 2026
-6. Darlington - Mar 26, 2026
+### Teams (4 total)
+| Team | Team UUID | Members |
+|------|-----------|---------|
+| Justin+Nate | c1000000-...-000000000001 | Justin Ellis4, Nathan Becker |
+| Blaine+Terry | c1000000-...-000000000002 | Blaine Carnes, Terry Domino |
+| Nick+Jordan | c1000000-...-000000000003 | Nick Green2, Jordan Stancil |
+| Ryan+Sam+Ronald | c1000000-...-000000000004 | Ryan Ramsey, Sam Kunnemann, Ronald Ramsey |
+
+### Completed Races (Stage 1) — 52 race_results rows in Supabase
+| # | Track | Date | Race UUID |
+|---|-------|------|-----------|
+| 1 | Daytona | Feb 12, 2026 | e1000000-...-000000000001 |
+| 2 | Atlanta | Feb 26, 2026 | e1000000-...-000000000002 |
+| 3 | COTA | Mar 5, 2026 | e1000000-...-000000000003 |
+| 4 | Phoenix | Mar 12, 2026 | e1000000-...-000000000004 |
+| 5 | Las Vegas | Mar 19, 2026 | e1000000-...-000000000005 |
+| 6 | Darlington | Mar 26, 2026 | e1000000-...-000000000006 |
+| 7 | Martinsville | Apr 3, 2026 | e1000000-...-000000000007 |
+
+**Next race:** Race 8 — Bristol (Thursday, Apr 16, 2026)
+
+### Drivers Who Missed Races
+- Ronald Ramsey: only raced Martinsville (race 7)
+- Sam Kunnemann: raced Phoenix, Las Vegas, Darlington, Martinsville (races 4-7)
+- Terry Domino: missed Darlington (race 6)
+- Jordan Stancil: missed Martinsville (race 7)
 
 ---
 
-## Points System
+## Points System (CURRENT — as implemented)
 
 ### Position Points
 1st = 40, 2nd = 35, 3rd = 34, 4th = 33, 5th = 32 ... down to 40th = 1
 
 Points are based on **true finishing position** (including AI cars in the field).
 
-### Bonus Points (per race)
+### Bonus Points (per race, among league drivers only)
 | Bonus | Points | Condition |
 |-------|--------|-----------|
-| Pole Position | +2 | Best qualify time |
-| Fastest Lap | +1 | Fastest single lap in race |
-| Most Laps Led | +2 | Led the most laps |
-| Lowest Incidents | +2 | Fewest incidents (among league drivers) |
-| Clean Race | +1 | 0 incidents |
+| Pole Position | +2 | Started P1 (not best start among league — actual P1 only) |
+| Fastest Lap | +2 | Fastest single lap time among league drivers |
+| Most Laps Led | +2 | Led the most laps among league drivers |
+| Lowest Incidents | +2 | Fewest incidents among league drivers (if tied: +1 each) |
 
-### Incident Penalties
-- 0-4 incidents: No penalty
-- 5-8 incidents: -1 point per incident over 4
-- 9-12 incidents: -2 points per incident over 8
-- 13+ incidents: -3 points per incident over 12
+### Incident Penalties (per race)
+| Incidents | Penalty |
+|-----------|---------|
+| 0–20 | No penalty |
+| 21–30 | -1 point |
+| 31–40 | -2 points |
+| 41+ | -3 points |
 
-### Drop Races
-- Drivers drop their **3 worst finishes** per 12-race stage
-- Teams use their **best 9 finishes** per stage
+Only the highest applicable tier applies (not cumulative).
 
-### Team Bonuses
-- Both drivers finishing top 5: bonus awarded
-- Combined performance across qualifying, laps led, fastest laps
-- Clean racing bonuses across the stage
+### Drop System (CRITICAL — implemented Apr 16, 2026)
+- **Drop worst 3 of 12 races per stage**
+- DNRs (Did Not Race) are injected as **0-point entries** and get dropped first
+- When a race is dropped, **ALL stats from that race are excluded** from stage totals:
+  - Points, laps led, incidents, wins, top 5, top 10, avg finish, bonus pts, penalty pts
+- Only kept races contribute to the driver's stage standings
+- The `raceByRace` array on each driver includes an `isDropped` boolean flag
+- Driver Profile shows DROPPED/COUNTED badges per race
+- Standings page shows dropped points, DNR count, raw vs kept totals
+
+### Stage Bonuses (end of 12-race stage)
+| Bonus | Points | Qualification |
+|-------|--------|---------------|
+| Most Laps Led | +3 | Open to ALL drivers |
+| Most Fastest Laps | +3 | Open to ALL drivers |
+| Lowest Total Incidents | +3 | **Requires 9+ races entered to qualify** |
+
+### Current Standings (after drops, 7 races)
+| Pos | Driver | Points (kept) | Raw Points | Dropped |
+|-----|--------|---------------|------------|---------|
+| 1 | Nick Green2 | 162 | 205 | 43 |
+| 2 | Nathan Becker | 156 | 203 | 47 |
+| 3 | Justin Ellis4 | 139 | 193 | 54 |
+| 4 | Blaine Carnes | 133 | 187 | 54 |
+| 5 | Jordan Stancil | 124 | 142 | 18 (1 DNR) |
+| 6 | Ryan Ramsey | 90 | 128 | 38 |
+| 7 | Terry Domino | 82 | 101 | 19 (1 DNR) |
+| 8 | Sam Kunnemann | 47 | 47 | 0 (3 DNRs) |
+| 9 | Ronald Ramsey | 10 | 10 | 0 (6 DNRs) |
 
 ---
 
@@ -93,31 +141,54 @@ Points are based on **true finishing position** (including AI cars in the field)
 
 ---
 
-## Design Decisions
+## Design Theme (ESPN/NASCAR Dark)
 
-### Visual Style
-- **ESPN/NASCAR dark theme** — broadcast graphics aesthetic
-- Background: `#0a0a0f` (near black)
-- Cards: `#14141f`
-- Card hover: `#1a1a2e`
-- Accent gold: `#f5a623` (NASCAR gold — primary accent)
-- Accent red: `#e63946` (racing red)
-- Accent teal: `#2ec4b6` (positive stats, gains)
-- Text primary: `#ffffff`
-- Text secondary: `#8a8a9a`
-- Borders: `#2a2a3e`
+| Token | Value | Usage |
+|-------|-------|-------|
+| bg-primary | `#0a0a0f` | Page backgrounds |
+| bg-card | `#14141f` | Card backgrounds |
+| bg-hover | `#1a1a2e` | Card hover states |
+| gold | `#f5a623` | Primary accent, points, leaders |
+| red | `#e63946` | Incidents, penalties, negatives |
+| teal | `#2ec4b6` | Positive stats, gains, bonuses |
+| text-primary | `#ffffff` | Main text |
+| text-secondary | `#8a8a9a` | Labels, subtitles |
+| borders | `#2a2a3e` | Card borders, dividers |
 
-### Architecture
-- **Public site** — no login required, anyone can view standings/results/stats
-- **Admin panel** — password-protected via Supabase Auth, only Justin logs in
-- **Data flow:** iRacing CSV export → Admin uploads via drag & drop → PapaParse parses client-side → Preview shown → Confirm → Supabase insert → Standings recalculate
-- **Demo data fallback** — all pages show hardcoded demo data when Supabase isn't connected, so the app works standalone for development
+---
 
-### Database
-- 18 Supabase tables (see `supabase-schema.sql`)
-- Key tables: `drivers`, `teams`, `seasons`, `stages`, `races`, `race_results`, `driver_standings`, `team_standings`, `overall_standings`, `schedule`, `news`
-- Row Level Security: public read on all display tables, authenticated write for admin
-- Standings tables are cached/materialized — recalculated after each race upload
+## Architecture & Data Flow
+
+### Data Pipeline
+- **All pages pull live data from Supabase** — no more hardcoded demo data (removed Apr 16)
+- `useSupabase.js` hooks layer powers all pages
+- `useComputedStandings()` is the main hook — chains useAllRaceResults + useDrivers + useTeams
+- Computes standings with drop system in `useMemo`
+- Points are pre-computed per race_result row (race_points, bonus_points, penalty_points, total_points)
+
+### Key Hooks (src/hooks/useSupabase.js)
+| Hook | Returns | Used By |
+|------|---------|---------|
+| `useAllRaceResults()` | All race_results with drivers + races joined | Standings, Awards, Heatmap, Timeline, PowerRankings |
+| `useComputedStandings()` | `{ standings, teamStandings, stageBonusTracker }` with drops | Standings, Drivers, Teams, HeadToHead, WhatIf, Rivalries, PowerRankings |
+| `useRaceResultsByRace()` | Results grouped by race | Results, Awards, Pickem, Timeline |
+| `useDrivers()` | Active drivers with team join | Heatmap, Pickem |
+| `useTeams()` | Teams with attached drivers | Teams (via teamStandings) |
+| `useRaces(stageId?)` | Races with stage info | Results, Teams, HeadToHead, Rivalries |
+| `useSchedule(seasonId?)` | Schedule entries | Schedule, Home |
+| `useNews(limit)` | Published news articles | Home |
+| `useDriver(driverId)` | Single driver + results | (available but DriverProfile uses useComputedStandings instead) |
+
+### Critical Supabase Notes
+- **FK Ambiguity Bug (FIXED):** `drivers` and `teams` have 3 FKs between them (`drivers.team_id → teams.id`, `teams.driver_1_id → drivers.id`, `teams.driver_2_id → drivers.id`). Must use `!drivers_team_id_fkey` hint in Supabase select queries when joining teams from drivers. Without this, Supabase returns an error and hooks silently fail.
+- **RLS Policies:** All tables have public SELECT (`qual: true`). Admin write requires `auth.role() = 'authenticated'`.
+- **Tables with RLS enabled:** All 18 public tables.
+
+### Database Tables (18 total)
+`admin_users`, `bonus_definitions`, `csv_uploads`, `driver_standings`, `drivers`, `incident_penalties`, `news`, `overall_standings`, `points_structure`, `race_bonuses`, `race_results`, `races`, `schedule`, `seasons`, `stages`, `team_standings`, `teams`, `tracks`
+
+### race_results columns
+`id`, `race_id`, `driver_id`, `finish_position`, `start_position`, `laps_completed`, `laps_led`, `incidents`, `average_lap_time`, `fastest_lap_time`, `fastest_lap_number`, `qualify_time`, `interval`, `out_reason`, `car_id`, `car_name`, `car_number`, `iracing_team_id`, `iracing_cust_id`, `race_points`, `bonus_points`, `penalty_points`, `total_points`, `created_at`
 
 ---
 
@@ -125,98 +196,106 @@ Points are based on **true finishing position** (including AI cars in the field)
 
 ```
 iracing-league-hub/
-├── public/
-├── scripts/
-│   └── migrate-from-sheets.js     # Seeds drivers, teams, season, stages, schedule
 ├── src/
-│   ├── components/
-│   │   ├── Layout.jsx              # Main nav + footer (uses Outlet)
-│   │   ├── StandingsTable.jsx      # Reusable standings table
-│   │   ├── RaceResultsTable.jsx    # Race results display
-│   │   ├── StatCard.jsx            # Metric display card
-│   │   ├── DriverCard.jsx          # Driver profile card
-│   │   ├── NewsCard.jsx            # News article card
-│   │   └── LoadingSpinner.jsx      # Loading indicator
 │   ├── hooks/
-│   │   └── useSupabase.js          # Data fetching hooks
+│   │   └── useSupabase.js          # ALL data fetching hooks + computed standings with drops
 │   ├── lib/
 │   │   ├── supabase.js             # Supabase client init
-│   │   ├── points.js               # NASCAR points engine
-│   │   └── csvParser.js            # iRacing CSV parser
+│   │   ├── points.js               # NASCAR points calculation engine (pole=P1 only)
+│   │   └── csvParser.js            # iRacing CSV parser (parseIRacingCSV, processRaceForUpload)
 │   ├── pages/
-│   │   ├── Home.jsx                # ESPN-style homepage
-│   │   ├── Standings.jsx           # Stage standings with tabs
-│   │   ├── Results.jsx             # Race results browser
-│   │   ├── Teams.jsx               # Team standings
-│   │   ├── Drivers.jsx             # Driver directory
-│   │   ├── DriverProfile.jsx       # Individual driver page
-│   │   ├── Schedule.jsx            # Full season schedule
-│   │   ├── NotFound.jsx            # 404
+│   │   ├── Home.jsx                # ESPN-style homepage (live data)
+│   │   ├── Standings.jsx           # Drop system display, stage bonus tracker
+│   │   ├── Results.jsx             # Race results with bonus labels
+│   │   ├── Teams.jsx               # Team War Room with H2H, stat comparison
+│   │   ├── Drivers.jsx             # Driver grid, links to profiles
+│   │   ├── DriverProfile.jsx       # Full profile with drop indicators, chart, race table
+│   │   ├── Schedule.jsx            # Season schedule grouped by stage
+│   │   ├── PowerRankings.jsx       # Uses ALL race data (no drops) for true trend picture
+│   │   ├── Rivalries.jsx           # Driver rivalries
+│   │   ├── HeadToHead.jsx          # H2H comparison tool
+│   │   ├── WhatIf.jsx              # What-if scenario simulator
+│   │   ├── Awards.jsx              # Season awards
+│   │   ├── Pickem.jsx              # Race predictions
+│   │   ├── Timeline.jsx            # Season timeline
+│   │   ├── IncidentHeatmap.jsx     # Incident visualization
 │   │   └── admin/
-│   │       ├── AdminLogin.jsx      # Auth login
-│   │       ├── AdminLayout.jsx     # Auth-protected wrapper
-│   │       ├── AdminDashboard.jsx  # Admin home
-│   │       ├── UploadRace.jsx      # CSV upload + preview
-│   │       ├── ManageDrivers.jsx   # CRUD drivers
-│   │       ├── ManageSchedule.jsx  # Edit schedule
-│   │       └── ManageNews.jsx      # News editor
-│   ├── styles/                     # Component CSS files
-│   ├── App.jsx                     # Router config
-│   ├── main.jsx                    # Entry point
-│   └── index.css                   # Global styles + theme
-├── supabase-schema.sql             # Full database schema
+│   │       ├── AdminLogin.jsx
+│   │       ├── AdminLayout.jsx
+│   │       ├── AdminDashboard.jsx
+│   │       ├── UploadRace.jsx      # CSV upload + preview (exists but needs UI connection)
+│   │       ├── ManageDrivers.jsx
+│   │       ├── ManageSchedule.jsx
+│   │       └── ManageNews.jsx
+│   ├── components/                  # Layout, StandingsTable, DriverCard, etc.
+│   ├── styles/                      # Component CSS files
+│   ├── App.jsx                      # Router config
+│   └── main.jsx                     # Entry point
+├── MEMORY.md                        # THIS FILE
+├── supabase-schema.sql
+├── seed-data.sql
+├── .env / .env.example
 ├── package.json
-├── vite.config.js
-├── tailwind.config.js
-├── vercel.json                     # SPA rewrite rules
-├── .env.example
-└── SETUP.md                        # Deployment guide
+├── vite.config.js / tailwind.config.js / vercel.json
+└── *.command                        # Push/deploy scripts (double-click on Mac)
 ```
 
 ---
 
-## Weekly Workflow
+## Push/Deploy Workflow
 
-1. Race happens on iRacing
+The sandbox cannot `git push` (network blocked), so `.command` scripts are created for Justin to double-click on his Mac. Each script:
+1. `cd` to the project directory
+2. Removes stale git lock files
+3. Configures git identity
+4. Stages specific files
+5. Creates a descriptive commit
+6. Pushes to `origin main`
+7. Vercel auto-deploys in ~30 seconds
+
+---
+
+## Weekly Race Upload Workflow
+
+1. Race happens on iRacing (Thursday nights)
 2. Export race results CSV from iRacing
 3. Log into admin panel at `/admin/login`
 4. Go to "Upload Race" page
 5. Drag & drop the CSV file
-6. Review the parsed preview (positions, points, bonuses calculated automatically)
+6. Review parsed preview (positions, points, bonuses calculated automatically)
 7. Select the correct stage and race number
 8. Confirm upload
-9. Standings update — league members see new results on the public site
+9. Standings update — public site reflects new results
+
+**Note:** `csvParser.js` exists and parses iRacing CSVs. The admin `UploadRace.jsx` page exists but may need verification that the full upload flow works end-to-end with Supabase.
 
 ---
 
-## Data Source: Google Sheets
+## Known Issues & Bugs Fixed
 
-The original data lives in a Google Sheet called "Iracing League" with:
-- **Stage 1 LeaderBoard** tab — aggregated standings, bonuses, team standings
-- **6 race result tabs** — raw iRacing export data per race (S1Darlington, S1Las Vegas, S1Phoenix, S1Coda, S1EchoPark, S1Daytona)
-- Each race tab has: metadata rows (1-6), then full results starting row 8-9
-- Fields: Fin Pos, Car ID, Car, Car Class, Team ID, Cust ID, Name, Start Pos, Car #, Out ID, Out, Interval, Laps Led, Qualify Time, Avg Lap Time, Fastest Lap Time, Fast Lap#, Laps Comp, Inc
-
-Migration approach: Export each race as CSV, upload through the admin panel, verify standings match the Google Sheet.
+| Date | Issue | Fix |
+|------|-------|-----|
+| Apr 16, 2026 | Pages show empty data after Supabase wiring | Added `!drivers_team_id_fkey` hint to resolve 3-way FK ambiguity between drivers↔teams |
+| Apr 16, 2026 | Pole bonus awarded to best start among league | Changed to P1 start only (`startPos === 1`) |
+| Apr 16, 2026 | Lowest incidents showed driver with 1 race | Added minimum race qualification (now 9+ races) |
+| Apr 16, 2026 | Team War Room showed only points + laps led | `teamData.drivers` were full objects, not IDs — fixed mapping |
+| Apr 16, 2026 | Driver Profile always showed "not found" | Checked `driver.races` (wrong field) and fell back to demo data keyed by strings not UUIDs — fully rewritten |
+| Apr 16, 2026 | Power Rankings had 0.00 averages | Referenced `r.finish` instead of `r.finishPosition` — fully rewritten |
+| Apr 16, 2026 | No drop system | Implemented: drop worst 3, DNR injection, full stat exclusion |
 
 ---
 
-## What's NOT Built Yet / Future Ideas
+## What's NOT Built Yet / Pending
 
+- [ ] **CSV race result upload flow verification** — csvParser.js and UploadRace.jsx exist but need end-to-end testing with live Supabase. Bristol race is next.
+- [ ] Stage filtering in standings (currently shows all races, not per-stage)
 - [ ] Real-time auto-refresh when new results are posted
-- [ ] Driver comparison tool (head-to-head stats)
-- [ ] Rivalry tracker (close finishes between specific drivers)
-- [ ] Season awards page (Most Improved, Ironman, Hard Charger, etc.)
 - [ ] Social media share cards for race results
-- [ ] Push notifications for new results
-- [ ] Historical season archive (for future seasons)
 - [ ] Custom domain setup
-- [ ] Mobile app version
+- [ ] Historical season archive
 - [ ] Automated iRacing API pull (instead of CSV upload)
 - [ ] Stage championship "playoffs" bracket visualization
-- [ ] Race replay/highlights video embeds
 - [ ] Driver helmet/livery image gallery
-- [ ] Prediction/fantasy league feature
 
 ---
 
@@ -227,20 +306,24 @@ Migration approach: Export each race as CSV, upload through the admin panel, ver
 | Apr 7, 2026 | React + Supabase stack | Modern, free hosting, real-time capable |
 | Apr 7, 2026 | ESPN dark theme | Matches broadcast feel Justin wants |
 | Apr 7, 2026 | CSV upload (not API) | Simpler, Justin controls when data goes in |
-| Apr 7, 2026 | Admin-only auth | Only Justin manages data, members just view |
 | Apr 7, 2026 | Vercel free tier | No cost to start, easy deployment |
-| Apr 7, 2026 | Demo data fallback | App works without Supabase for dev/testing |
-| Apr 7, 2026 | Migrate existing data via CSV upload | Verify each race as it goes in |
+| Apr 16, 2026 | Remove all DEMO hardcoded data | All 15 pages wired to live Supabase data |
+| Apr 16, 2026 | Computed standings pattern | useComputedStandings derives everything from raw race_results |
+| Apr 16, 2026 | Drop system: worst 3 of 12 | NASCAR-style, DNRs as 0-point droppable entries |
+| Apr 16, 2026 | All stats excluded on drops | User requested: "when we drop the race all the stats with it should drop" |
+| Apr 16, 2026 | Power Rankings use ALL data (no drops) | User requested: shows real trend even when standings mask decline |
+| Apr 16, 2026 | Lowest incidents requires 9+ races | Prevents drivers with few races from winning clean driving bonus |
+| Apr 16, 2026 | Pole = P1 start only | Not "best start among league" — must actually start first |
 
 ---
 
 ## Environment Variables
 
 ```
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key-here
+VITE_SUPABASE_URL=https://awdzzzcbxeafakeilxfn.supabase.co
+VITE_SUPABASE_ANON_KEY=<set in .env and Vercel>
 ```
 
 ---
 
-*Last updated: April 7, 2026*
+*Last updated: April 16, 2026*

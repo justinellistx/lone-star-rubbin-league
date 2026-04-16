@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Papa from 'papaparse';
 import { supabase } from '../../lib/supabase';
 import { parseIRacingCSV } from '../../lib/csvParser';
 import {
@@ -109,16 +108,59 @@ export default function UploadRace() {
     }
   };
 
+  // Build a driver map that matches by cust_id first, then by name fallback
+  const buildDriverMap = () => {
+    const byCustId = {};
+    const byName = {};
+    drivers.forEach((d) => {
+      if (d.cust_id) byCustId[d.cust_id] = d.id;
+      // Normalize name for fuzzy matching (lowercase, trim trailing numbers iRacing adds)
+      const normalized = d.name.toLowerCase().replace(/\d+$/, '').trim();
+      byName[normalized] = d.id;
+      byName[d.name.toLowerCase().trim()] = d.id; // also exact match
+    });
+    return { byCustId, byName };
+  };
+
+  const resolveDriverId = (result, driverMap) => {
+    // Try cust_id first
+    if (result.custId && driverMap.byCustId[result.custId]) {
+      return { driverId: driverMap.byCustId[result.custId], matchType: 'cust_id' };
+    }
+    // Fallback: name match
+    if (result.name) {
+      const normalized = result.name.toLowerCase().replace(/\d+$/, '').trim();
+      if (driverMap.byName[normalized]) {
+        return { driverId: driverMap.byName[normalized], matchType: 'name' };
+      }
+      const exact = result.name.toLowerCase().trim();
+      if (driverMap.byName[exact]) {
+        return { driverId: driverMap.byName[exact], matchType: 'name' };
+      }
+    }
+    return { driverId: null, matchType: 'unmatched' };
+  };
+
   const generatePreview = (result) => {
     if (!result.results || result.results.length === 0) {
       setError('No race results found in CSV');
       return;
     }
 
-    // Calculate points for preview
-    const previewResults = result.results.slice(0, 10).map((r) => {
+    const driverMap = buildDriverMap();
+
+    // Filter to league members for bonus calculations
+    const leagueResults = result.results.filter((r) => {
+      const { driverId } = resolveDriverId(r, driverMap);
+      return driverId !== null;
+    });
+
+    // Calculate points for ALL results
+    const previewResults = result.results.map((r) => {
       const positionPts = getPositionPoints(r.finPos);
-      const bonuses = calculateBonuses(r, result.results);
+      const { driverId, matchType } = resolveDriverId(r, driverMap);
+      // Bonuses only among league members
+      const bonuses = driverId ? calculateBonuses(r, leagueResults) : {};
       const incidentPts = calculateIncidentPenalty(r.incidents || 0);
       return {
         ...r,
@@ -126,13 +168,21 @@ export default function UploadRace() {
         bonuses,
         incidentPts,
         totalPts: positionPts + Object.values(bonuses).reduce((a, b) => a + b, 0) + incidentPts,
+        driverId,
+        matchType,
       };
     });
+
+    const matched = previewResults.filter((r) => r.driverId);
+    const unmatched = previewResults.filter((r) => !r.driverId);
 
     setPreview({
       metadata: result.metadata,
       totalResults: result.results.length,
+      matchedCount: matched.length,
+      unmatchedCount: unmatched.length,
       previewResults,
+      unmatched,
     });
   };
 
@@ -153,7 +203,9 @@ export default function UploadRace() {
         .insert({
           stage_id: selectedStage,
           race_number: parseInt(raceNumber),
-          race_date: parsed.metadata.startTime || new Date().toISOString().split('T')[0],
+          race_date: parsed.metadata.startTime
+            ? new Date(parsed.metadata.startTime).toISOString().split('T')[0]
+            : new Date().toISOString().split('T')[0],
           track_name: parsed.metadata.track || 'Unknown Track',
           series: parsed.metadata.series || '',
           status: 'completed',
@@ -164,22 +216,24 @@ export default function UploadRace() {
 
       if (raceError) throw raceError;
 
-      // Create driver map from cust_id to driver id
-      const driverMap = {};
-      drivers.forEach((d) => {
-        if (d.cust_id) {
-          driverMap[d.cust_id] = d.id;
-        }
+      // Build driver map with cust_id + name fallback
+      const driverMap = buildDriverMap();
+
+      // Filter to only league members for bonus calculations
+      const leagueResults = parsed.results.filter((r) => {
+        const { driverId } = resolveDriverId(r, driverMap);
+        return driverId !== null;
       });
 
       // Insert race results
       const raceResults = parsed.results
         .map((result) => {
-          const driverId = driverMap[result.custId];
+          const { driverId } = resolveDriverId(result, driverMap);
           if (!driverId) return null;
 
           const positionPts = getPositionPoints(result.finPos);
-          const bonusObj = calculateBonuses(result, parsed.results);
+          // Calculate bonuses only among league members
+          const bonusObj = calculateBonuses(result, leagueResults);
           const bonusPts = Object.values(bonusObj).reduce((a, b) => a + b, 0);
           const incidentPts = calculateIncidentPenalty(result.incidents || 0);
 
@@ -188,17 +242,19 @@ export default function UploadRace() {
             driver_id: driverId,
             finish_position: result.finPos,
             start_position: result.startPos || 0,
-            car_class: result.carClass || '',
+            car_name: result.car || result.carClass || '',
             car_number: result.carNumber || 0,
+            car_id: result.carId || null,
             laps_completed: result.lapsCompleted || 0,
             laps_led: result.lapsLed || 0,
             incidents: result.incidents || 0,
-            dnf_reason: result.outReason || '',
+            out_reason: result.outReason || 'Running',
             qualify_time: result.qualifyTime || null,
-            avg_lap_time: result.avgLapTime || null,
+            average_lap_time: result.avgLapTime || null,
             fastest_lap_time: result.fastestLapTime || null,
             fastest_lap_number: result.fastestLapNumber || null,
             interval: result.interval || '',
+            iracing_cust_id: result.custId || null,
             race_points: positionPts,
             bonus_points: bonusPts,
             penalty_points: incidentPts,
@@ -208,7 +264,7 @@ export default function UploadRace() {
         .filter((r) => r !== null);
 
       if (raceResults.length === 0) {
-        throw new Error('No drivers matched in the CSV. Check cust_id mapping.');
+        throw new Error('No drivers matched in the CSV. Check driver cust_id values or names.');
       }
 
       const { error: resultsError } = await supabase
@@ -387,58 +443,76 @@ export default function UploadRace() {
           <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg overflow-hidden mb-6">
             <div className="p-6 border-b border-[#2a2a3e]">
               <h2 className="text-lg font-semibold text-white">
-                Results Preview ({preview.previewResults.length} of {preview.totalResults})
+                Results Preview ({preview.totalResults} drivers in CSV)
               </h2>
-              <p className="text-[#8a8a9a] text-sm mt-1">
-                Showing first 10 results. All {preview.totalResults} drivers will be uploaded.
-              </p>
+              <div className="flex gap-4 mt-2">
+                <span className="text-[#2ec4b6] text-sm font-medium">
+                  {preview.matchedCount} matched
+                </span>
+                {preview.unmatchedCount > 0 && (
+                  <span className="text-[#f5a623] text-sm font-medium">
+                    {preview.unmatchedCount} unmatched (not league members or missing cust_id)
+                  </span>
+                )}
+              </div>
             </div>
+
+            {/* Unmatched drivers warning */}
+            {preview.unmatched && preview.unmatched.length > 0 && (
+              <div className="px-6 py-3 bg-[#1a1a0f] border-b border-[#2a2a3e]">
+                <p className="text-[#f5a623] text-sm font-medium mb-1">Unmatched drivers (will be skipped):</p>
+                <p className="text-[#8a8a9a] text-sm">
+                  {preview.unmatched.map((r) => `${r.name} (P${r.finPos})`).join(', ')}
+                </p>
+              </div>
+            )}
 
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-[#1a1a2e] border-b border-[#2a2a3e]">
                   <tr>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-[#8a8a9a]">
-                      Position
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-[#8a8a9a]">
-                      Driver
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-[#8a8a9a]">
-                      Car
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-[#8a8a9a]">
-                      Laps
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-[#8a8a9a]">
-                      Led
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-medium text-[#8a8a9a]">
-                      Incidents
-                    </th>
-                    <th className="px-6 py-3 text-right text-sm font-medium text-[#8a8a9a]">
-                      Points
-                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-[#8a8a9a]">Pos</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-[#8a8a9a]">Driver</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-[#8a8a9a]">Start</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-[#8a8a9a]">Laps</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-[#8a8a9a]">Led</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-[#8a8a9a]">Inc</th>
+                    <th className="px-4 py-3 text-right text-sm font-medium text-[#8a8a9a]">Points</th>
+                    <th className="px-4 py-3 text-center text-sm font-medium text-[#8a8a9a]">Match</th>
                   </tr>
                 </thead>
                 <tbody>
                   {preview.previewResults.map((result, idx) => (
                     <tr
                       key={idx}
-                      className="border-b border-[#2a2a3e] hover:bg-[#1a1a2e] transition-colors"
+                      className={`border-b border-[#2a2a3e] hover:bg-[#1a1a2e] transition-colors ${!result.driverId ? 'opacity-40' : ''}`}
                     >
-                      <td className="px-6 py-4">
-                        <span className="inline-block w-8 h-8 bg-[#f5a623] text-[#0a0a0f] rounded-full flex items-center justify-center text-sm font-bold">
+                      <td className="px-4 py-3">
+                        <span className="inline-flex w-8 h-8 bg-[#f5a623] text-[#0a0a0f] rounded-full items-center justify-center text-sm font-bold">
                           {result.finPos}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-white font-medium">{result.name}</td>
-                      <td className="px-6 py-4 text-[#8a8a9a]">{result.carNumber}</td>
-                      <td className="px-6 py-4 text-[#8a8a9a]">{result.lapsCompleted}</td>
-                      <td className="px-6 py-4 text-[#8a8a9a]">{result.lapsLed}</td>
-                      <td className="px-6 py-4 text-[#8a8a9a]">{result.incidents}</td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-4 py-3">
+                        <div className="text-white font-medium">{result.name}</div>
+                        <div className="text-[#8a8a9a] text-xs">#{result.carNumber}</div>
+                      </td>
+                      <td className="px-4 py-3 text-[#8a8a9a]">{result.startPos}</td>
+                      <td className="px-4 py-3 text-[#8a8a9a]">{result.lapsCompleted}</td>
+                      <td className="px-4 py-3 text-[#8a8a9a]">{result.lapsLed}</td>
+                      <td className="px-4 py-3 text-[#8a8a9a]">{result.incidents}</td>
+                      <td className="px-4 py-3 text-right">
                         <span className="font-bold text-[#2ec4b6]">{result.totalPts}</span>
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        {result.matchType === 'cust_id' && (
+                          <span className="text-[#2ec4b6] text-xs font-medium">ID</span>
+                        )}
+                        {result.matchType === 'name' && (
+                          <span className="text-[#f5a623] text-xs font-medium">Name</span>
+                        )}
+                        {result.matchType === 'unmatched' && (
+                          <span className="text-[#e63946] text-xs font-medium">Skip</span>
+                        )}
                       </td>
                     </tr>
                   ))}
