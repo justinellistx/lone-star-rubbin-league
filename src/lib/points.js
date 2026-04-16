@@ -41,11 +41,8 @@ export function calculateBonuses(result, allResults) {
     return bonuses;
   }
 
-  // Pole position bonus (2 points) - best starting position among league members
-  const poleWinner = allResults.reduce((best, r) => {
-    return (r.startPos || 99) < (best.startPos || 99) ? r : best;
-  });
-  if (poleWinner.custId === result.custId) {
+  // Pole position bonus (2 points) - only awarded if driver started P1
+  if (result.startPos === 1) {
     bonuses.pole = 2;
   }
 

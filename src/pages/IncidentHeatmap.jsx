@@ -17,6 +17,12 @@ export default function IncidentHeatmap() {
 
   const allDrivers = ['Justin', 'Nate', 'Blaine', 'Nik', 'Jordan', 'Ryan', 'Terry', 'Sam', 'Ronald'];
 
+  // Map lowercase keys to display names
+  const driverDisplayName = {
+    blaine: 'Blaine', ryan: 'Ryan', justin: 'Justin', nik: 'Nik',
+    terry: 'Terry', jordan: 'Jordan', nate: 'Nate', sam: 'Sam', ronald: 'Ronald',
+  };
+
   // Prepare track view data
   const trackViewData = useMemo(() => {
     return Object.entries(trackIncidents).map(([track, drivers]) => {
@@ -24,13 +30,15 @@ export default function IncidentHeatmap() {
       const totalIncidents = incidentArray.reduce((sum, val) => sum + val, 0);
       const avgIncidents = (totalIncidents / incidentArray.length).toFixed(1);
 
-      // Find cleanest and dirtiest
+      // Find cleanest (lowest incidents) and dirtiest (highest incidents) among human drivers
       const driverEntries = Object.entries(drivers);
-      const cleanest = driverEntries.reduce((min, [driver, count]) =>
-        count < min.count ? { driver, count } : min
+      const cleanest = driverEntries.reduce(
+        (min, [driver, count]) => (count < min.count ? { driver: driverDisplayName[driver] || driver, count } : min),
+        { driver: '', count: Infinity }
       );
-      const dirtiest = driverEntries.reduce((max, [driver, count]) =>
-        count > max.count ? { driver, count } : max
+      const dirtiest = driverEntries.reduce(
+        (max, [driver, count]) => (count > max.count ? { driver: driverDisplayName[driver] || driver, count } : max),
+        { driver: '', count: -1 }
       );
 
       return {
