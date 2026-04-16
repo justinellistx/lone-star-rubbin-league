@@ -7,10 +7,11 @@ echo ""
 echo "1. NEW: Driver Interviews page with driver cards + media room links"
 echo "2. NEW: Private media room per driver (/interviews/:driverId)"
 echo "3. NEW: Admin Manage Interviews (single + bulk assign)"
-echo "4. NEW: Interview hooks in useSupabase.js"
-echo "5. NEW: Interviews link in main nav + admin sidebar"
-echo "6. FIX: Pick'em FK now references schedule (not races)"
-echo "7. FIX: Pick'em leaderboard scoring property names"
+echo "4. NEW: ESPN-style story generator (pre-race preview + post-race recap)"
+echo "5. NEW: Interview hooks in useSupabase.js"
+echo "6. NEW: Interviews link in main nav + admin sidebar"
+echo "7. FIX: Pick'em FK now references schedule (not races)"
+echo "8. FIX: Pick'em leaderboard scoring property names"
 echo ""
 
 # Remove stale git lock files if present
@@ -26,6 +27,7 @@ git add \
   src/pages/Interviews.jsx \
   src/pages/InterviewRoom.jsx \
   src/pages/admin/ManageInterviews.jsx \
+  src/lib/storyGenerator.js \
   src/hooks/useSupabase.js \
   src/App.jsx \
   src/components/Layout.jsx \
@@ -43,6 +45,10 @@ Interviews:
 - Only answered interviews shown publicly (unanswered stay private)
 - Admin /admin/interviews with single question + bulk assign workflow
 - Bulk assign: randomize from NASCAR-style question bank per driver
+- ESPN-style story generator: builds articles from interview answers + standings
+- Generate Pre-Race Preview button: weaves pre-race quotes into hype article
+- Generate Post-Race Recap button: combines results + quotes into recap
+- Generated stories auto-publish to News page
 - 18 Bristol questions seeded (9 pre-race + 9 post-race, personalized)
 - Interviews nav link + admin sidebar link
 

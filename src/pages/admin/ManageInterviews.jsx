@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../../lib/supabase';
+import { generatePreRacePreview, generatePostRaceRecap } from '../../lib/storyGenerator';
 import {
   Plus,
   Edit2,
@@ -14,6 +15,8 @@ import {
   Users,
   ChevronDown,
   ChevronUp,
+  FileText,
+  Newspaper,
 } from 'lucide-react';
 
 // Pre-built question bank for quick assignment
@@ -335,6 +338,140 @@ export default function ManageInterviews() {
     });
   };
 
+  // ── Story Generation ──
+  const [generating, setGenerating] = useState(false);
+
+  const handleGenerateStory = async (raceId, type) => {
+    setError('');
+    setSuccess('');
+    setGenerating(true);
+
+    try {
+      const race = scheduleMap[raceId];
+      if (!race) throw new Error('Race not found');
+
+      // Get interviews for this race + type
+      const raceInterviews = interviews
+        .filter((q) => q.schedule_id === raceId && q.question_type === type && q.answer_text)
+        .map((q) => ({
+          driver: {
+            name: q.drivers?.name,
+            car_number: q.drivers?.car_number,
+            nickname: q.drivers?.nickname,
+          },
+          question_text: q.question_text,
+          answer_text: q.answer_text,
+        }));
+
+      if (raceInterviews.length === 0) {
+        setError(`No answered ${type === 'pre_race' ? 'pre-race' : 'post-race'} interviews for this race yet`);
+        setGenerating(false);
+        return;
+      }
+
+      // Fetch standings
+      const { data: standingsData } = await supabase.rpc('get_standings_summary').catch(() => ({ data: null }));
+
+      // Fallback: build standings from race_results
+      let standings = [];
+      if (!standingsData) {
+        const { data: results } = await supabase
+          .from('race_results')
+          .select('driver_id, total_points, finish_position, laps_led, incidents, start_position, drivers ( name, car_number, nickname )');
+        if (results) {
+          const driverTotals = {};
+          results.forEach((r) => {
+            const key = r.driver_id;
+            if (!driverTotals[key]) {
+              driverTotals[key] = {
+                name: r.drivers?.name, car_number: r.drivers?.car_number,
+                nickname: r.drivers?.nickname, season_points: 0, wins: 0,
+                best_finish: 99, races_run: 0,
+              };
+            }
+            driverTotals[key].season_points += r.total_points || 0;
+            driverTotals[key].races_run += 1;
+            if (r.finish_position === 1) driverTotals[key].wins += 1;
+            if (r.finish_position < driverTotals[key].best_finish) driverTotals[key].best_finish = r.finish_position;
+          });
+          standings = Object.values(driverTotals).sort((a, b) => b.season_points - a.season_points);
+        }
+      } else {
+        standings = standingsData;
+      }
+
+      let article;
+
+      if (type === 'pre_race') {
+        article = generatePreRacePreview({
+          track: race.track_name,
+          raceNumber: race.race_number,
+          interviews: raceInterviews,
+          standings,
+        });
+      } else {
+        // For post-race, also fetch race results
+        let raceResults = [];
+        if (race.race_id) {
+          const { data: rrData } = await supabase
+            .from('race_results')
+            .select('*, drivers ( name, car_number, nickname )')
+            .eq('race_id', race.race_id)
+            .order('finish_position', { ascending: true });
+          if (rrData) {
+            raceResults = rrData.map((r) => ({
+              name: r.drivers?.name, car_number: r.drivers?.car_number || r.car_number,
+              nickname: r.drivers?.nickname, finish_position: r.finish_position,
+              start_position: r.start_position, incidents: r.incidents,
+              laps_led: r.laps_led, total_points: r.total_points,
+            }));
+          }
+        }
+
+        // Find next track
+        const nextRace = schedule.find(
+          (s) => s.race_number === race.race_number + 1
+        );
+
+        article = generatePostRaceRecap({
+          track: race.track_name,
+          raceNumber: race.race_number,
+          interviews: raceInterviews,
+          standings,
+          raceResults,
+          nextTrack: nextRace?.track_name || null,
+        });
+      }
+
+      if (!article) {
+        setError('Could not generate article — no answered interviews');
+        setGenerating(false);
+        return;
+      }
+
+      // Insert into news table
+      const { error: newsError } = await supabase.from('news').insert({
+        title: article.title,
+        subtitle: article.subtitle,
+        body: article.body,
+        category: article.category,
+        published: true,
+        published_at: new Date().toISOString(),
+      });
+
+      if (newsError) throw newsError;
+
+      const label = type === 'pre_race' ? 'Pre-race preview' : 'Post-race recap';
+      setSuccess(`${label} published to News! "${article.title}"`);
+      setTimeout(() => setSuccess(''), 6000);
+    } catch (err) {
+      console.error('Error generating story:', err);
+      setError(err.message || 'Failed to generate story');
+    } finally {
+      setGenerating(false);
+    }
+  };
+
   return (
     <div className="p-8 bg-[#0a0a0f] min-h-screen">
       <div className="max-w-6xl mx-auto">
@@ -632,7 +769,34 @@ export default function ManageInterviews() {
                 </button>
 
                 {!isCollapsed && (
-                  <div className="space-y-2 ml-4">
+                  <div>
+                    {/* Generate Story Buttons */}
+                    {answered > 0 && (
+                      <div className="flex gap-2 ml-4 mb-3">
+                        {questions.some((q) => q.question_type === 'pre_race' && q.answer_text) && (
+                          <button
+                            onClick={() => handleGenerateStory(raceId, 'pre_race')}
+                            disabled={generating}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-[#f5a623]/10 border border-[#f5a623]/30 text-[#f5a623] text-xs font-semibold rounded-lg hover:bg-[#f5a623]/20 transition-colors disabled:opacity-40"
+                          >
+                            <Newspaper className="w-3.5 h-3.5" />
+                            {generating ? 'Generating...' : 'Generate Pre-Race Preview'}
+                          </button>
+                        )}
+                        {questions.some((q) => q.question_type === 'post_race' && q.answer_text) && (
+                          <button
+                            onClick={() => handleGenerateStory(raceId, 'post_race')}
+                            disabled={generating}
+                            className="flex items-center gap-2 px-3 py-1.5 bg-[#2ec4b6]/10 border border-[#2ec4b6]/30 text-[#2ec4b6] text-xs font-semibold rounded-lg hover:bg-[#2ec4b6]/20 transition-colors disabled:opacity-40"
+                          >
+                            <Newspaper className="w-3.5 h-3.5" />
+                            {generating ? 'Generating...' : 'Generate Post-Race Recap'}
+                          </button>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="space-y-2 ml-4">
                     {questions
                       .sort((a, b) => {
                         if (a.question_type !== b.question_type) return a.question_type === 'pre_race' ? -1 : 1;
@@ -696,6 +860,7 @@ export default function ManageInterviews() {
                           </div>
                         </div>
                       ))}
+                    </div>
                   </div>
                 )}
               </div>
