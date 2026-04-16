@@ -108,44 +108,55 @@ export default function Standings() {
               </div>
             </div>
 
+            {/* Drop System Info */}
+            {stageBonusTracker && (
+              <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg px-6 py-4 mb-6">
+                <p className="text-[#8a8a9a] text-sm">
+                  <span className="text-[#f5a623] font-bold">Drop {stageBonusTracker.dropsAllowed} worst</span> of {stageBonusTracker.totalRaces} races per stage.
+                  {' '}DNRs count as 0-point races and are dropped first.
+                  {' '}<span className="text-white">{stageBonusTracker.racesCompleted} of {stageBonusTracker.totalRaces} races completed.</span>
+                </p>
+              </div>
+            )}
+
             {/* Full Standings Table */}
             <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg overflow-hidden mb-12">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-[#2a2a3e] bg-[#0a0a0f]">
-                      <th className="px-6 py-4 text-left text-[#8a8a9a] text-xs font-bold uppercase">
+                      <th className="px-4 py-4 text-left text-[#8a8a9a] text-xs font-bold uppercase">
                         Pos
                       </th>
-                      <th className="px-6 py-4 text-left text-[#8a8a9a] text-xs font-bold uppercase">
+                      <th className="px-4 py-4 text-left text-[#8a8a9a] text-xs font-bold uppercase">
                         Driver
                       </th>
-                      <th className="px-6 py-4 text-left text-[#8a8a9a] text-xs font-bold uppercase">
+                      <th className="px-4 py-4 text-left text-[#8a8a9a] text-xs font-bold uppercase">
                         Team
                       </th>
-                      <th className="px-6 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">
+                      <th className="px-4 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">
                         Points
                       </th>
-                      <th className="px-6 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">
-                        Pos Pts
+                      <th className="px-4 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">
+                        Dropped
                       </th>
-                      <th className="px-6 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">
-                        Bonus
+                      <th className="px-4 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">
+                        Races
                       </th>
-                      <th className="px-6 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">
-                        Penalty
-                      </th>
-                      <th className="px-6 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">
+                      <th className="px-4 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">
                         Wins
                       </th>
-                      <th className="px-6 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">
+                      <th className="px-4 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">
                         Top 5
                       </th>
-                      <th className="px-6 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">
-                        Top 10
-                      </th>
-                      <th className="px-6 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">
+                      <th className="px-4 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">
                         Avg Fin
+                      </th>
+                      <th className="px-4 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">
+                        Laps Led
+                      </th>
+                      <th className="px-4 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">
+                        Inc
                       </th>
                     </tr>
                   </thead>
@@ -155,7 +166,7 @@ export default function Standings() {
                         key={driver.id}
                         className="border-b border-[#2a2a3e] hover:bg-[#1a1a2e] transition"
                       >
-                        <td className="px-6 py-4">
+                        <td className="px-4 py-4">
                           <div
                             className={`flex items-center justify-center w-8 h-8 rounded font-bold ${
                               idx === 0
@@ -166,34 +177,46 @@ export default function Standings() {
                             {idx + 1}
                           </div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-4 py-4">
                           <div className="font-semibold text-white">{driver.name}</div>
                           <div className="text-sm text-[#8a8a9a]">#{driver.number}</div>
                         </td>
-                        <td className="px-6 py-4 text-[#8a8a9a]">{driver.team}</td>
-                        <td className="px-6 py-4 text-right">
-                          <span className="font-bold text-[#f5a623]">{driver.points}</span>
+                        <td className="px-4 py-4 text-[#8a8a9a]">{driver.team}</td>
+                        <td className="px-4 py-4 text-right">
+                          <div className="font-bold text-[#f5a623]">{driver.points}</div>
+                          {driver.droppedPoints > 0 && (
+                            <div className="text-xs text-[#8a8a9a]">
+                              {driver.rawPoints} raw
+                            </div>
+                          )}
                         </td>
-                        <td className="px-6 py-4 text-right text-[#8a8a9a] font-semibold">
-                          {driver.posPoints || '—'}
+                        <td className="px-4 py-4 text-right">
+                          {driver.droppedPoints > 0 ? (
+                            <span className="text-[#e63946] text-sm font-semibold">-{driver.droppedPoints}</span>
+                          ) : (
+                            <span className="text-[#8a8a9a]">—</span>
+                          )}
+                          {driver.dnrCount > 0 && (
+                            <div className="text-xs text-[#8a8a9a]">{driver.dnrCount} DNR</div>
+                          )}
                         </td>
-                        <td className="px-6 py-4 text-right text-[#2ec4b6] font-semibold">
-                          {driver.bonusPoints ? `+${driver.bonusPoints}` : '—'}
+                        <td className="px-4 py-4 text-right text-[#8a8a9a] font-semibold">
+                          {driver.racesEntered}
                         </td>
-                        <td className="px-6 py-4 text-right text-[#e63946] font-semibold">
-                          {driver.penaltyPoints ? driver.penaltyPoints : '—'}
-                        </td>
-                        <td className="px-6 py-4 text-right text-white font-semibold">
+                        <td className="px-4 py-4 text-right text-white font-semibold">
                           {driver.wins}
                         </td>
-                        <td className="px-6 py-4 text-right text-[#2ec4b6] font-semibold">
+                        <td className="px-4 py-4 text-right text-[#2ec4b6] font-semibold">
                           {driver.top5}
                         </td>
-                        <td className="px-6 py-4 text-right text-[#e63946] font-semibold">
-                          {driver.top10}
-                        </td>
-                        <td className="px-6 py-4 text-right text-white font-semibold">
+                        <td className="px-4 py-4 text-right text-white font-semibold">
                           {(driver.avgFinish || 0).toFixed(1)}
+                        </td>
+                        <td className="px-4 py-4 text-right text-[#f5a623] font-semibold">
+                          {driver.lapsLed}
+                        </td>
+                        <td className="px-4 py-4 text-right text-[#e63946] font-semibold">
+                          {driver.totalIncidents}
                         </td>
                       </tr>
                     ))}
@@ -237,12 +260,21 @@ export default function Standings() {
                       <Shield size={16} className="text-[#2ec4b6]" />
                       <span className="text-[#8a8a9a] text-xs uppercase font-bold">Lowest Total Incidents</span>
                     </div>
-                    <div>
-                      <div className="text-white font-bold text-lg">{stageBonusTracker.lowestIncidents.name}</div>
-                      <div className="text-[#2ec4b6] text-sm font-bold mt-1">
-                        {stageBonusTracker.lowestIncidents.value} incidents
+                    {stageBonusTracker.lowestIncidents.qualified ? (
+                      <div>
+                        <div className="text-white font-bold text-lg">{stageBonusTracker.lowestIncidents.name}</div>
+                        <div className="text-[#2ec4b6] text-sm font-bold mt-1">
+                          {stageBonusTracker.lowestIncidents.value} incidents
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div>
+                        <div className="text-[#8a8a9a] font-bold text-lg">No one qualifies yet</div>
+                        <div className="text-[#8a8a9a] text-xs mt-1">
+                          Requires {stageBonusTracker.lowestIncidents.minRaces}+ races entered
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Most Fastest Laps */}

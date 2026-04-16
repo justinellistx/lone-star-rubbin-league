@@ -357,8 +357,22 @@ export function useComputedStandings() {
     if (!drivers) console.warn('[useComputedStandings] drivers is null after loading');
   }
 
+  const DROPS_ALLOWED = 3;
+  const RACES_PER_STAGE = 12;
+
   const standings = useMemo(() => {
     if (!allResults || !drivers) return null;
+
+    // Collect all completed race IDs for DNR injection
+    const completedRaceIds = new Set();
+    const raceInfoMap = {};
+    allResults.forEach(r => {
+      completedRaceIds.add(r.race_id);
+      if (!raceInfoMap[r.race_id]) {
+        raceInfoMap[r.race_id] = r.races;
+      }
+    });
+    const completedRaceList = [...completedRaceIds];
 
     const driverMap = {};
     drivers.forEach(d => {
@@ -370,31 +384,69 @@ export function useComputedStandings() {
         team: d.teams?.name || '',
         teamId: d.team_id,
         races: [],
+        enteredRaceIds: new Set(),
       };
     });
 
     allResults.forEach(r => {
       if (!driverMap[r.driver_id]) return;
       driverMap[r.driver_id].races.push(r);
+      driverMap[r.driver_id].enteredRaceIds.add(r.race_id);
     });
 
     const result = Object.values(driverMap).map(d => {
-      const races = d.races;
-      const totalPoints = races.reduce((s, r) => s + (r.total_points || 0), 0);
-      const posPoints = races.reduce((s, r) => s + (r.race_points || 0), 0);
-      const bonusPoints = races.reduce((s, r) => s + (r.bonus_points || 0), 0);
-      const penaltyPoints = races.reduce((s, r) => s + (r.penalty_points || 0), 0);
-      const wins = races.filter(r => r.finish_position === 1).length;
-      const top5 = races.filter(r => r.finish_position <= 5).length;
-      const top10 = races.filter(r => r.finish_position <= 10).length;
-      const lapsLed = races.reduce((s, r) => s + (r.laps_led || 0), 0);
-      const totalIncidents = races.reduce((s, r) => s + (r.incidents || 0), 0);
-      const avgFinish = races.length > 0
-        ? races.reduce((s, r) => s + r.finish_position, 0) / races.length
+      const enteredRaces = d.races;
+
+      // Inject DNR entries for races this driver missed (0 points, droppable)
+      const dnrRaces = completedRaceList
+        .filter(raceId => !d.enteredRaceIds.has(raceId))
+        .map(raceId => ({
+          race_id: raceId,
+          races: raceInfoMap[raceId],
+          driver_id: d.id,
+          finish_position: null,
+          start_position: null,
+          total_points: 0,
+          race_points: 0,
+          bonus_points: 0,
+          penalty_points: 0,
+          laps_led: 0,
+          incidents: 0,
+          fastest_lap_time: null,
+          isDNR: true,
+        }));
+
+      const allRaces = [...enteredRaces, ...dnrRaces];
+      const dnrCount = dnrRaces.length;
+
+      // Sort by total_points ascending — worst races first (DNRs at 0 sink to bottom)
+      const sorted = [...allRaces].sort((a, b) => (a.total_points || 0) - (b.total_points || 0));
+
+      // Drop worst N races
+      const dropped = sorted.slice(0, DROPS_ALLOWED);
+      const kept = sorted.slice(DROPS_ALLOWED);
+
+      const droppedRaceIds = new Set(dropped.map(r => r.race_id));
+
+      // Points after drops
+      const points = kept.reduce((s, r) => s + (r.total_points || 0), 0);
+
+      // Raw totals (all entered races, no drops)
+      const rawPoints = enteredRaces.reduce((s, r) => s + (r.total_points || 0), 0);
+      const posPoints = enteredRaces.reduce((s, r) => s + (r.race_points || 0), 0);
+      const bonusPoints = enteredRaces.reduce((s, r) => s + (r.bonus_points || 0), 0);
+      const penaltyPoints = enteredRaces.reduce((s, r) => s + (r.penalty_points || 0), 0);
+      const wins = enteredRaces.filter(r => r.finish_position === 1).length;
+      const top5 = enteredRaces.filter(r => r.finish_position <= 5).length;
+      const top10 = enteredRaces.filter(r => r.finish_position <= 10).length;
+      const lapsLed = enteredRaces.reduce((s, r) => s + (r.laps_led || 0), 0);
+      const totalIncidents = enteredRaces.reduce((s, r) => s + (r.incidents || 0), 0);
+      const avgFinish = enteredRaces.length > 0
+        ? enteredRaces.reduce((s, r) => s + r.finish_position, 0) / enteredRaces.length
         : 0;
 
-      // Per-race data for charts / head-to-head
-      const raceByRace = races
+      // Per-race data for charts / head-to-head (entered races only)
+      const raceByRace = enteredRaces
         .sort((a, b) => a.races.race_number - b.races.race_number)
         .map(r => ({
           raceNum: r.races.race_number,
@@ -406,6 +458,7 @@ export function useComputedStandings() {
           incidents: r.incidents || 0,
           lapsLed: r.laps_led || 0,
           bestLap: r.fastest_lap_time,
+          isDropped: droppedRaceIds.has(r.race_id),
         }));
 
       return {
@@ -415,7 +468,9 @@ export function useComputedStandings() {
         nickname: d.nickname,
         team: d.team,
         teamId: d.teamId,
-        points: totalPoints,
+        points,          // after drops — this drives the standings
+        rawPoints,       // before drops — for reference
+        droppedPoints: rawPoints - points,
         posPoints,
         bonusPoints,
         penaltyPoints,
@@ -425,7 +480,9 @@ export function useComputedStandings() {
         lapsLed,
         totalIncidents,
         avgFinish: parseFloat(avgFinish.toFixed(1)),
-        racesEntered: races.length,
+        racesEntered: enteredRaces.length,
+        dnrCount,
+        dropsUsed: DROPS_ALLOWED,
         raceByRace,
       };
     })
@@ -458,18 +515,27 @@ export function useComputedStandings() {
   }, [standings, teams]);
 
   // Stage bonus tracker
+  const MIN_RACES_FOR_INCIDENTS = 9;
+
   const stageBonusTracker = useMemo(() => {
     if (!standings) return null;
 
+    const racesCompleted = Math.max(...standings.map(d => d.racesEntered), 0);
+
+    // Most laps led — open to ALL drivers
     const mostLapsLed = standings.reduce((best, d) =>
       d.lapsLed > (best?.lapsLed || 0) ? d : best, standings[0]);
-    const lowestIncidents = standings.reduce((best, d) =>
-      d.totalIncidents < (best?.totalIncidents || Infinity) ? d : best, standings[0]);
 
-    // Count fastest lap awards per driver
+    // Lowest incidents — requires 9+ races entered to qualify
+    const qualifiedForIncidents = standings.filter(d => d.racesEntered >= MIN_RACES_FOR_INCIDENTS);
+    const lowestIncidents = qualifiedForIncidents.length > 0
+      ? qualifiedForIncidents.reduce((best, d) =>
+          d.totalIncidents < (best?.totalIncidents || Infinity) ? d : best, qualifiedForIncidents[0])
+      : null; // No one qualifies yet
+
+    // Count fastest lap awards per driver — open to ALL drivers
     const fastestLapCounts = {};
     if (allResults) {
-      // Group results by race
       const byRace = {};
       allResults.forEach(r => {
         if (!byRace[r.race_id]) byRace[r.race_id] = [];
@@ -494,10 +560,13 @@ export function useComputedStandings() {
       .filter(([, count]) => count === maxFastestLaps);
 
     return {
-      racesCompleted: standings[0]?.raceByRace?.length || 0,
-      totalRaces: 12,
+      racesCompleted,
+      totalRaces: RACES_PER_STAGE,
+      dropsAllowed: DROPS_ALLOWED,
       mostLapsLed: { name: mostLapsLed?.name, value: mostLapsLed?.lapsLed || 0 },
-      lowestIncidents: { name: lowestIncidents?.name, value: lowestIncidents?.totalIncidents || 0 },
+      lowestIncidents: lowestIncidents
+        ? { name: lowestIncidents.name, value: lowestIncidents.totalIncidents, qualified: true }
+        : { name: 'No one qualifies yet', value: null, qualified: false, minRaces: MIN_RACES_FOR_INCIDENTS },
       mostFastestLaps: {
         leaders: fastestLapLeaders.map(([name]) => name),
         value: maxFastestLaps,
