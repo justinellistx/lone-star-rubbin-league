@@ -127,7 +127,7 @@ export function useDrivers() {
         setLoading(true);
         const { data, error } = await supabase
           .from('drivers')
-          .select('*, teams ( id, name )')
+          .select('*, teams!drivers_team_id_fkey ( id, name )')
           .eq('active', true)
           .order('name', { ascending: true });
 
@@ -309,7 +309,7 @@ export function useDriver(driverId) {
         setLoading(true);
         const { data: driver, error: dErr } = await supabase
           .from('drivers')
-          .select('*, teams ( id, name )')
+          .select('*, teams!drivers_team_id_fkey ( id, name )')
           .eq('id', driverId)
           .single();
 
@@ -345,8 +345,17 @@ export function useDriver(driverId) {
  */
 export function useComputedStandings() {
   const { data: allResults, loading: rLoading, error: rError } = useAllRaceResults();
-  const { data: drivers, loading: dLoading } = useDrivers();
-  const { data: teams } = useTeams();
+  const { data: drivers, loading: dLoading, error: dError } = useDrivers();
+  const { data: teams, error: tError } = useTeams();
+
+  // Debug logging for data pipeline
+  if (!rLoading && !dLoading) {
+    if (rError) console.error('[useComputedStandings] race_results error:', rError);
+    if (dError) console.error('[useComputedStandings] drivers error:', dError);
+    if (tError) console.error('[useComputedStandings] teams error:', tError);
+    if (!allResults) console.warn('[useComputedStandings] allResults is null after loading');
+    if (!drivers) console.warn('[useComputedStandings] drivers is null after loading');
+  }
 
   const standings = useMemo(() => {
     if (!allResults || !drivers) return null;
