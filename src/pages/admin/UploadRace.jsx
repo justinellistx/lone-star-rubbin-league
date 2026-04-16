@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { parseIRacingCSV } from '../../lib/csvParser';
+import { generatePostRaceQuestions } from '../../lib/postRaceQuestions';
 import {
   getPositionPoints,
   calculateBonuses,
@@ -273,12 +274,57 @@ export default function UploadRace() {
 
       if (resultsError) throw resultsError;
 
-      // TODO: Recalculate standings here in a production app
-      // This would typically be done with a database trigger or function
+      // ── Auto-generate post-race interview questions ──
+      let questionsGenerated = 0;
+      try {
+        // Find matching schedule entry by race_number
+        const raceNum = parseInt(raceNumber);
+        const { data: scheduleEntry } = await supabase
+          .from('schedule')
+          .select('id')
+          .eq('race_number', raceNum)
+          .maybeSingle();
+
+        if (scheduleEntry) {
+          // Link the schedule entry to this race and mark completed
+          await supabase
+            .from('schedule')
+            .update({ race_id: race.id, status: 'completed' })
+            .eq('id', scheduleEntry.id);
+
+          // Generate personalized post-race questions from actual results
+          const trackName = parsed.metadata.track || 'Unknown Track';
+          const questions = generatePostRaceQuestions({
+            scheduleId: scheduleEntry.id,
+            trackName,
+            raceResults: raceResults.map((r) => ({
+              driver_id: r.driver_id,
+              finish_position: r.finish_position,
+              start_position: r.start_position,
+              laps_led: r.laps_led,
+              incidents: r.incidents,
+            })),
+          });
+
+          if (questions.length > 0) {
+            const { error: qError } = await supabase
+              .from('interview_questions')
+              .upsert(questions, { onConflict: 'schedule_id,driver_id,question_type' });
+
+            if (!qError) questionsGenerated = questions.length;
+          }
+        }
+      } catch (qErr) {
+        // Don't fail the upload if question generation fails
+        console.warn('Post-race question generation failed:', qErr);
+      }
 
       setStatus('success');
       setSuccess(
-        `Race uploaded successfully! ${raceResults.length} drivers recorded.`
+        `Race uploaded successfully! ${raceResults.length} drivers recorded.` +
+        (questionsGenerated > 0
+          ? ` ${questionsGenerated} post-race interview questions generated!`
+          : '')
       );
       setParsed(null);
       setPreview(null);

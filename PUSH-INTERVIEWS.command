@@ -8,10 +8,11 @@ echo "1. NEW: Driver Interviews page with driver cards + media room links"
 echo "2. NEW: Private media room per driver (/interviews/:driverId)"
 echo "3. NEW: Admin Manage Interviews (single + bulk assign)"
 echo "4. NEW: ESPN-style story generator (pre-race preview + post-race recap)"
-echo "5. NEW: Interview hooks in useSupabase.js"
-echo "6. NEW: Interviews link in main nav + admin sidebar"
-echo "7. FIX: Pick'em FK now references schedule (not races)"
-echo "8. FIX: Pick'em leaderboard scoring property names"
+echo "5. NEW: Post-race questions auto-generate from uploaded race results"
+echo "6. NEW: Interview hooks in useSupabase.js"
+echo "7. NEW: Interviews link in main nav + admin sidebar"
+echo "8. FIX: Pick'em FK now references schedule (not races)"
+echo "9. FIX: Pick'em leaderboard scoring property names"
 echo ""
 
 # Remove stale git lock files if present
@@ -27,7 +28,9 @@ git add \
   src/pages/Interviews.jsx \
   src/pages/InterviewRoom.jsx \
   src/pages/admin/ManageInterviews.jsx \
+  src/pages/admin/UploadRace.jsx \
   src/lib/storyGenerator.js \
+  src/lib/postRaceQuestions.js \
   src/hooks/useSupabase.js \
   src/App.jsx \
   src/components/Layout.jsx \
@@ -49,7 +52,10 @@ Interviews:
 - Generate Pre-Race Preview button: weaves pre-race quotes into hype article
 - Generate Post-Race Recap button: combines results + quotes into recap
 - Generated stories auto-publish to News page
-- 18 Bristol questions seeded (9 pre-race + 9 post-race, personalized)
+- Post-race questions auto-generate on CSV upload from actual race results
+- Question generator categorizes drivers (winner, podium, gained/lost spots, etc.)
+- Schedule entry auto-linked to race + marked completed on upload
+- 9 Bristol pre-race questions seeded (post-race now auto-generated)
 - Interviews nav link + admin sidebar link
 
 Pick'em fix:
