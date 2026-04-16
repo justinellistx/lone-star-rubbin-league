@@ -94,28 +94,22 @@ export default function Pickem() {
   const leaderboard = useMemo(() => {
     if (!allPicksData || !raceResultsData || !drivers || !allRaces) return [];
 
-    // Build result map: raceId -> position -> driverId (actual results)
-    const resultMap = {};
-    if (raceResultsData) {
-      raceResultsData.forEach((race) => {
-        if (race.results) {
-          resultMap[race.id] = {};
-          race.results.forEach((r) => {
-            resultMap[race.id][r.position] = r.driverId || r.driver_id;
-          });
-        }
+    // Build schedule_id -> races_id mapping (picks use schedule IDs, results use races IDs)
+    const scheduleToRaceId = {};
+    if (schedule) {
+      schedule.forEach((s) => {
+        if (s.race_id) scheduleToRaceId[s.id] = s.race_id;
       });
     }
 
-    // Also build a quick lookup: raceId -> driverId -> finishPosition
+    // Build a quick lookup: racesTableId -> driverId -> finishPosition
     const finishMap = {};
     if (raceResultsData) {
       raceResultsData.forEach((race) => {
         if (race.results) {
           finishMap[race.id] = {};
           race.results.forEach((r) => {
-            const did = r.driverId || r.driver_id;
-            finishMap[race.id][did] = r.position;
+            finishMap[race.id][r.id] = r.finishPosition;
           });
         }
       });
@@ -124,18 +118,19 @@ export default function Pickem() {
     // Score each picker
     const pickerScores = {};
     allPicksData.forEach((pick) => {
-      const { picker_id, race_id, pick_position, picked_driver_id } = pick;
+      const { picker_id, race_id: scheduleId, pick_position, picked_driver_id } = pick;
 
-      // Only score completed races
-      if (!finishMap[race_id]) return;
+      // Map schedule ID to races table ID for result lookup
+      const racesId = scheduleToRaceId[scheduleId];
+      if (!racesId || !finishMap[racesId]) return;
 
       if (!pickerScores[picker_id]) {
         pickerScores[picker_id] = { total: 0, exact: 0, close: 0, racesPlayed: new Set() };
       }
 
-      pickerScores[picker_id].racesPlayed.add(race_id);
+      pickerScores[picker_id].racesPlayed.add(scheduleId);
 
-      const actualPosition = finishMap[race_id][picked_driver_id];
+      const actualPosition = finishMap[racesId][picked_driver_id];
       if (actualPosition === undefined) return;
 
       if (actualPosition === pick_position) {
@@ -159,7 +154,7 @@ export default function Pickem() {
         racesPlayed: scores.racesPlayed.size,
       }))
       .sort((a, b) => b.total - a.total);
-  }, [allPicksData, raceResultsData, drivers, allRaces]);
+  }, [allPicksData, raceResultsData, drivers, allRaces, schedule]);
 
   // ── Helpers ──
   const getDriverName = (id) => drivers?.find((d) => d.id === id)?.name || 'Unknown';
