@@ -657,3 +657,107 @@ export function useTeamStandings(stageId) {
   const { teamStandings, loading, error } = useComputedStandings();
   return { data: teamStandings, loading, error };
 }
+
+// ─── Pick'em hooks ────────────────────────────────────────────
+
+/**
+ * Fetch all picks for a specific race
+ */
+export function usePickemPicks(raceId) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    if (!raceId) { setData(null); setLoading(false); return; }
+
+    async function fetchData() {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('pickem_picks')
+          .select('*')
+          .eq('race_id', raceId)
+          .order('picker_id')
+          .order('pick_position', { ascending: true });
+
+        if (error) throw error;
+        setData(data);
+      } catch (err) {
+        setError(err.message);
+        setData(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [raceId, refreshKey]);
+
+  const refresh = () => setRefreshKey((k) => k + 1);
+  return { data, loading, error, refresh };
+}
+
+/**
+ * Fetch ALL picks across all races (for leaderboard)
+ */
+export function useAllPickemPicks() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('pickem_picks')
+          .select('*')
+          .order('race_id')
+          .order('picker_id')
+          .order('pick_position', { ascending: true });
+
+        if (error) throw error;
+        setData(data);
+      } catch (err) {
+        setError(err.message);
+        setData(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  return { data, loading, error };
+}
+
+/**
+ * Submit picks for a race (upserts — replaces existing picks)
+ */
+export async function submitPickemPicks(raceId, pickerId, picks) {
+  // picks = [{ position: 1, driverId: '...' }, ...]
+  // Delete existing picks for this picker+race first
+  const { error: delError } = await supabase
+    .from('pickem_picks')
+    .delete()
+    .eq('race_id', raceId)
+    .eq('picker_id', pickerId);
+
+  if (delError) throw delError;
+
+  // Insert new picks
+  const rows = picks.map((p) => ({
+    race_id: raceId,
+    picker_id: pickerId,
+    pick_position: p.position,
+    picked_driver_id: p.driverId,
+  }));
+
+  const { error: insError } = await supabase
+    .from('pickem_picks')
+    .insert(rows);
+
+  if (insError) throw insError;
+  return true;
+}
