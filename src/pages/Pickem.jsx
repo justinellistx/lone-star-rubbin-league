@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import { AlertCircle, CheckCircle } from 'lucide-react';
-import { useDrivers, useRaceResultsByRace } from '../hooks/useSupabase';
+import { useDrivers, useRaceResultsByRace, useSchedule } from '../hooks/useSupabase';
 
 export default function Pickem() {
   const { data: drivers, loading: driversLoading } = useDrivers();
   const { data: races, loading: racesLoading } = useRaceResultsByRace();
+  const { data: schedule, loading: scheduleLoading } = useSchedule(null);
+
+  // Find the next upcoming race dynamically
+  const nextRace = schedule?.find((r) => r.status === 'upcoming') || null;
+  const nextTrackName = nextRace?.track_name || 'Next Race';
 
   const [picks, setPicks] = useState({
     first: '',
@@ -79,7 +84,7 @@ export default function Pickem() {
     { key: 'fifth', label: '5th Place', position: '5️⃣' },
   ];
 
-  if (driversLoading || racesLoading) {
+  if (driversLoading || racesLoading || scheduleLoading) {
     return (
       <div className="min-h-screen p-6 flex items-center justify-center" style={{ backgroundColor: '#0a0a0f' }}>
         <p style={{ color: '#8a8a9a' }}>Loading...</p>
@@ -98,10 +103,10 @@ export default function Pickem() {
           }}
         >
           <h1 className="text-3xl font-bold" style={{ color: '#f5a623' }}>
-            Bristol Pick'em
+            {nextTrackName} Pick'em
           </h1>
           <p className="text-lg mt-2" style={{ color: '#8a8a9a' }}>
-            Next Race: Bristol Motor Speedway
+            Next Race: {nextTrackName}
           </p>
         </div>
 
@@ -214,7 +219,7 @@ export default function Pickem() {
                   <h3 className="text-lg font-bold text-white">Submitted!</h3>
                 </div>
                 <p className="text-sm mb-4" style={{ color: '#8a8a9a' }}>
-                  Your picks for Bristol have been locked in.
+                  Your picks for {nextTrackName} have been locked in.
                 </p>
                 <div className="space-y-2 text-sm">
                   {positions.map((pos) => (
