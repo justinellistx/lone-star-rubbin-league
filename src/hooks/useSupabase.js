@@ -428,21 +428,26 @@ export function useComputedStandings() {
 
       const droppedRaceIds = new Set(dropped.map(r => r.race_id));
 
-      // Points after drops
+      // Only non-DNR kept races count for stats
+      const keptEntered = kept.filter(r => !r.isDNR);
+
+      // Points after drops (all kept races including DNR placeholders at 0)
       const points = kept.reduce((s, r) => s + (r.total_points || 0), 0);
 
-      // Raw totals (all entered races, no drops)
+      // Raw totals (all entered races before drops — for reference)
       const rawPoints = enteredRaces.reduce((s, r) => s + (r.total_points || 0), 0);
-      const posPoints = enteredRaces.reduce((s, r) => s + (r.race_points || 0), 0);
-      const bonusPoints = enteredRaces.reduce((s, r) => s + (r.bonus_points || 0), 0);
-      const penaltyPoints = enteredRaces.reduce((s, r) => s + (r.penalty_points || 0), 0);
-      const wins = enteredRaces.filter(r => r.finish_position === 1).length;
-      const top5 = enteredRaces.filter(r => r.finish_position <= 5).length;
-      const top10 = enteredRaces.filter(r => r.finish_position <= 10).length;
-      const lapsLed = enteredRaces.reduce((s, r) => s + (r.laps_led || 0), 0);
-      const totalIncidents = enteredRaces.reduce((s, r) => s + (r.incidents || 0), 0);
-      const avgFinish = enteredRaces.length > 0
-        ? enteredRaces.reduce((s, r) => s + r.finish_position, 0) / enteredRaces.length
+
+      // All stats computed from KEPT races only — dropped race stats don't count
+      const posPoints = keptEntered.reduce((s, r) => s + (r.race_points || 0), 0);
+      const bonusPoints = keptEntered.reduce((s, r) => s + (r.bonus_points || 0), 0);
+      const penaltyPoints = keptEntered.reduce((s, r) => s + (r.penalty_points || 0), 0);
+      const wins = keptEntered.filter(r => r.finish_position === 1).length;
+      const top5 = keptEntered.filter(r => r.finish_position <= 5).length;
+      const top10 = keptEntered.filter(r => r.finish_position <= 10).length;
+      const lapsLed = keptEntered.reduce((s, r) => s + (r.laps_led || 0), 0);
+      const totalIncidents = keptEntered.reduce((s, r) => s + (r.incidents || 0), 0);
+      const avgFinish = keptEntered.length > 0
+        ? keptEntered.reduce((s, r) => s + r.finish_position, 0) / keptEntered.length
         : 0;
 
       // Per-race data for charts / head-to-head (entered races only)
