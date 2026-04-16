@@ -369,39 +369,146 @@ export default function ManageInterviews() {
         return;
       }
 
-      // Build drop-adjusted standings from race_results (worst 3 dropped)
-      const DROPS_ALLOWED = 3;
+      // ── Fetch ALL data sources in parallel ──
+      const DROPS_ALLOWED_LOCAL = 3;
+
+      // 1) All race results (for standings + driver forms)
+      const allResultsPromise = supabase
+        .from('race_results')
+        .select('driver_id, race_id, total_points, finish_position, start_position, laps_led, incidents, drivers ( id, name, car_number, nickname ), races ( race_number, track_name, race_date )');
+
+      // 2) Pick'em predictions for this race (schedule_id = raceId)
+      const pickemPromise = supabase
+        .from('pickem_picks')
+        .select('*')
+        .eq('race_id', raceId);
+
+      // 3) Active drivers list (for Pick'em name mapping)
+      const driversPromise = supabase
+        .from('drivers')
+        .select('id, name, car_number, nickname')
+        .eq('active', true);
+
+      const [allResultsRes, pickemRes, driversRes] = await Promise.all([
+        allResultsPromise, pickemPromise, driversPromise,
+      ]);
+
+      const allResults = allResultsRes.data || [];
+      const pickemPicks = pickemRes.data || [];
+      const allDrivers = driversRes.data || [];
+
+      // ── Build drop-adjusted standings ──
       let standings = [];
+      const driverIdMap = {}; // car_number -> id
       {
-        const { data: results } = await supabase
-          .from('race_results')
-          .select('driver_id, total_points, finish_position, laps_led, incidents, start_position, drivers ( name, car_number, nickname )');
-        if (results) {
-          const driverTotals = {};
-          results.forEach((r) => {
-            const key = r.driver_id;
-            if (!driverTotals[key]) {
-              driverTotals[key] = {
-                name: r.drivers?.name, car_number: r.drivers?.car_number,
-                nickname: r.drivers?.nickname, racePoints: [], wins: 0,
-                best_finish: 99, races_run: 0,
-              };
-            }
-            driverTotals[key].racePoints.push(r.total_points || 0);
-            driverTotals[key].races_run += 1;
-            if (r.finish_position === 1) driverTotals[key].wins += 1;
-            if (r.finish_position < driverTotals[key].best_finish) driverTotals[key].best_finish = r.finish_position;
-          });
-          standings = Object.values(driverTotals).map((d) => {
-            // Sort points ascending, drop worst N
-            const sorted = [...d.racePoints].sort((a, b) => a - b);
-            const kept = sorted.slice(Math.min(DROPS_ALLOWED, Math.max(0, sorted.length - 1)));
-            const season_points = kept.reduce((s, p) => s + p, 0);
-            return { ...d, season_points };
-          }).sort((a, b) => b.season_points - a.season_points);
-        }
+        const driverTotals = {};
+        allResults.forEach((r) => {
+          const key = r.driver_id;
+          if (!driverTotals[key]) {
+            driverTotals[key] = {
+              id: r.drivers?.id || key,
+              name: r.drivers?.name, car_number: r.drivers?.car_number,
+              nickname: r.drivers?.nickname, racePoints: [], wins: 0,
+              best_finish: 99, races_run: 0,
+            };
+            if (r.drivers?.car_number) driverIdMap[r.drivers.car_number] = key;
+          }
+          driverTotals[key].racePoints.push(r.total_points || 0);
+          driverTotals[key].races_run += 1;
+          if (r.finish_position === 1) driverTotals[key].wins += 1;
+          if (r.finish_position < driverTotals[key].best_finish) {
+            driverTotals[key].best_finish = r.finish_position;
+          }
+        });
+        standings = Object.values(driverTotals).map((d) => {
+          const sorted = [...d.racePoints].sort((a, b) => a - b);
+          const kept = sorted.slice(Math.min(DROPS_ALLOWED_LOCAL, Math.max(0, sorted.length - 1)));
+          const season_points = kept.reduce((s, p) => s + p, 0);
+          return { ...d, season_points };
+        }).sort((a, b) => b.season_points - a.season_points);
       }
 
+      // ── Analyze Pick'em predictions ──
+      let pickem = null;
+      if (pickemPicks.length > 0) {
+        const driverNameMap = {};
+        allDrivers.forEach((d) => { driverNameMap[d.id] = d.name; });
+
+        const winPicks = {};
+        const top5Picks = {};
+        pickemPicks.forEach((p) => {
+          const name = driverNameMap[p.picked_driver_id];
+          if (!name) return;
+          if (p.pick_position === 1) winPicks[name] = (winPicks[name] || 0) + 1;
+          top5Picks[name] = (top5Picks[name] || 0) + 1;
+        });
+
+        const totalPickers = new Set(pickemPicks.map((p) => p.picker_id)).size;
+        const winFavorites = Object.entries(winPicks)
+          .sort((a, b) => b[1] - a[1])
+          .map(([name, count]) => ({ name, count, pct: Math.round((count / totalPickers) * 100) }));
+
+        const fanFavorites = Object.entries(top5Picks)
+          .sort((a, b) => b[1] - a[1])
+          .map(([name, count]) => ({ name, count }));
+
+        const pickedIds = new Set(pickemPicks.map((p) => p.picked_driver_id));
+        const snubbed = allDrivers.filter((d) => !pickedIds.has(d.id)).map((d) => d.name);
+
+        pickem = { winFavorites, fanFavorites, totalPickers, snubbed };
+      }
+
+      // ── Build driver power ranking forms ──
+      const driverForms = {};
+      const driverIds = new Set(allResults.map((r) => r.driver_id));
+      driverIds.forEach((driverId) => {
+        const races = allResults
+          .filter((r) => r.driver_id === driverId && r.races)
+          .sort((a, b) => a.races.race_number - b.races.race_number);
+        if (races.length === 0) return;
+
+        const last3 = races.slice(-3);
+        const last3Avg = last3.length > 0
+          ? last3.reduce((s, r) => s + r.finish_position, 0) / last3.length
+          : null;
+        const last3Pts = last3.reduce((s, r) => s + (r.total_points || 0), 0);
+
+        let form;
+        if (last3.length < 2) form = 'unknown';
+        else if (last3Avg <= 5) form = 'on_fire';
+        else if (last3Avg <= 10) form = 'strong';
+        else if (last3Avg <= 18) form = 'steady';
+        else form = 'struggling';
+
+        let trend = 'steady';
+        if (races.length >= 4) {
+          const mid = Math.floor(races.length / 2);
+          const firstAvg = races.slice(0, mid).reduce((s, r) => s + r.finish_position, 0) / mid;
+          const secondAvg = races.slice(mid).reduce((s, r) => s + r.finish_position, 0) / (races.length - mid);
+          const diff = firstAvg - secondAvg;
+          if (diff > 5) trend = 'surging';
+          else if (diff > 2) trend = 'trending_up';
+          else if (diff < -5) trend = 'falling';
+          else if (diff < -2) trend = 'trending_down';
+        }
+
+        let streak = 0;
+        for (let i = races.length - 1; i >= 0; i--) {
+          if (races[i].finish_position <= 5) streak++;
+          else break;
+        }
+
+        driverForms[driverId] = {
+          form, trend, streak,
+          last3Avg: last3Avg ? parseFloat(last3Avg.toFixed(1)) : null,
+          last3Pts,
+          totalRaces: races.length,
+          lastFinish: races[races.length - 1]?.finish_position,
+          lastTrack: races[races.length - 1]?.races?.track_name,
+        };
+      });
+
+      // ── Generate the article ──
       let article;
 
       if (type === 'pre_race') {
@@ -410,24 +517,22 @@ export default function ManageInterviews() {
           raceNumber: race.race_number,
           interviews: raceInterviews,
           standings,
+          pickem,
+          driverForms,
         });
       } else {
-        // For post-race, also fetch race results
+        // For post-race, also fetch this specific race's results
         let raceResults = [];
         if (race.race_id) {
-          const { data: rrData } = await supabase
-            .from('race_results')
-            .select('*, drivers ( name, car_number, nickname )')
-            .eq('race_id', race.race_id)
-            .order('finish_position', { ascending: true });
-          if (rrData) {
-            raceResults = rrData.map((r) => ({
-              name: r.drivers?.name, car_number: r.drivers?.car_number || r.car_number,
-              nickname: r.drivers?.nickname, finish_position: r.finish_position,
-              start_position: r.start_position, incidents: r.incidents,
-              laps_led: r.laps_led, total_points: r.total_points,
-            }));
-          }
+          const thisRaceResults = allResults
+            .filter((r) => r.race_id === race.race_id)
+            .sort((a, b) => a.finish_position - b.finish_position);
+          raceResults = thisRaceResults.map((r) => ({
+            name: r.drivers?.name, car_number: r.drivers?.car_number,
+            nickname: r.drivers?.nickname, finish_position: r.finish_position,
+            start_position: r.start_position, incidents: r.incidents,
+            laps_led: r.laps_led, total_points: r.total_points,
+          }));
         }
 
         // Find next track
@@ -442,6 +547,8 @@ export default function ManageInterviews() {
           standings,
           raceResults,
           nextTrack: nextRace?.track_name || null,
+          pickem,
+          driverForms,
         });
       }
 
