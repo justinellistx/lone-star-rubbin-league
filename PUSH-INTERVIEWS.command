@@ -4,11 +4,11 @@ cd /Users/justinellis/Desktop/iracing-league-hub
 
 echo "🎙️ PUSHING INTERVIEWS + PICK'EM FIX..."
 echo ""
-echo "1. NEW: Driver Interviews page (pre-race + post-race)"
-echo "2. NEW: Admin Manage Interviews (single + bulk assign)"
-echo "3. NEW: Interview hooks in useSupabase.js"
-echo "4. NEW: Interviews link in main nav"
-echo "5. NEW: Interviews link in admin sidebar"
+echo "1. NEW: Driver Interviews page with driver cards + media room links"
+echo "2. NEW: Private media room per driver (/interviews/:driverId)"
+echo "3. NEW: Admin Manage Interviews (single + bulk assign)"
+echo "4. NEW: Interview hooks in useSupabase.js"
+echo "5. NEW: Interviews link in main nav + admin sidebar"
 echo "6. FIX: Pick'em FK now references schedule (not races)"
 echo "7. FIX: Pick'em leaderboard scoring property names"
 echo ""
@@ -24,6 +24,7 @@ git config user.email "justinellis@crossfitwillis.com"
 # Stage all files
 git add \
   src/pages/Interviews.jsx \
+  src/pages/InterviewRoom.jsx \
   src/pages/admin/ManageInterviews.jsx \
   src/hooks/useSupabase.js \
   src/App.jsx \
@@ -37,9 +38,9 @@ git commit -m "Add driver interviews system + fix Pick'em submission
 
 Interviews:
 - New interview_questions table in Supabase (schedule + driver FK)
-- Public /interviews page with Browse + Submit Answer tabs
-- Browse: filter by race/type, grouped by race with pre/post sections
-- Submit: drivers identify themselves, see pending questions, submit answers
+- Public /interviews page: driver cards with pending counts + media room links
+- Private /interviews/:driverId media room for answering questions
+- Only answered interviews shown publicly (unanswered stay private)
 - Admin /admin/interviews with single question + bulk assign workflow
 - Bulk assign: randomize from NASCAR-style question bank per driver
 - 18 Bristol questions seeded (9 pre-race + 9 post-race, personalized)

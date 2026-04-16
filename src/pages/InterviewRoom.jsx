@@ -1,0 +1,289 @@
+import React, { useState, useMemo } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import {
+  Mic,
+  ArrowLeft,
+  CheckCircle,
+  Clock,
+  Send,
+  AlertCircle,
+  Lock,
+  MessageSquare,
+} from 'lucide-react';
+import {
+  useDrivers,
+  useSchedule,
+  useDriverInterviews,
+  submitInterviewAnswer,
+} from '../hooks/useSupabase';
+
+const TYPE_LABELS = { pre_race: 'Pre-Race', post_race: 'Post-Race' };
+const TYPE_COLORS = {
+  pre_race: { bg: 'bg-[#f5a623]', border: 'border-[#f5a623]', glow: 'shadow-[#f5a623]/10' },
+  post_race: { bg: 'bg-[#2ec4b6]', border: 'border-[#2ec4b6]', glow: 'shadow-[#2ec4b6]/10' },
+};
+
+export default function InterviewRoom() {
+  const { driverId } = useParams();
+  const { data: drivers, loading: driversLoading } = useDrivers();
+  const { data: schedule, loading: scheduleLoading } = useSchedule(null);
+  const { data: myInterviews, loading: interviewsLoading, refresh } = useDriverInterviews(driverId);
+
+  const [answers, setAnswers] = useState({});
+  const [submitting, setSubmitting] = useState({});
+  const [justSubmitted, setJustSubmitted] = useState({});
+  const [error, setError] = useState('');
+
+  const driver = useMemo(() => {
+    return drivers?.find((d) => d.id === driverId) || null;
+  }, [drivers, driverId]);
+
+  const scheduleMap = useMemo(() => {
+    if (!schedule) return {};
+    const map = {};
+    schedule.forEach((s) => { map[s.id] = s; });
+    return map;
+  }, [schedule]);
+
+  // Split into pending vs answered
+  const pending = useMemo(() => {
+    if (!myInterviews) return [];
+    return myInterviews
+      .filter((q) => !q.answer_text)
+      .sort((a, b) => {
+        const ra = scheduleMap[a.schedule_id]?.race_number || 0;
+        const rb = scheduleMap[b.schedule_id]?.race_number || 0;
+        if (ra !== rb) return rb - ra; // newest race first
+        return a.question_type === 'pre_race' ? -1 : 1;
+      });
+  }, [myInterviews, scheduleMap]);
+
+  const answered = useMemo(() => {
+    if (!myInterviews) return [];
+    return myInterviews
+      .filter((q) => q.answer_text)
+      .sort((a, b) => {
+        const ra = scheduleMap[a.schedule_id]?.race_number || 0;
+        const rb = scheduleMap[b.schedule_id]?.race_number || 0;
+        if (ra !== rb) return rb - ra;
+        return a.question_type === 'pre_race' ? -1 : 1;
+      });
+  }, [myInterviews, scheduleMap]);
+
+  const handleSubmit = async (questionId) => {
+    const text = answers[questionId]?.trim();
+    if (!text) { setError('Write something before submitting!'); return; }
+
+    setSubmitting((prev) => ({ ...prev, [questionId]: true }));
+    setError('');
+    try {
+      await submitInterviewAnswer(questionId, text);
+      setJustSubmitted((prev) => ({ ...prev, [questionId]: true }));
+      setAnswers((prev) => ({ ...prev, [questionId]: '' }));
+      // Brief celebration before refresh
+      setTimeout(() => {
+        refresh();
+        setJustSubmitted((prev) => ({ ...prev, [questionId]: false }));
+      }, 2000);
+    } catch (err) {
+      setError(err.message || 'Failed to submit. Try again.');
+    } finally {
+      setSubmitting((prev) => ({ ...prev, [questionId]: false }));
+    }
+  };
+
+  const isLoading = driversLoading || scheduleLoading || interviewsLoading;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
+        <div className="text-center">
+          <Mic className="w-8 h-8 text-[#f5a623] animate-pulse mx-auto mb-4" />
+          <p className="text-[#8a8a9a]">Entering media room...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!driver) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
+        <div className="text-center">
+          <p className="text-[#e63946] text-lg mb-4">Driver not found</p>
+          <Link to="/interviews" className="text-[#f5a623] hover:underline">
+            Back to Interviews
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#0a0a0f] py-8 px-4">
+      <div className="max-w-3xl mx-auto">
+        {/* Back link */}
+        <Link
+          to="/interviews"
+          className="inline-flex items-center gap-2 text-[#8a8a9a] hover:text-[#f5a623] transition-colors mb-6 text-sm"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Interviews
+        </Link>
+
+        {/* Driver Header */}
+        <div className="bg-[#14141f] border border-[#2a2a3e] rounded-xl p-6 mb-8">
+          <div className="flex items-center gap-5">
+            <div className="w-20 h-20 rounded-full bg-[#1a1a2e] border-2 border-[#f5a623] flex items-center justify-center flex-shrink-0">
+              <span className="text-white font-bold text-2xl">#{driver.car_number}</span>
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-white">{driver.name}</h1>
+              {driver.nickname && (
+                <p className="text-[#f5a623] text-lg">"{driver.nickname}"</p>
+              )}
+              <p className="text-[#8a8a9a] text-sm mt-1 flex items-center gap-2">
+                <Mic className="w-4 h-4" />
+                Media Room
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {error && (
+          <div className="mb-6 p-4 bg-[#1a1a2e] border border-[#e63946] rounded-lg flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-[#e63946] flex-shrink-0 mt-0.5" />
+            <p className="text-[#e63946]">{error}</p>
+          </div>
+        )}
+
+        {/* ═══════════ PENDING QUESTIONS ═══════════ */}
+        {pending.length > 0 ? (
+          <div className="mb-10">
+            <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-[#f5a623]" />
+              Your Questions ({pending.length})
+            </h2>
+            <p className="text-[#8a8a9a] text-sm mb-5">
+              Answer these — your responses will be published for the league to see.
+            </p>
+
+            <div className="space-y-5">
+              {pending.map((q) => {
+                const race = scheduleMap[q.schedule_id];
+                const colors = TYPE_COLORS[q.question_type];
+                const isSubmitting = submitting[q.id];
+                const wasJustSubmitted = justSubmitted[q.id];
+
+                return (
+                  <div
+                    key={q.id}
+                    className={`bg-[#14141f] border rounded-xl p-6 transition-all ${
+                      wasJustSubmitted
+                        ? 'border-[#2ec4b6] shadow-lg shadow-[#2ec4b6]/10'
+                        : `${colors.border}`
+                    }`}
+                  >
+                    {/* Badge row */}
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className={`${colors.bg} text-white text-xs font-bold px-2.5 py-1 rounded`}>
+                        {TYPE_LABELS[q.question_type]}
+                      </span>
+                      <span className="text-[#8a8a9a] text-sm">
+                        Race {race?.race_number}: {race?.track_name}
+                      </span>
+                    </div>
+
+                    {/* The question */}
+                    <p className="text-white text-xl font-medium leading-relaxed mb-5">
+                      "{q.question_text}"
+                    </p>
+
+                    {wasJustSubmitted ? (
+                      <div className="flex items-center gap-3 py-3">
+                        <CheckCircle className="w-6 h-6 text-[#2ec4b6]" />
+                        <span className="text-[#2ec4b6] font-semibold text-lg">Answer submitted!</span>
+                      </div>
+                    ) : (
+                      <div>
+                        <textarea
+                          value={answers[q.id] || ''}
+                          onChange={(e) => {
+                            setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }));
+                            setError('');
+                          }}
+                          placeholder="Speak your mind... talk trash, hype it up, keep it real."
+                          rows="4"
+                          className="w-full px-4 py-3 bg-[#0a0a0f] border border-[#2a2a3e] text-white placeholder-[#8a8a9a] rounded-lg focus:outline-none focus:border-[#f5a623] transition-colors resize-none text-base mb-4"
+                        />
+                        <button
+                          onClick={() => handleSubmit(q.id)}
+                          disabled={isSubmitting || !answers[q.id]?.trim()}
+                          className="flex items-center gap-2 px-8 py-3 bg-[#f5a623] text-[#0a0a0f] font-bold rounded-lg hover:bg-[#e59b1a] transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-base"
+                        >
+                          <Send className="w-4 h-4" />
+                          {isSubmitting ? 'Submitting...' : 'Submit Answer'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-xl p-8 text-center mb-10">
+            <CheckCircle className="w-10 h-10 text-[#2ec4b6] mx-auto mb-3" />
+            <p className="text-white text-lg font-medium">You're all caught up!</p>
+            <p className="text-[#8a8a9a] text-sm mt-1">
+              No pending questions. Check back before the next race.
+            </p>
+          </div>
+        )}
+
+        {/* ═══════════ PREVIOUS ANSWERS ═══════════ */}
+        {answered.length > 0 && (
+          <div>
+            <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-[#2ec4b6]" />
+              Your Previous Interviews ({answered.length})
+            </h2>
+            <p className="text-[#8a8a9a] text-sm mb-5">
+              These are published and visible to the league.
+            </p>
+
+            <div className="space-y-3">
+              {answered.map((q) => {
+                const race = scheduleMap[q.schedule_id];
+                const colors = TYPE_COLORS[q.question_type];
+
+                return (
+                  <div
+                    key={q.id}
+                    className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-5"
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className={`${colors.bg} text-white text-xs font-bold px-2 py-0.5 rounded`}>
+                        {TYPE_LABELS[q.question_type]}
+                      </span>
+                      <span className="text-[#8a8a9a] text-sm">
+                        Race {race?.race_number}: {race?.track_name}
+                      </span>
+                      <Lock className="w-3 h-3 text-[#2ec4b6] ml-auto" />
+                    </div>
+                    <p className="text-[#8a8a9a] text-sm italic mb-2">"{q.question_text}"</p>
+                    <p className="text-white">{q.answer_text}</p>
+                    {q.answered_at && (
+                      <p className="text-[#8a8a9a] text-xs mt-2">
+                        Submitted {new Date(q.answered_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

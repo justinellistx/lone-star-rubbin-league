@@ -17,6 +17,7 @@ import PowerRankings from './pages/PowerRankings';
 import News from './pages/News';
 import Pickem from './pages/Pickem';
 import Interviews from './pages/Interviews';
+import InterviewRoom from './pages/InterviewRoom';
 import NotFound from './pages/NotFound';
 
 // Admin pages
@@ -51,6 +52,7 @@ function App() {
         <Route path="/news" element={<News />} />
         <Route path="/pickem" element={<Pickem />} />
         <Route path="/interviews" element={<Interviews />} />
+        <Route path="/interviews/:driverId" element={<InterviewRoom />} />
         <Route path="*" element={<NotFound />} />
       </Route>
 
