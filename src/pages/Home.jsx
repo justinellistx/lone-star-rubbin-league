@@ -223,33 +223,96 @@ export default function Home() {
         </div>
       </section>
 
-      {/* News & Highlights */}
+      {/* Headlines Ticker */}
       <section className="py-12 px-4 md:px-8 bg-[#14141f] border-y border-[#2a2a3e]">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-white mb-8">News & Highlights</h2>
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-bold text-white">Headlines</h2>
+            <Link
+              to="/news"
+              className="flex items-center gap-2 text-[#f5a623] hover:text-white transition"
+            >
+              All News
+              <ChevronRight size={20} />
+            </Link>
+          </div>
 
           {newsLoading ? (
-            <div className="text-[#8a8a9a]">Loading news...</div>
+            <div className="text-[#8a8a9a]">Loading headlines...</div>
           ) : displayNews && displayNews.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {displayNews.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg p-6 hover:border-[#f5a623] transition"
-                >
-                  <div className="text-sm text-[#f5a623] uppercase font-bold mb-2">
-                    {item.category || 'News'}
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
-                  <p className="text-[#8a8a9a] mb-4">{item.content}</p>
-                  <div className="text-xs text-[#8a8a9a]">
-                    {new Date(item.created_at).toLocaleDateString()}
-                  </div>
+            <div className="space-y-4">
+              {/* Featured article */}
+              <Link
+                to="/news"
+                className="block bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg p-6 hover:border-[#f5a623] transition group"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <span
+                    className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full"
+                    style={{
+                      color: displayNews[0].category === 'recap' ? '#e63946'
+                        : displayNews[0].category === 'highlight' ? '#2ec4b6'
+                        : displayNews[0].category === 'announcement' ? '#a78bfa'
+                        : '#f5a623',
+                      backgroundColor: (displayNews[0].category === 'recap' ? '#e63946'
+                        : displayNews[0].category === 'highlight' ? '#2ec4b6'
+                        : displayNews[0].category === 'announcement' ? '#a78bfa'
+                        : '#f5a623') + '15',
+                    }}
+                  >
+                    {displayNews[0].category === 'recap' ? 'Race Recap'
+                      : displayNews[0].category === 'highlight' ? 'Highlight'
+                      : displayNews[0].category === 'announcement' ? 'Announcement'
+                      : 'News'}
+                  </span>
+                  <span className="text-[#8a8a9a] text-xs">
+                    {new Date(displayNews[0].published_at || displayNews[0].created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  </span>
                 </div>
-              ))}
+                <h3 className="text-2xl font-bold text-white group-hover:text-[#f5a623] transition mb-2">
+                  {displayNews[0].title}
+                </h3>
+                {displayNews[0].subtitle && (
+                  <p className="text-[#f5a623] text-sm">{displayNews[0].subtitle}</p>
+                )}
+              </Link>
+
+              {/* Remaining headlines */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {displayNews.slice(1).map((item) => (
+                  <Link
+                    key={item.id}
+                    to="/news"
+                    className="bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg p-5 hover:border-[#f5a623] transition group flex gap-4"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span
+                          className="text-xs font-bold uppercase"
+                          style={{
+                            color: item.category === 'recap' ? '#e63946'
+                              : item.category === 'highlight' ? '#2ec4b6'
+                              : item.category === 'announcement' ? '#a78bfa'
+                              : '#f5a623',
+                          }}
+                        >
+                          {item.category || 'news'}
+                        </span>
+                        <span className="text-[#8a8a9a] text-xs">
+                          {new Date(item.published_at || item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </span>
+                      </div>
+                      <h4 className="font-bold text-white group-hover:text-[#f5a623] transition text-sm leading-snug">
+                        {item.title}
+                      </h4>
+                    </div>
+                    <ChevronRight size={16} className="text-[#8a8a9a] group-hover:text-[#f5a623] transition flex-shrink-0 mt-1" />
+                  </Link>
+                ))}
+              </div>
             </div>
           ) : (
-            <div className="text-[#8a8a9a]">No news available</div>
+            <div className="text-[#8a8a9a]">No headlines available</div>
           )}
         </div>
       </section>

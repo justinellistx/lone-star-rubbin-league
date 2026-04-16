@@ -14,6 +14,7 @@ import Rivalries from './pages/Rivalries';
 import IncidentHeatmap from './pages/IncidentHeatmap';
 import WhatIf from './pages/WhatIf';
 import PowerRankings from './pages/PowerRankings';
+import News from './pages/News';
 import Pickem from './pages/Pickem';
 import NotFound from './pages/NotFound';
 
@@ -45,6 +46,7 @@ function App() {
         <Route path="/heatmap" element={<IncidentHeatmap />} />
         <Route path="/what-if" element={<WhatIf />} />
         <Route path="/power-rankings" element={<PowerRankings />} />
+        <Route path="/news" element={<News />} />
         <Route path="/pickem" element={<Pickem />} />
         <Route path="*" element={<NotFound />} />
       </Route>
