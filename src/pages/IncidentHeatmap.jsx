@@ -1,27 +1,39 @@
 import React, { useState, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import { useAllRaceResults, useDrivers } from '../hooks/useSupabase';
 
 export default function IncidentHeatmap() {
   const [view, setView] = useState('track'); // 'track' or 'driver'
 
-  // Track incident data
-  const trackIncidents = {
-    Daytona: { blaine: 8, ryan: 8, justin: 8, nik: 20, terry: 6, jordan: 8, nate: 16 },
-    Atlanta: { jordan: 42, terry: 33, nate: 34, blaine: 30, nik: 22, justin: 18, ryan: 24 },
-    COTA: { nate: 17, justin: 17, ryan: 8, nik: 25, blaine: 43, jordan: 46, terry: 45 },
-    Phoenix: { nate: 12, nik: 12, jordan: 4, justin: 0, blaine: 4, ryan: 12, sam: 20, terry: 10 },
-    'Las Vegas': { nik: 6, blaine: 4, justin: 0, jordan: 0, nate: 11, sam: 10, terry: 6, ryan: 4 },
-    Darlington: { nik: 10, justin: 30, blaine: 20, nate: 40, jordan: 38, ryan: 12, sam: 42 },
-    Martinsville: { nate: 10, ryan: 4, nik: 4, justin: 10, blaine: 18, terry: 32, sam: 52, ronald: 46 },
-  };
+  // Fetch data from Supabase
+  const { data: raceResults, loading: resultsLoading } = useAllRaceResults();
+  const { data: driversData, loading: driversLoading } = useDrivers();
 
-  const allDrivers = ['Justin', 'Nate', 'Blaine', 'Nik', 'Jordan', 'Ryan', 'Terry', 'Sam', 'Ronald'];
+  // Build trackIncidents dynamically from race results
+  const trackIncidents = useMemo(() => {
+    if (!raceResults || raceResults.length === 0) return {};
 
-  // Map lowercase keys to display names
-  const driverDisplayName = {
-    blaine: 'Blaine', ryan: 'Ryan', justin: 'Justin', nik: 'Nik',
-    terry: 'Terry', jordan: 'Jordan', nate: 'Nate', sam: 'Sam', ronald: 'Ronald',
-  };
+    const incidentsByTrack = {};
+
+    raceResults.forEach(result => {
+      const track = result.races?.track_name || 'Unknown';
+      const driverName = result.drivers?.name || 'Unknown';
+      const incidents = result.incidents || 0;
+
+      if (!incidentsByTrack[track]) {
+        incidentsByTrack[track] = {};
+      }
+      incidentsByTrack[track][driverName.toLowerCase()] = incidents;
+    });
+
+    return incidentsByTrack;
+  }, [raceResults]);
+
+  // Build allDrivers list from drivers data
+  const allDrivers = useMemo(() => {
+    if (!driversData || driversData.length === 0) return [];
+    return driversData.map(driver => driver.name).sort();
+  }, [driversData]);
 
   // Prepare track view data
   const trackViewData = useMemo(() => {
@@ -30,14 +42,20 @@ export default function IncidentHeatmap() {
       const totalIncidents = incidentArray.reduce((sum, val) => sum + val, 0);
       const avgIncidents = (totalIncidents / incidentArray.length).toFixed(1);
 
-      // Find cleanest (lowest incidents) and dirtiest (highest incidents) among human drivers
+      // Find cleanest (lowest incidents) and dirtiest (highest incidents)
       const driverEntries = Object.entries(drivers);
       const cleanest = driverEntries.reduce(
-        (min, [driver, count]) => (count < min.count ? { driver: driverDisplayName[driver] || driver, count } : min),
+        (min, [driver, count]) => {
+          const displayName = driver.charAt(0).toUpperCase() + driver.slice(1);
+          return count < min.count ? { driver: displayName, count } : min;
+        },
         { driver: '', count: Infinity }
       );
       const dirtiest = driverEntries.reduce(
-        (max, [driver, count]) => (count > max.count ? { driver: driverDisplayName[driver] || driver, count } : max),
+        (max, [driver, count]) => {
+          const displayName = driver.charAt(0).toUpperCase() + driver.slice(1);
+          return count > max.count ? { driver: displayName, count } : max;
+        },
         { driver: '', count: -1 }
       );
 
@@ -50,7 +68,7 @@ export default function IncidentHeatmap() {
         dirtiest,
       };
     });
-  }, []);
+  }, [trackIncidents]);
 
   // Prepare driver view data (heatmap matrix)
   const driverViewData = useMemo(() => {
@@ -63,7 +81,7 @@ export default function IncidentHeatmap() {
       });
       return row;
     });
-  }, []);
+  }, [allDrivers, trackIncidents]);
 
   // Get color based on incident count
   const getIncidentColor = (count, max) => {
@@ -83,7 +101,10 @@ export default function IncidentHeatmap() {
   };
 
   const allAverages = trackViewData.map(t => t.average);
-  const maxIncidents = Math.max(...Object.values(trackIncidents).flatMap(t => Object.values(t)));
+  const maxIncidents = useMemo(() => {
+    const allIncidents = Object.values(trackIncidents).flatMap(t => Object.values(t));
+    return allIncidents.length > 0 ? Math.max(...allIncidents) : 0;
+  }, [trackIncidents]);
 
   // Custom tooltip for bar chart
   const CustomTooltip = ({ active, payload }) => {
@@ -101,6 +122,35 @@ export default function IncidentHeatmap() {
     }
     return null;
   };
+
+  // Show loading state
+  if (resultsLoading || driversLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] to-[#14141f] p-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block">
+            <div className="w-12 h-12 border-4 border-[#2a2a3e] border-t-[#f5a623] rounded-full animate-spin mb-4"></div>
+          </div>
+          <p className="text-[#8a8a9a] text-lg">Loading incident data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show empty state if no data
+  if (!raceResults || raceResults.length === 0 || allDrivers.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] to-[#14141f] p-8">
+        <div className="mb-8">
+          <h1 className="text-5xl font-black mb-2 text-white">INCIDENT HEATMAP</h1>
+          <p className="text-[#8a8a9a] text-lg">Track incidents by location and driver</p>
+        </div>
+        <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-8 text-center">
+          <p className="text-[#8a8a9a]">No incident data available yet.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] to-[#14141f] p-8">

@@ -1,27 +1,11 @@
 import React, { useState } from 'react';
 import { AlertCircle, CheckCircle } from 'lucide-react';
-
-const DRIVERS = [
-  { id: 'justin', name: 'Justin Ellis4', number: 5 },
-  { id: 'nate', name: 'Nathan Becker', number: 21 },
-  { id: 'blaine', name: 'Blaine Karnes', number: 25 },
-  { id: 'nik', name: 'Nik Green2', number: 88 },
-  { id: 'jordan', name: 'Jordan Stancil', number: 15 },
-  { id: 'ryan', name: 'Ryan Ramsey', number: 10 },
-  { id: 'terry', name: 'Terry Domino', number: 11 },
-  { id: 'sam', name: 'Sam Kunnemann', number: 64 },
-  { id: 'ronald', name: 'Ronald Ramsey', number: 77 },
-];
-
-const LAST_RACE_RESULTS = [
-  { position: 1, id: 'nate', name: 'Nathan Becker', number: 21 },
-  { position: 2, id: 'ryan', name: 'Ryan Ramsey', number: 10 },
-  { position: 3, id: 'nik', name: 'Nik Green2', number: 88 },
-  { position: 4, id: 'justin', name: 'Justin Ellis4', number: 5 },
-  { position: 5, id: 'blaine', name: 'Blaine Karnes', number: 25 },
-];
+import { useDrivers, useRaceResultsByRace } from '../hooks/useSupabase';
 
 export default function Pickem() {
+  const { data: drivers, loading: driversLoading } = useDrivers();
+  const { data: races, loading: racesLoading } = useRaceResultsByRace();
+
   const [picks, setPicks] = useState({
     first: '',
     second: '',
@@ -32,6 +16,9 @@ export default function Pickem() {
 
   const [submitted, setSubmitted] = useState(false);
   const [validationError, setValidationError] = useState('');
+
+  const lastRaceResults = races && races.length > 0 ? races[races.length - 1].results : [];
+  const lastRaceName = races && races.length > 0 ? races[races.length - 1].track : 'Previous Race';
 
   const handlePickChange = (position, value) => {
     setPicks((prev) => ({
@@ -77,11 +64,11 @@ export default function Pickem() {
   };
 
   const getDriverName = (driverId) => {
-    return DRIVERS.find((d) => d.id === driverId)?.name || '';
+    return drivers?.find((d) => d.id === driverId)?.name || '';
   };
 
   const getDriverNumber = (driverId) => {
-    return DRIVERS.find((d) => d.id === driverId)?.number || '';
+    return drivers?.find((d) => d.id === driverId)?.car_number || '';
   };
 
   const positions = [
@@ -91,6 +78,14 @@ export default function Pickem() {
     { key: 'fourth', label: '4th Place', position: '4️⃣' },
     { key: 'fifth', label: '5th Place', position: '5️⃣' },
   ];
+
+  if (driversLoading || racesLoading) {
+    return (
+      <div className="min-h-screen p-6 flex items-center justify-center" style={{ backgroundColor: '#0a0a0f' }}>
+        <p style={{ color: '#8a8a9a' }}>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen p-6" style={{ backgroundColor: '#0a0a0f' }}>
@@ -157,7 +152,7 @@ export default function Pickem() {
                       }}
                     >
                       <option value="">Select a driver...</option>
-                      {DRIVERS.map((driver) => {
+                      {drivers?.map((driver) => {
                         const isSelected = Object.values(picks).includes(driver.id);
                         const isCurrentSelection = picks[pos.key] === driver.id;
                         const isDisabled = isSelected && !isCurrentSelection;
@@ -168,7 +163,7 @@ export default function Pickem() {
                             value={driver.id}
                             disabled={isDisabled}
                           >
-                            #{driver.number} {driver.name}
+                            #{driver.car_number} {driver.name}
                             {isDisabled ? ' (already selected)' : ''}
                           </option>
                         );
@@ -261,42 +256,44 @@ export default function Pickem() {
         </div>
 
         {/* Last Race Results */}
-        <div
-          className="mt-8 p-6 rounded-lg border"
-          style={{
-            backgroundColor: '#14141f',
-            borderColor: '#2a2a3e',
-          }}
-        >
-          <h2 className="text-2xl font-bold mb-4" style={{ color: '#f5a623' }}>
-            Last Race Results: Martinsville
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
-            {LAST_RACE_RESULTS.map((result) => (
-              <div
-                key={result.id}
-                className="p-4 rounded-lg text-center border"
-                style={{
-                  backgroundColor: '#0a0a0f',
-                  borderColor: '#2a2a3e',
-                }}
-              >
+        {lastRaceResults && lastRaceResults.length > 0 && (
+          <div
+            className="mt-8 p-6 rounded-lg border"
+            style={{
+              backgroundColor: '#14141f',
+              borderColor: '#2a2a3e',
+            }}
+          >
+            <h2 className="text-2xl font-bold mb-4" style={{ color: '#f5a623' }}>
+              Last Race Results: {lastRaceName}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-5 gap-4">
+              {lastRaceResults.slice(0, 5).map((result, idx) => (
                 <div
-                  className="text-3xl font-bold mb-2"
-                  style={{ color: '#f5a623' }}
+                  key={idx}
+                  className="p-4 rounded-lg text-center border"
+                  style={{
+                    backgroundColor: '#0a0a0f',
+                    borderColor: '#2a2a3e',
+                  }}
                 >
-                  {result.position}
+                  <div
+                    className="text-3xl font-bold mb-2"
+                    style={{ color: '#f5a623' }}
+                  >
+                    {result.position}
+                  </div>
+                  <p className="font-bold text-white text-sm mb-1">
+                    {result.name}
+                  </p>
+                  <p style={{ color: '#2ec4b6' }} className="text-sm">
+                    #{result.car_number}
+                  </p>
                 </div>
-                <p className="font-bold text-white text-sm mb-1">
-                  {result.name}
-                </p>
-                <p style={{ color: '#2ec4b6' }} className="text-sm">
-                  #{result.number}
-                </p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

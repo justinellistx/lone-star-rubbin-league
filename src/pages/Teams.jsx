@@ -1,112 +1,80 @@
 import React, { useState } from 'react';
 import { ChevronDown, Swords, Shield, Zap, Trophy } from 'lucide-react';
-import { useTeamStandings } from '../hooks/useSupabase';
+import { useComputedStandings, useRaces } from '../hooks/useSupabase';
 
-const DRIVER_RACES = {
-  justin: [19, 20, 22, 4, 3, 2, 4],
-  nate:   [30, 13, 1, 1, 19, 13, 1],
-  blaine: [15, 17, 25, 5, 2, 3, 5],
-  nik:    [24, 18, 24, 2, 1, 1, 3],
-  jordan: [27, 1, 26, 3, 4, 16, null],
-  ryan:   [18, 30, 23, 23, 25, 18, 2],
-  terry:  [26, 2, 27, 25, 24, null, 12],
-  sam:    [null, null, null, 24, 22, 25, 24],
-  ronald: [null, null, null, null, null, null, 26],
-};
+function getTeammateH2H(standings, driver1, driver2) {
+  if (!driver1 || !driver2) return null;
+  if (!driver1.raceByRace || !driver2.raceByRace) return null;
 
-const DRIVER_INC = {
-  justin: [8, 18, 17, 0, 0, 30, 10],
-  nate:   [16, 34, 17, 12, 11, 40, 10],
-  blaine: [8, 30, 43, 4, 4, 20, 18],
-  nik:    [20, 22, 25, 12, 6, 10, 4],
-  jordan: [8, 42, 46, 4, 0, 38, null],
-  ryan:   [8, 24, 8, 12, 4, 12, 4],
-  terry:  [6, 33, 45, 10, 6, null, 32],
-  sam:    [null, null, null, 20, 10, 42, 52],
-  ronald: [null, null, null, null, null, null, 46],
-};
-
-const RACE_NAMES = ['Daytona', 'Atlanta', 'COTA', 'Phoenix', 'Las Vegas', 'Darlington', 'Martinsville'];
-
-const DEMO_TEAMS = {
-  stage1: [
-    {
-      id: 'team-1', position: 1, name: 'Justin+Nate', points: 396, combinedLapsLed: 286,
-      drivers: [
-        { id: 'justin', name: 'Justin Ellis4', number: 5, nickname: 'J-Easy', points: 193, posPoints: 185, bonusPoints: 9, penaltyPoints: -1, wins: 0, top5: 4, top10: 4, avgFinish: 10.57, lapsLed: 118, totalIncidents: 83 },
-        { id: 'nate', name: 'Nathan Becker', number: 21, nickname: 'Becker Wrecker', points: 203, posPoints: 193, bonusPoints: 14, penaltyPoints: -4, wins: 3, top5: 3, top10: 3, avgFinish: 11.14, lapsLed: 168, totalIncidents: 140 },
-      ],
-    },
-    {
-      id: 'team-2', position: 2, name: 'Nik+Jordan', points: 347, combinedLapsLed: 302,
-      drivers: [
-        { id: 'nik', name: 'Nik Green2', number: 88, nickname: 'Adventure Man', points: 205, posPoints: 194, bonusPoints: 13, penaltyPoints: -2, wins: 2, top5: 4, top10: 4, avgFinish: 10.43, lapsLed: 301, totalIncidents: 99 },
-        { id: 'jordan', name: 'Jordan Stancil', number: 15, nickname: 'J-Dawg', points: 142, posPoints: 149, bonusPoints: 1, penaltyPoints: -8, wins: 1, top5: 3, top10: 3, avgFinish: 12.83, lapsLed: 1, totalIncidents: 138 },
-      ],
-    },
-    {
-      id: 'team-3', position: 3, name: 'Blaine+Terry', points: 288, combinedLapsLed: 0,
-      drivers: [
-        { id: 'blaine', name: 'Blaine Karnes', number: 25, nickname: 'Tard', points: 187, posPoints: 187, bonusPoints: 4, penaltyPoints: -4, wins: 0, top5: 4, top10: 4, avgFinish: 10.29, lapsLed: 0, totalIncidents: 127 },
-        { id: 'terry', name: 'Terry Domino', number: 11, nickname: 'Domino Slices', points: 101, posPoints: 106, bonusPoints: 2, penaltyPoints: -7, wins: 0, top5: 1, top10: 1, avgFinish: 19.33, lapsLed: 0, totalIncidents: 132 },
-      ],
-    },
-    {
-      id: 'team-4', position: 4, name: 'Ryan+Sam+Ronald', points: 185, combinedLapsLed: 54,
-      drivers: [
-        { id: 'ryan', name: 'Ryan Ramsey', number: 10, nickname: 'Thunder Boy', points: 128, posPoints: 120, bonusPoints: 9, penaltyPoints: -1, wins: 0, top5: 1, top10: 1, avgFinish: 19.86, lapsLed: 54, totalIncidents: 72 },
-        { id: 'sam', name: 'Sam Kunnemann', number: 64, nickname: 'Samon', points: 47, posPoints: 53, bonusPoints: 0, penaltyPoints: -6, wins: 0, top5: 0, top10: 0, avgFinish: 23.75, lapsLed: 0, totalIncidents: 124 },
-        { id: 'ronald', name: 'Ronald Ramsey', number: 77, nickname: 'The Fuzz', points: 10, posPoints: 11, bonusPoints: 2, penaltyPoints: -3, wins: 0, top5: 0, top10: 0, avgFinish: 26.0, lapsLed: 0, totalIncidents: 46 },
-      ],
-    },
-  ],
-};
-
-function getTeammateH2H(driverIds) {
-  if (driverIds.length < 2) return null;
-  const [a, b] = driverIds;
   let aWins = 0, bWins = 0;
   const battles = [];
-  for (let i = 0; i < 7; i++) {
-    const aPos = DRIVER_RACES[a][i];
-    const bPos = DRIVER_RACES[b][i];
-    if (aPos !== null && bPos !== null) {
-      if (aPos < bPos) { aWins++; battles.push({ race: i, winner: a }); }
-      else if (bPos < aPos) { bWins++; battles.push({ race: i, winner: b }); }
-      else { battles.push({ race: i, winner: 'tie' }); }
+
+  const maxRaces = Math.max(driver1.raceByRace.length, driver2.raceByRace.length);
+  for (let i = 0; i < maxRaces; i++) {
+    const aRace = driver1.raceByRace[i];
+    const bRace = driver2.raceByRace[i];
+
+    if (aRace && bRace && aRace.finishPosition !== null && bRace.finishPosition !== null) {
+      if (aRace.finishPosition < bRace.finishPosition) {
+        aWins++;
+        battles.push({ race: i, winner: driver1.id });
+      } else if (bRace.finishPosition < aRace.finishPosition) {
+        bWins++;
+        battles.push({ race: i, winner: driver2.id });
+      } else {
+        battles.push({ race: i, winner: 'tie' });
+      }
     }
   }
-  return { aWins, bWins, battles };
-}
 
-function getTeamWeeklyPoints(team) {
-  return RACE_NAMES.map((_, rIdx) => {
-    let total = 0;
-    team.drivers.forEach((d) => {
-      const pos = DRIVER_RACES[d.id][rIdx];
-      if (pos !== null) {
-        if (pos === 1) total += 40;
-        else if (pos === 2) total += 35;
-        else if (pos >= 3 && pos <= 40) total += 37 - pos;
-        else total += 1;
-      }
-    });
-    return total;
-  });
+  return { aWins, bWins, battles };
 }
 
 export default function Teams() {
   const [expandedTeamId, setExpandedTeamId] = useState(null);
-  const { data: teamStandings } = useTeamStandings(null);
-
-  const teams =
-    teamStandings && teamStandings.length > 0 && teamStandings[0].points !== undefined
-      ? teamStandings
-      : DEMO_TEAMS.stage1;
+  const { standings, teamStandings, loading } = useComputedStandings();
+  const { data: races } = useRaces();
 
   const toggleExpanded = (teamId) => {
     setExpandedTeamId(expandedTeamId === teamId ? null : teamId);
   };
+
+  if (loading) {
+    return (
+      <div className="bg-[#0a0a0f] min-h-screen py-12 px-4 md:px-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-white text-2xl font-bold mb-4">Loading Teams...</div>
+          <div className="text-[#8a8a9a]">Fetching standings and race data</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!teamStandings || teamStandings.length === 0) {
+    return (
+      <div className="bg-[#0a0a0f] min-h-screen py-12 px-4 md:px-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-white text-2xl font-bold mb-4">No Teams Data</div>
+          <div className="text-[#8a8a9a]">Teams will appear here once season data is available</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Build teams with drivers by matching teamStandings to standings
+  const teams = teamStandings.map((teamData) => {
+    const drivers = teamData.drivers
+      .map((driverId) => standings.find((d) => d.id === driverId))
+      .filter(Boolean);
+
+    return {
+      id: teamData.id,
+      name: teamData.name,
+      points: teamData.points,
+      combinedLapsLed: teamData.lapsLed || 0,
+      drivers,
+    };
+  });
 
   return (
     <div className="bg-[#0a0a0f] min-h-screen py-12 px-4 md:px-8">
@@ -120,10 +88,21 @@ export default function Teams() {
         {/* Team Power Rankings */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {teams.map((team, idx) => {
-            const totalWins = team.drivers.reduce((s, d) => s + d.wins, 0);
-            const totalIncidents = team.drivers.reduce((s, d) => s + d.totalIncidents, 0);
-            const weeklyPts = getTeamWeeklyPoints(team);
-            const last3Total = weeklyPts.slice(4).reduce((s, p) => s + p, 0);
+            const totalWins = team.drivers.reduce((s, d) => s + (d.wins || 0), 0);
+            const totalIncidents = team.drivers.reduce((s, d) => s + (d.totalIncidents || 0), 0);
+
+            // Calculate last 3 races points from raceByRace data
+            let last3Total = 0;
+            team.drivers.forEach((driver) => {
+              if (driver.raceByRace) {
+                const lastRaces = driver.raceByRace.slice(-3);
+                lastRaces.forEach((race) => {
+                  if (race.points) {
+                    last3Total += race.points;
+                  }
+                });
+              }
+            });
 
             return (
               <div
@@ -173,9 +152,9 @@ export default function Teams() {
         <div className="space-y-8">
           {teams.map((team, teamIdx) => {
             const isExpanded = expandedTeamId === team.id;
-            const h2h = team.drivers.length >= 2 ? getTeammateH2H(team.drivers.map((d) => d.id)) : null;
             const d1 = team.drivers[0];
             const d2 = team.drivers.length >= 2 ? team.drivers[1] : null;
+            const h2h = d1 && d2 ? getTeammateH2H(standings, d1, d2) : null;
 
             return (
               <div
@@ -295,9 +274,15 @@ export default function Teams() {
                           <thead>
                             <tr className="border-b border-[#2a2a3e]">
                               <th className="px-3 py-2 text-left text-[#8a8a9a] text-xs font-bold uppercase">Driver</th>
-                              {RACE_NAMES.map((t, i) => (
-                                <th key={i} className="px-3 py-2 text-center text-[#8a8a9a] text-xs font-bold uppercase">{t.slice(0, 3)}</th>
-                              ))}
+                              {races && races.length > 0 ? (
+                                races.map((race, i) => (
+                                  <th key={i} className="px-3 py-2 text-center text-[#8a8a9a] text-xs font-bold uppercase">
+                                    {race.track_name?.slice(0, 3) || `R${race.race_number}`}
+                                  </th>
+                                ))
+                              ) : (
+                                <th className="px-3 py-2 text-center text-[#8a8a9a] text-xs font-bold uppercase">-</th>
+                              )}
                             </tr>
                           </thead>
                           <tbody>
@@ -307,32 +292,45 @@ export default function Teams() {
                                   <span className="text-white font-semibold">{driver.name.split(' ')[0]}</span>
                                   <span className="text-[#8a8a9a] ml-1">#{driver.number}</span>
                                 </td>
-                                {DRIVER_RACES[driver.id].map((pos, rIdx) => {
-                                  // Find if this driver beat teammate(s) this race
-                                  const otherPositions = team.drivers
-                                    .filter((d) => d.id !== driver.id)
-                                    .map((d) => DRIVER_RACES[d.id][rIdx])
-                                    .filter((p) => p !== null);
-                                  const beatAll = pos !== null && otherPositions.length > 0 && otherPositions.every((op) => pos < op);
+                                {driver.raceByRace && driver.raceByRace.length > 0 ? (
+                                  driver.raceByRace.map((raceData, rIdx) => {
+                                    const pos = raceData.finishPosition;
+                                    // Find if this driver beat teammate(s) this race
+                                    const otherPositions = team.drivers
+                                      .filter((d) => d.id !== driver.id)
+                                      .map((d) => {
+                                        if (d.raceByRace && d.raceByRace[rIdx]) {
+                                          return d.raceByRace[rIdx].finishPosition;
+                                        }
+                                        return null;
+                                      })
+                                      .filter((p) => p !== null);
+                                    const beatAll =
+                                      pos !== null &&
+                                      otherPositions.length > 0 &&
+                                      otherPositions.every((op) => pos < op);
 
-                                  return (
-                                    <td
-                                      key={rIdx}
-                                      className={`px-3 py-2 text-center font-semibold ${
-                                        pos === null
-                                          ? 'text-[#8a8a9a]'
-                                          : beatAll
-                                            ? 'text-[#f5a623]'
-                                            : pos <= 5
-                                              ? 'text-[#2ec4b6]'
-                                              : 'text-white'
-                                      }`}
-                                    >
-                                      {pos === null ? 'DNR' : `P${pos}`}
-                                      {beatAll && ' ★'}
-                                    </td>
-                                  );
-                                })}
+                                    return (
+                                      <td
+                                        key={rIdx}
+                                        className={`px-3 py-2 text-center font-semibold ${
+                                          pos === null
+                                            ? 'text-[#8a8a9a]'
+                                            : beatAll
+                                              ? 'text-[#f5a623]'
+                                              : pos <= 5
+                                                ? 'text-[#2ec4b6]'
+                                                : 'text-white'
+                                        }`}
+                                      >
+                                        {pos === null ? 'DNR' : `P${pos}`}
+                                        {beatAll && ' ★'}
+                                      </td>
+                                    );
+                                  })
+                                ) : (
+                                  <td className="px-3 py-2 text-center text-[#8a8a9a] font-semibold">-</td>
+                                )}
                               </tr>
                             ))}
                           </tbody>
@@ -364,33 +362,39 @@ export default function Teams() {
                             <div className="text-[#f5a623] font-black text-2xl mb-3">{driver.points} pts</div>
                             <div className="text-xs text-[#8a8a9a] mb-4">
                               {driver.posPoints}p
-                              {driver.bonusPoints > 0 && <span className="text-[#2ec4b6]"> +{driver.bonusPoints}</span>}
-                              {driver.penaltyPoints < 0 && <span className="text-[#e63946]"> {driver.penaltyPoints}</span>}
+                              {driver.bonusPoints > 0 && (
+                                <span className="text-[#2ec4b6]"> +{driver.bonusPoints}</span>
+                              )}
+                              {driver.penaltyPoints < 0 && (
+                                <span className="text-[#e63946]"> {driver.penaltyPoints}</span>
+                              )}
                             </div>
                             <div className="grid grid-cols-2 gap-3 text-sm">
                               <div>
                                 <div className="text-[#8a8a9a] text-xs uppercase">Wins</div>
-                                <div className="text-white font-bold">{driver.wins}</div>
+                                <div className="text-white font-bold">{driver.wins || 0}</div>
                               </div>
                               <div>
                                 <div className="text-[#8a8a9a] text-xs uppercase">Top 5s</div>
-                                <div className="text-white font-bold">{driver.top5}</div>
+                                <div className="text-white font-bold">{driver.top5 || 0}</div>
                               </div>
                               <div>
                                 <div className="text-[#8a8a9a] text-xs uppercase">Avg Finish</div>
-                                <div className="text-[#2ec4b6] font-bold">{(driver.avgFinish || 0).toFixed(1)}</div>
+                                <div className="text-[#2ec4b6] font-bold">
+                                  {driver.avgFinish ? driver.avgFinish.toFixed(1) : '0.0'}
+                                </div>
                               </div>
                               <div>
                                 <div className="text-[#8a8a9a] text-xs uppercase">Laps Led</div>
-                                <div className="text-white font-bold">{driver.lapsLed}</div>
+                                <div className="text-white font-bold">{driver.lapsLed || 0}</div>
                               </div>
                               <div>
                                 <div className="text-[#8a8a9a] text-xs uppercase">Incidents</div>
-                                <div className="text-[#e63946] font-bold">{driver.totalIncidents}</div>
+                                <div className="text-[#e63946] font-bold">{driver.totalIncidents || 0}</div>
                               </div>
                               <div>
                                 <div className="text-[#8a8a9a] text-xs uppercase">Top 10s</div>
-                                <div className="text-white font-bold">{driver.top10}</div>
+                                <div className="text-white font-bold">{driver.top10 || 0}</div>
                               </div>
                             </div>
                           </div>

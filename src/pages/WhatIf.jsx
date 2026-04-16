@@ -1,42 +1,27 @@
 import React, { useState, useMemo } from 'react';
 import { TrendingUp, TrendingDown } from 'lucide-react';
-
-const RACE_POINTS = {
-  justin: { r1: 18, r2: 21, r3: 15, r4: 35, r5: 37, r6: 34, r7: 33 },
-  nate:   { r1: 7,  r2: 22, r3: 46, r4: 44, r5: 18, r6: 26, r7: 40 },
-  blaine: { r1: 26, r2: 19, r3: 9,  r4: 32, r5: 35, r6: 34, r7: 32 },
-  nik:    { r1: 13, r2: 18, r3: 12, r4: 37, r5: 42, r6: 44, r7: 39 },
-  jordan: { r1: 10, r2: 37, r3: 8,  r4: 34, r5: 34, r6: 19, r7: 0 },
-  ryan:   { r1: 19, r2: 10, r3: 16, r4: 14, r5: 14, r6: 19, r7: 36 },
-  terry:  { r1: 13, r2: 33, r3: 7,  r4: 12, r5: 13, r6: 0,  r7: 23 },
-  sam:    { r1: 0,  r2: 0,  r3: 0,  r4: 13, r5: 15, r6: 9,  r7: 10 },
-  ronald: { r1: 0,  r2: 0,  r3: 0,  r4: 0,  r5: 0,  r6: 0,  r7: 10 },
-};
-
-const DRIVERS = [
-  { id: 'justin', name: 'Justin Ellis4', number: 5 },
-  { id: 'nate', name: 'Nathan Becker', number: 21 },
-  { id: 'blaine', name: 'Blaine Karnes', number: 25 },
-  { id: 'nik', name: 'Nik Green2', number: 88 },
-  { id: 'jordan', name: 'Jordan Stancil', number: 15 },
-  { id: 'ryan', name: 'Ryan Ramsey', number: 10 },
-  { id: 'terry', name: 'Terry Domino', number: 11 },
-  { id: 'sam', name: 'Sam Kunnemann', number: 64 },
-  { id: 'ronald', name: 'Ronald Ramsey', number: 77 },
-];
-
-const RACES = [
-  { id: 'r1', label: 'R1: Daytona' },
-  { id: 'r2', label: 'R2: Atlanta' },
-  { id: 'r3', label: 'R3: COTA' },
-  { id: 'r4', label: 'R4: Phoenix' },
-  { id: 'r5', label: 'R5: Las Vegas' },
-  { id: 'r6', label: 'R6: Darlington' },
-  { id: 'r7', label: 'R7: Martinsville' },
-];
+import { useComputedStandings, useRaces } from '../hooks/useSupabase';
 
 export default function WhatIf() {
-  const [activeRaces, setActiveRaces] = useState(new Set(['r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7']));
+  const { standings, loading: standingsLoading } = useComputedStandings();
+  const { data: races, loading: racesLoading } = useRaces();
+
+  // Build race list from live data
+  const raceList = useMemo(() => {
+    if (!races || races.length === 0) return [];
+    return races.map((race, idx) => ({
+      id: `r${idx + 1}`,
+      label: `R${race.race_number}: ${race.track_name}`,
+      raceNumber: race.race_number,
+    }));
+  }, [races]);
+
+  // Initialize activeRaces to include all available races
+  const defaultActiveRaces = useMemo(() => {
+    return new Set(raceList.map(r => r.id));
+  }, [raceList]);
+
+  const [activeRaces, setActiveRaces] = useState(defaultActiveRaces);
 
   const toggleRace = (raceId) => {
     const newActive = new Set(activeRaces);
@@ -49,32 +34,39 @@ export default function WhatIf() {
   };
 
   const resetAll = () => {
-    setActiveRaces(new Set(['r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7']));
+    setActiveRaces(defaultActiveRaces);
   };
 
   const allStandings = useMemo(() => {
-    const standings = DRIVERS.map((driver) => {
+    if (!standings || standings.length === 0) return [];
+
+    return standings.map((driver) => {
       let total = 0;
-      RACES.forEach((race) => {
-        if (activeRaces.has(race.id)) {
-          total += RACE_POINTS[driver.id][race.id];
-        }
-      });
+      if (driver.raceByRace && Array.isArray(driver.raceByRace)) {
+        driver.raceByRace.forEach((race, idx) => {
+          const raceId = `r${idx + 1}`;
+          if (activeRaces.has(raceId)) {
+            total += race.points || 0;
+          }
+        });
+      }
       return { ...driver, points: total };
-    });
-    return standings.sort((a, b) => b.points - a.points);
-  }, [activeRaces]);
+    }).sort((a, b) => b.points - a.points);
+  }, [standings, activeRaces]);
 
   const originalStandings = useMemo(() => {
-    const standings = DRIVERS.map((driver) => {
+    if (!standings || standings.length === 0) return [];
+
+    return standings.map((driver) => {
       let total = 0;
-      RACES.forEach((race) => {
-        total += RACE_POINTS[driver.id][race.id];
-      });
+      if (driver.raceByRace && Array.isArray(driver.raceByRace)) {
+        driver.raceByRace.forEach((race) => {
+          total += race.points || 0;
+        });
+      }
       return { ...driver, points: total };
-    });
-    return standings.sort((a, b) => b.points - a.points);
-  }, []);
+    }).sort((a, b) => b.points - a.points);
+  }, [standings]);
 
   const positionMap = useMemo(() => {
     const map = {};
@@ -96,7 +88,29 @@ export default function WhatIf() {
 
   const biggestMovers = movers.filter((m) => m.change !== 0).slice(0, 3);
 
-  const isAllActive = activeRaces.size === RACES.length;
+  const isAllActive = activeRaces.size === raceList.length;
+
+  if (standingsLoading || racesLoading) {
+    return (
+      <div className="min-h-screen p-6 flex items-center justify-center" style={{ backgroundColor: '#0a0a0f' }}>
+        <div className="text-center">
+          <p style={{ color: '#f5a623' }} className="text-lg font-semibold">
+            Loading standings...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!standings || standings.length === 0 || raceList.length === 0) {
+    return (
+      <div className="min-h-screen p-6 flex items-center justify-center" style={{ backgroundColor: '#0a0a0f' }}>
+        <div className="text-center">
+          <p style={{ color: '#8a8a9a' }}>No standings data available</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen p-6" style={{ backgroundColor: '#0a0a0f' }}>
@@ -110,7 +124,7 @@ export default function WhatIf() {
 
         <div className="mb-8">
           <div className="flex flex-wrap gap-3 mb-4">
-            {RACES.map((race) => (
+            {raceList.map((race) => (
               <button
                 key={race.id}
                 onClick={() => toggleRace(race.id)}
@@ -281,7 +295,7 @@ export default function WhatIf() {
           }}
         >
           <p className="text-sm" style={{ color: '#8a8a9a' }}>
-            Selected races: {activeRaces.size} / {RACES.length}
+            Selected races: {activeRaces.size} / {raceList.length}
           </p>
         </div>
       </div>

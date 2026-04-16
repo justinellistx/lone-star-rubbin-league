@@ -1,31 +1,14 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ArrowUpDown } from 'lucide-react';
-import { useDrivers } from '../hooks/useSupabase';
-
-const DEMO_DRIVERS = [
-  { id: 'nik', name: 'Nik Green2', number: 88, nickname: 'Adventure Man', team: 'Nik+Jordan', points: 205, wins: 2, top5: 4, top10: 4, avgFinish: 10.4 },
-  { id: 'nate', name: 'Nathan Becker', number: 21, nickname: 'Becker Wrecker', team: 'Justin+Nate', points: 203, wins: 3, top5: 3, top10: 3, avgFinish: 11.1 },
-  { id: 'justin', name: 'Justin Ellis4', number: 5, nickname: 'J-Easy', team: 'Justin+Nate', points: 193, wins: 0, top5: 4, top10: 4, avgFinish: 10.6 },
-  { id: 'blaine', name: 'Blaine Karnes', number: 25, nickname: 'Tard', team: 'Blaine+Terry', points: 187, wins: 0, top5: 4, top10: 4, avgFinish: 10.3 },
-  { id: 'jordan', name: 'Jordan Stancil', number: 15, nickname: 'J-Dawg', team: 'Nik+Jordan', points: 142, wins: 1, top5: 3, top10: 3, avgFinish: 12.8 },
-  { id: 'ryan', name: 'Ryan Ramsey', number: 10, nickname: 'Thunder Boy', team: 'Ryan+Sam+Ronald', points: 128, wins: 0, top5: 1, top10: 1, avgFinish: 19.9 },
-  { id: 'terry', name: 'Terry Domino', number: 11, nickname: 'Domino Slices', team: 'Blaine+Terry', points: 101, wins: 0, top5: 1, top10: 1, avgFinish: 19.3 },
-  { id: 'sam', name: 'Sam Kunnemann', number: 64, nickname: 'Samon', team: 'Ryan+Sam+Ronald', points: 47, wins: 0, top5: 0, top10: 0, avgFinish: 23.8 },
-  { id: 'ronald', name: 'Ronald Ramsey', number: 77, nickname: 'The Fuzz', team: 'Ryan+Sam+Ronald', points: 10, wins: 0, top5: 0, top10: 0, avgFinish: 26.0 },
-];
+import { useComputedStandings } from '../hooks/useSupabase';
 
 export default function Drivers() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('points');
-  const { data: drivers, loading } = useDrivers();
+  const { standings, loading } = useComputedStandings();
 
-  // Only use Supabase data if it has the expected shape (points, avgFinish, etc.)
-  // Otherwise fall back to demo data with real results
-  const displayDrivers =
-    drivers && drivers.length > 0 && drivers[0].points !== undefined
-      ? drivers
-      : DEMO_DRIVERS;
+  const displayDrivers = standings || [];
 
   const filteredDrivers = useMemo(() => {
     let result = displayDrivers.filter(
@@ -54,8 +37,15 @@ export default function Drivers() {
           <p className="text-[#8a8a9a] text-lg">2026 Season Roster</p>
         </div>
 
-        {/* Search & Sort Controls */}
-        <div className="mb-12 flex flex-col md:flex-row gap-4">
+        {/* Loading State */}
+        {loading ? (
+          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-12 text-center">
+            <p className="text-[#8a8a9a]">Loading drivers...</p>
+          </div>
+        ) : (
+          <>
+            {/* Search & Sort Controls */}
+            <div className="mb-12 flex flex-col md:flex-row gap-4">
           {/* Search Bar */}
           <div className="flex-1 relative">
             <Search
@@ -149,27 +139,29 @@ export default function Drivers() {
           </div>
         )}
 
-        {/* Summary Stats */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-6">
-            <div className="text-[#8a8a9a] text-sm uppercase font-bold mb-2">Total Drivers</div>
-            <div className="text-3xl font-bold text-white">{filteredDrivers.length}</div>
-          </div>
+            {/* Summary Stats */}
+            <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-6">
+                <div className="text-[#8a8a9a] text-sm uppercase font-bold mb-2">Total Drivers</div>
+                <div className="text-3xl font-bold text-white">{filteredDrivers.length}</div>
+              </div>
 
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-6">
-            <div className="text-[#8a8a9a] text-sm uppercase font-bold mb-2">Total Wins</div>
-            <div className="text-3xl font-bold text-[#f5a623]">
-              {filteredDrivers.reduce((sum, d) => sum + d.wins, 0)}
-            </div>
-          </div>
+              <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-6">
+                <div className="text-[#8a8a9a] text-sm uppercase font-bold mb-2">Total Wins</div>
+                <div className="text-3xl font-bold text-[#f5a623]">
+                  {filteredDrivers.reduce((sum, d) => sum + d.wins, 0)}
+                </div>
+              </div>
 
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-6">
-            <div className="text-[#8a8a9a] text-sm uppercase font-bold mb-2">Combined Points</div>
-            <div className="text-3xl font-bold text-[#2ec4b6]">
-              {filteredDrivers.reduce((sum, d) => sum + d.points, 0)}
+              <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-6">
+                <div className="text-[#8a8a9a] text-sm uppercase font-bold mb-2">Combined Points</div>
+                <div className="text-3xl font-bold text-[#2ec4b6]">
+                  {filteredDrivers.reduce((sum, d) => sum + d.points, 0)}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );

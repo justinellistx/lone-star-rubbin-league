@@ -1,25 +1,37 @@
 import React, { useMemo } from 'react';
+import { useComputedStandings, useRaces } from '../hooks/useSupabase';
 
 export default function Rivalries() {
-  // Driver data
-  const driverInfo = {
-    Justin: { number: 5, nickname: 'J-Easy', finishes: [19, 20, 22, 4, 3, 2, 4] },
-    Nate: { number: 21, nickname: 'Becker Wrecker', finishes: [30, 13, 1, 1, 19, 13, 1] },
-    Blaine: { number: 25, nickname: 'Tard', finishes: [15, 17, 25, 5, 2, 3, 5] },
-    Nik: { number: 88, nickname: 'Adventure Man', finishes: [24, 18, 24, 2, 1, 1, 3] },
-    Jordan: { number: 15, nickname: 'J-Dawg', finishes: [27, 1, 26, 3, 4, 16, null] },
-    Ryan: { number: 10, nickname: 'Thunder Boy', finishes: [18, 30, 23, 23, 25, 18, 2] },
-    Terry: { number: 11, nickname: 'Domino Slices', finishes: [26, 2, 27, 25, 24, null, 12] },
-    Sam: { number: 64, nickname: 'Samon', finishes: [null, null, null, 24, 22, 25, 24] },
-    Ronald: { number: 77, nickname: 'The Fuzz', finishes: [null, null, null, null, null, null, 26] },
-  };
+  const { standings, loading: standingsLoading } = useComputedStandings();
+  const { data: races, loading: racesLoading } = useRaces();
 
-  const trackNames = ['Track 1', 'Track 2', 'Track 3', 'Track 4', 'Track 5', 'Track 6', 'Track 7'];
+  // Build driver info from standings
+  const driverInfo = useMemo(() => {
+    if (!standings || standings.length === 0) return {};
+
+    const info = {};
+    standings.forEach((driver) => {
+      info[driver.name] = {
+        number: driver.number,
+        nickname: driver.nickname || '',
+        finishes: (driver.raceByRace || []).map((r) => r.finishPosition || null),
+      };
+    });
+    return info;
+  }, [standings]);
+
+  // Build track names from races
+  const trackNames = useMemo(() => {
+    if (!races || races.length === 0) return [];
+    return races.map((r) => r.track_name);
+  }, [races]);
 
   // Calculate rivalries
   const rivalries = useMemo(() => {
     const rivalryMap = {};
     const drivers = Object.keys(driverInfo);
+
+    if (drivers.length === 0) return [];
 
     // Compare all pairs of drivers
     for (let i = 0; i < drivers.length; i++) {
@@ -41,7 +53,7 @@ export default function Rivalries() {
           const pos1 = finishes1[raceIdx];
           const pos2 = finishes2[raceIdx];
 
-          // Skip DNF
+          // Skip DNF (null)
           if (pos1 === null || pos2 === null) continue;
 
           const difference = Math.abs(pos1 - pos2);
@@ -56,7 +68,7 @@ export default function Rivalries() {
             }
 
             battleLog.push({
-              track: trackNames[raceIdx],
+              track: trackNames[raceIdx] || `Race ${raceIdx + 1}`,
               pos1,
               pos2,
               difference,
@@ -78,7 +90,7 @@ export default function Rivalries() {
             driver1Ahead,
             driver2Ahead,
             closestDifference,
-            closestTrack: trackNames[closestTrackIndex],
+            closestTrack: trackNames[closestTrackIndex] || `Race ${closestTrackIndex + 1}`,
             battleLog: battleLog.sort((a, b) => a.difference - b.difference),
           };
         }
@@ -86,7 +98,7 @@ export default function Rivalries() {
     }
 
     return Object.values(rivalryMap).sort((a, b) => b.closeFinishes - a.closeFinishes);
-  }, []);
+  }, [driverInfo, trackNames]);
 
   const getIntensityColor = (closeFinishes) => {
     if (closeFinishes >= 6) return 'from-red-600 to-red-500';
@@ -101,6 +113,16 @@ export default function Rivalries() {
     if (closeFinishes >= 2) return 'HEATED';
     return 'BUDDING';
   };
+
+  if (standingsLoading || racesLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] to-[#14141f] p-8 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-white text-lg font-semibold">Loading rivalries...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] to-[#14141f] p-8">

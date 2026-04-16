@@ -1,81 +1,71 @@
 import React from 'react';
 import { Calendar, Award, Zap, TrendingUp } from 'lucide-react';
-
-const TIMELINE_ENTRIES = [
-  {
-    id: 1,
-    date: 'Feb 12',
-    title: 'Season Opener at Daytona',
-    description: 'The Lone Star Rubbin\' League kicks off Stage 1 with NASCAR Trucks at Daytona. Blaine Karnes takes the best league finish at P15, gaining 9 spots from his P24 start.',
-    stat: 'Blaine: P15 (+9 positions)',
-    icon: 'calendar',
-  },
-  {
-    id: 2,
-    date: 'Feb 26',
-    title: 'J-Dawg\'s Upset Victory',
-    description: 'Jordan Stancil storms from P20 to take the checkered flag at Atlanta — the first win of the 2026 season. A wild race sees 42 incidents for the winner alone.',
-    stat: 'Jordan: P20 → 1st Place',
-    icon: 'award',
-    accentColor: '#e63946',
-  },
-  {
-    id: 3,
-    date: 'Mar 5',
-    title: 'Becker Wrecker Dominates COTA',
-    description: 'Nathan Becker leads 34 of 35 laps from pole to flag at COTA. A dominant road course performance earns him the Fastest Lap, Most Laps Led, and Pole bonuses.',
-    stat: 'Nathan: 34/35 laps led',
-    icon: 'zap',
-    accentColor: '#2ec4b6',
-  },
-  {
-    id: 4,
-    date: 'Mar 12',
-    title: 'Becker Goes Back-to-Back',
-    description: 'Nathan Becker wins again at Phoenix from pole, but Nik Green2 steals the show by leading 144 of 150 laps and settling for P2. Justin Ellis4 records a perfect 0-incident race.',
-    stat: 'Nik: 144/150 laps | Justin: 0 incidents',
-    icon: 'trending',
-    accentColor: '#f5a623',
-  },
-  {
-    id: 5,
-    date: 'Mar 19',
-    title: 'Adventure Man Arrives',
-    description: 'Nik Green2 takes his first career win at Las Vegas from pole. Justin Ellis4 leads 63 laps but finishes P3. Four drivers record 0 incidents — a season best for clean racing.',
-    stat: 'Nik\'s first W | 4 drivers: 0 incidents',
-    icon: 'award',
-    accentColor: '#2ec4b6',
-  },
-  {
-    id: 6,
-    date: 'Mar 26',
-    title: 'Nik Goes Back-to-Back at Darlington',
-    description: 'Nik Green2 wins again at the Lady in Black, setting the fastest lap. Nathan Becker leads 47 laps from pole but fades to P13 with 40 incidents. Terry Domino misses his first race (DNR).',
-    stat: 'Nik: 2 wins | Nathan: 47 laps led',
-    icon: 'zap',
-    accentColor: '#f5a623',
-  },
-  {
-    id: 7,
-    date: 'Apr 3',
-    title: 'Becker\'s Martinsville Masterclass',
-    description: 'Nathan Becker claims his third win at Martinsville. Ryan Ramsey scores his best finish (P2). Ronald Ramsey makes his league debut, starting from pole. The top 3 in points are separated by just 12 points.',
-    stat: 'Nathan: 3 wins | Ryan: Best finish P2',
-    icon: 'award',
-    accentColor: '#e63946',
-  },
-  {
-    id: 8,
-    date: 'Apr 7',
-    title: 'Stage 1 Midpoint — 5 to Go',
-    description: 'With 7 of 12 races complete, Nik Green2 leads by just 2 points over Nathan Becker. Four drivers are within 18 points. Bristol is next. Who will be Stage 1 Champion?',
-    stat: 'Nik leads by 2 pts | 4 drivers within 18 pts',
-    icon: 'trending',
-    accentColor: '#2ec4b6',
-  },
-];
+import { useRaceResultsByRace } from '../hooks/useSupabase';
 
 export default function Timeline() {
+  const { data: races, loading } = useRaceResultsByRace();
+
+  const generateTimelineEntries = () => {
+    if (!races || races.length === 0) return [];
+
+    return races.map((race, idx) => {
+      const results = race.results || [];
+      const winner = results.length > 0 ? results[0] : null;
+
+      let title = `${race.track || 'Race'} ${idx + 1}`;
+      let description = '';
+      let stat = '';
+      let icon = 'award';
+      let accentColor = '#f5a623';
+
+      if (winner) {
+        title = `${winner.name} Wins at ${race.track || 'Race ' + (idx + 1)}`;
+
+        // Generate notable stat
+        const secondPlace = results.length > 1 ? results[1] : null;
+        const thirdPlace = results.length > 2 ? results[2] : null;
+
+        // Check for close finish
+        if (secondPlace && secondPlace.position === 2) {
+          const gap = Math.abs((winner.finish || 0) - (secondPlace.finish || 0));
+          if (gap < 3) {
+            description = `${winner.name} takes the checkered flag at ${race.track || 'the track'} in a nail-biting finish. A commanding drive secures the victory. ${secondPlace.name} finishes P2.`;
+            stat = `${winner.name}: P1 | Close finish`;
+            accentColor = '#e63946';
+          }
+        }
+
+        // Check for dominant win
+        if (!description && results.length > 3) {
+          const topFiveCount = results.filter((r, i) => i < 5).length;
+          description = `${winner.name} takes a dominant victory at ${race.track || 'the track'}. A commanding performance puts them in the championship mix. The field is still competitive behind them.`;
+          stat = `${winner.name}: P1 win | Dominant`;
+          accentColor = '#2ec4b6';
+          icon = 'zap';
+        }
+
+        if (!description) {
+          description = `${winner.name} takes the checkered flag at ${race.track || 'the track'}. A strong drive secures the victory and valuable championship points. ${thirdPlace ? secondPlace.name + ' P2' : 'Solid podium finishes'} round out the top three.`;
+          stat = `${winner.name}: Victory at ${race.track || 'the track'}`;
+          icon = 'award';
+        }
+      } else {
+        description = `Race at ${race.track || 'the track'} completed.`;
+        stat = 'Race complete';
+      }
+
+      return {
+        id: idx + 1,
+        date: race.date ? new Date(race.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : `Race ${idx + 1}`,
+        title,
+        description,
+        stat,
+        icon,
+        accentColor,
+      };
+    });
+  };
+
   const getIcon = (iconType) => {
     const iconProps = { size: 20 };
     switch (iconType) {
@@ -91,6 +81,16 @@ export default function Timeline() {
         return <Calendar {...iconProps} />;
     }
   };
+
+  const timelineEntries = generateTimelineEntries();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen p-6 flex items-center justify-center" style={{ backgroundColor: '#0a0a0f' }}>
+        <p style={{ color: '#8a8a9a' }}>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen py-16 px-4 md:px-8" style={{ backgroundColor: '#0a0a0f' }}>
@@ -111,7 +111,7 @@ export default function Timeline() {
 
         {/* Timeline Items */}
         <div className="space-y-12 md:space-y-0">
-          {TIMELINE_ENTRIES.map((entry, index) => {
+          {timelineEntries.map((entry, index) => {
             const isEven = index % 2 === 0;
             const accentColor = entry.accentColor || '#f5a623';
 

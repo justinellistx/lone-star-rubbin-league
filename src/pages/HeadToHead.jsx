@@ -1,52 +1,51 @@
 import { useState, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-
-const DRIVERS = {
-  justin: { name: 'Justin Ellis4', number: 5, nickname: 'J-Easy', points: 193, wins: 0, top5: 4, top10: 4, avgFinish: 10.57, lapsLed: 118, totalIncidents: 83,
-    races: [{ num: 1, track: 'Daytona', pos: 19 }, { num: 2, track: 'Atlanta', pos: 20 }, { num: 3, track: 'COTA', pos: 22 }, { num: 4, track: 'Phoenix', pos: 4 }, { num: 5, track: 'Las Vegas', pos: 3 }, { num: 6, track: 'Darlington', pos: 2 }, { num: 7, track: 'Martinsville', pos: 4 }] },
-  nate: { name: 'Nathan Becker', number: 21, nickname: 'Becker Wrecker', points: 203, wins: 3, top5: 3, top10: 3, avgFinish: 11.14, lapsLed: 168, totalIncidents: 140,
-    races: [{ num: 1, track: 'Daytona', pos: 30 }, { num: 2, track: 'Atlanta', pos: 13 }, { num: 3, track: 'COTA', pos: 1 }, { num: 4, track: 'Phoenix', pos: 1 }, { num: 5, track: 'Las Vegas', pos: 19 }, { num: 6, track: 'Darlington', pos: 13 }, { num: 7, track: 'Martinsville', pos: 1 }] },
-  blaine: { name: 'Blaine Karnes', number: 25, nickname: 'Tard', points: 187, wins: 0, top5: 4, top10: 4, avgFinish: 10.29, lapsLed: 0, totalIncidents: 127,
-    races: [{ num: 1, track: 'Daytona', pos: 15 }, { num: 2, track: 'Atlanta', pos: 17 }, { num: 3, track: 'COTA', pos: 25 }, { num: 4, track: 'Phoenix', pos: 5 }, { num: 5, track: 'Las Vegas', pos: 2 }, { num: 6, track: 'Darlington', pos: 3 }, { num: 7, track: 'Martinsville', pos: 5 }] },
-  nik: { name: 'Nik Green2', number: 88, nickname: 'Adventure Man', points: 205, wins: 2, top5: 4, top10: 4, avgFinish: 10.43, lapsLed: 301, totalIncidents: 99,
-    races: [{ num: 1, track: 'Daytona', pos: 24 }, { num: 2, track: 'Atlanta', pos: 18 }, { num: 3, track: 'COTA', pos: 24 }, { num: 4, track: 'Phoenix', pos: 2 }, { num: 5, track: 'Las Vegas', pos: 1 }, { num: 6, track: 'Darlington', pos: 1 }, { num: 7, track: 'Martinsville', pos: 3 }] },
-  jordan: { name: 'Jordan Stancil', number: 15, nickname: 'J-Dawg', points: 142, wins: 1, top5: 3, top10: 3, avgFinish: 12.83, lapsLed: 1, totalIncidents: 138,
-    races: [{ num: 1, track: 'Daytona', pos: 27 }, { num: 2, track: 'Atlanta', pos: 1 }, { num: 3, track: 'COTA', pos: 26 }, { num: 4, track: 'Phoenix', pos: 3 }, { num: 5, track: 'Las Vegas', pos: 4 }, { num: 6, track: 'Darlington', pos: 16 }, { num: 7, track: 'Martinsville', pos: null }] },
-  ryan: { name: 'Ryan Ramsey', number: 10, nickname: 'Thunder Boy', points: 128, wins: 0, top5: 1, top10: 1, avgFinish: 19.86, lapsLed: 54, totalIncidents: 72,
-    races: [{ num: 1, track: 'Daytona', pos: 18 }, { num: 2, track: 'Atlanta', pos: 30 }, { num: 3, track: 'COTA', pos: 23 }, { num: 4, track: 'Phoenix', pos: 23 }, { num: 5, track: 'Las Vegas', pos: 25 }, { num: 6, track: 'Darlington', pos: 18 }, { num: 7, track: 'Martinsville', pos: 2 }] },
-  terry: { name: 'Terry Domino', number: 11, nickname: 'Domino Slices', points: 101, wins: 0, top5: 1, top10: 1, avgFinish: 19.33, lapsLed: 0, totalIncidents: 132,
-    races: [{ num: 1, track: 'Daytona', pos: 26 }, { num: 2, track: 'Atlanta', pos: 2 }, { num: 3, track: 'COTA', pos: 27 }, { num: 4, track: 'Phoenix', pos: 25 }, { num: 5, track: 'Las Vegas', pos: 24 }, { num: 6, track: 'Darlington', pos: null }, { num: 7, track: 'Martinsville', pos: 12 }] },
-  sam: { name: 'Sam Kunnemann', number: 64, nickname: 'Samon', points: 47, wins: 0, top5: 0, top10: 0, avgFinish: 23.75, lapsLed: 0, totalIncidents: 124,
-    races: [{ num: 1, track: 'Daytona', pos: null }, { num: 2, track: 'Atlanta', pos: null }, { num: 3, track: 'COTA', pos: null }, { num: 4, track: 'Phoenix', pos: 24 }, { num: 5, track: 'Las Vegas', pos: 22 }, { num: 6, track: 'Darlington', pos: 25 }, { num: 7, track: 'Martinsville', pos: 24 }] },
-  ronald: { name: 'Ronald Ramsey', number: 77, nickname: 'The Fuzz', points: 10, wins: 0, top5: 0, top10: 0, avgFinish: 26.0, lapsLed: 0, totalIncidents: 46,
-    races: [{ num: 1, track: 'Daytona', pos: null }, { num: 2, track: 'Atlanta', pos: null }, { num: 3, track: 'COTA', pos: null }, { num: 4, track: 'Phoenix', pos: null }, { num: 5, track: 'Las Vegas', pos: null }, { num: 6, track: 'Darlington', pos: null }, { num: 7, track: 'Martinsville', pos: 26 }] },
-};
+import { useComputedStandings, useRaces } from '../hooks/useSupabase';
 
 export default function HeadToHead() {
-  const [driverAKey, setDriverAKey] = useState('');
-  const [driverBKey, setDriverBKey] = useState('');
+  const [driverAId, setDriverAId] = useState('');
+  const [driverBId, setDriverBId] = useState('');
 
-  const driverA = driverAKey ? DRIVERS[driverAKey] : null;
-  const driverB = driverBKey ? DRIVERS[driverBKey] : null;
+  const { standings, loading: standingsLoading } = useComputedStandings();
+  const { data: races } = useRaces();
 
-  const driverList = Object.entries(DRIVERS).map(([key, driver]) => ({
-    key,
-    name: driver.name,
-    number: driver.number,
-  }));
+  // Build race lookup map by race number
+  const raceMap = useMemo(() => {
+    const map = {};
+    if (races) {
+      races.forEach(race => {
+        map[race.race_number] = race;
+      });
+    }
+    return map;
+  }, [races]);
+
+  const driverList = useMemo(() => {
+    if (!standings) return [];
+    return standings.map(driver => ({
+      id: driver.id,
+      name: driver.name,
+      number: driver.number,
+    }));
+  }, [standings]);
+
+  const driverA = driverAId && standings ? standings.find(d => d.id === driverAId) : null;
+  const driverB = driverBId && standings ? standings.find(d => d.id === driverBId) : null;
 
   const chartData = useMemo(() => {
     if (!driverA || !driverB) return [];
 
     const data = [];
-    for (let i = 0; i < 7; i++) {
-      const raceA = driverA.races[i];
-      const raceB = driverB.races[i];
+    const maxRaces = Math.max(driverA.raceByRace.length, driverB.raceByRace.length);
+
+    for (let i = 0; i < maxRaces; i++) {
+      const raceA = driverA.raceByRace[i];
+      const raceB = driverB.raceByRace[i];
 
       data.push({
         race: `Race ${i + 1}`,
-        [driverA.name]: raceA?.pos ?? null,
-        [driverB.name]: raceB?.pos ?? null,
+        [driverA.name]: raceA?.finishPosition ?? null,
+        [driverB.name]: raceB?.finishPosition ?? null,
       });
     }
     return data;
@@ -59,30 +58,39 @@ export default function HeadToHead() {
     let aWins = 0;
     let bWins = 0;
 
-    for (let i = 0; i < 7; i++) {
-      const raceA = driverA.races[i];
-      const raceB = driverB.races[i];
+    const maxRaces = Math.max(driverA.raceByRace.length, driverB.raceByRace.length);
+
+    for (let i = 0; i < maxRaces; i++) {
+      const raceA = driverA.raceByRace[i];
+      const raceB = driverB.raceByRace[i];
 
       let winner = null;
-      if (raceA?.pos !== null && raceB?.pos !== null) {
-        if (raceA.pos < raceB.pos) {
+      let raced = false;
+
+      // Only count as a race if both drivers participated
+      if (raceA && raceB) {
+        raced = true;
+        if (raceA.finishPosition < raceB.finishPosition) {
           winner = 'A';
           aWins++;
-        } else if (raceB.pos < raceA.pos) {
+        } else if (raceB.finishPosition < raceA.finishPosition) {
           winner = 'B';
           bWins++;
         }
       }
 
-      matchups.push({
-        race: i + 1,
-        track: raceA?.track || raceB?.track || 'Unknown',
-        posA: raceA?.pos,
-        posB: raceB?.pos,
-        winner,
-        aWins,
-        bWins,
-      });
+      if (raceA || raceB) {
+        matchups.push({
+          race: i + 1,
+          track: raceA?.track || raceB?.track || 'Unknown',
+          posA: raceA?.finishPosition,
+          posB: raceB?.finishPosition,
+          raced,
+          winner,
+          aWins,
+          bWins,
+        });
+      }
     }
 
     return matchups;
@@ -118,8 +126,8 @@ export default function HeadToHead() {
       },
       {
         label: 'Avg Finish',
-        aValue: parseFloat(driverA.avgFinish.toFixed(2)),
-        bValue: parseFloat(driverB.avgFinish.toFixed(2)),
+        aValue: driverA.avgFinish,
+        bValue: driverB.avgFinish,
         lowerIsBetter: true,
       },
       {
@@ -161,15 +169,17 @@ export default function HeadToHead() {
     let bWins = 0;
     let totalRaces = 0;
 
-    for (let i = 0; i < 7; i++) {
-      const raceA = driverA.races[i];
-      const raceB = driverB.races[i];
+    const maxRaces = Math.max(driverA.raceByRace.length, driverB.raceByRace.length);
 
-      if (raceA?.pos !== null && raceB?.pos !== null) {
+    for (let i = 0; i < maxRaces; i++) {
+      const raceA = driverA.raceByRace[i];
+      const raceB = driverB.raceByRace[i];
+
+      if (raceA && raceB && raceA.finishPosition !== null && raceB.finishPosition !== null) {
         totalRaces++;
-        if (raceA.pos < raceB.pos) {
+        if (raceA.finishPosition < raceB.finishPosition) {
           aWins++;
-        } else if (raceB.pos < raceA.pos) {
+        } else if (raceB.finishPosition < raceA.finishPosition) {
           bWins++;
         }
       }
@@ -177,6 +187,19 @@ export default function HeadToHead() {
 
     return { aWins, bWins, totalRaces };
   }, [driverA, driverB]);
+
+  if (standingsLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#0a0a0f] p-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin mb-4">
+            <div className="h-12 w-12 border-4 border-[#2a2a3e] border-t-[#f5a623] rounded-full"></div>
+          </div>
+          <p className="text-[#8a8a9a] text-lg">Loading driver standings...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#0a0a0f] p-8">
@@ -193,13 +216,13 @@ export default function HeadToHead() {
           <div>
             <label className="block text-[#f5a623] font-semibold mb-3">Driver A</label>
             <select
-              value={driverAKey}
-              onChange={(e) => setDriverAKey(e.target.value)}
+              value={driverAId}
+              onChange={(e) => setDriverAId(e.target.value)}
               className="w-full bg-[#14141f] border border-[#2a2a3e] text-white px-4 py-3 rounded-lg focus:outline-none focus:border-[#f5a623] transition"
             >
               <option value="">Select Driver A</option>
               {driverList.map((driver) => (
-                <option key={driver.key} value={driver.key}>
+                <option key={driver.id} value={driver.id}>
                   #{driver.number} - {driver.name}
                 </option>
               ))}
@@ -210,13 +233,13 @@ export default function HeadToHead() {
           <div>
             <label className="block text-[#2ec4b6] font-semibold mb-3">Driver B</label>
             <select
-              value={driverBKey}
-              onChange={(e) => setDriverBKey(e.target.value)}
+              value={driverBId}
+              onChange={(e) => setDriverBId(e.target.value)}
               className="w-full bg-[#14141f] border border-[#2a2a3e] text-white px-4 py-3 rounded-lg focus:outline-none focus:border-[#2ec4b6] transition"
             >
               <option value="">Select Driver B</option>
               {driverList.map((driver) => (
-                <option key={driver.key} value={driver.key}>
+                <option key={driver.id} value={driver.id}>
                   #{driver.number} - {driver.name}
                 </option>
               ))}
@@ -366,14 +389,14 @@ export default function HeadToHead() {
                     </thead>
                     <tbody>
                       {raceByRaceMatchup.map((race) => {
-                        const aPos = race.posA !== null ? `P${race.posA}` : 'DNR';
-                        const bPos = race.posB !== null ? `P${race.posB}` : 'DNR';
+                        const aPos = race.posA !== null && race.posA !== undefined ? `P${race.posA}` : 'DNR';
+                        const bPos = race.posB !== null && race.posB !== undefined ? `P${race.posB}` : 'DNR';
                         const winnerText =
-                          race.winner === 'A' ? 'A' : race.winner === 'B' ? 'B' : '-';
+                          race.raced && race.winner === 'A' ? 'A' : race.raced && race.winner === 'B' ? 'B' : '-';
                         const winnerColor =
-                          race.winner === 'A'
+                          race.raced && race.winner === 'A'
                             ? 'text-[#f5a623]'
-                            : race.winner === 'B'
+                            : race.raced && race.winner === 'B'
                             ? 'text-[#2ec4b6]'
                             : 'text-[#8a8a9a]';
 
@@ -413,7 +436,7 @@ export default function HeadToHead() {
           </>
         )}
 
-        {(!driverA || !driverB) && (driverAKey || driverBKey) && (
+        {(!driverA || !driverB) && (driverAId || driverBId) && (
           <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-12 text-center">
             <p className="text-[#8a8a9a] text-lg">Select both drivers to view the comparison</p>
           </div>
