@@ -369,8 +369,8 @@ export default function ManageInterviews() {
         return;
       }
 
-      // Fetch standings
-      const { data: standingsData } = await supabase.rpc('get_standings_summary').catch(() => ({ data: null }));
+      // Fetch standings — no RPC, build from race_results
+      let standingsData = null;
 
       // Fallback: build standings from race_results
       let standings = [];
