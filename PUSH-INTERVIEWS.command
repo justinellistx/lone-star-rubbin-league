@@ -38,7 +38,10 @@ git add \
   src/pages/admin/AdminLayout.jsx \
   src/pages/Pickem.jsx \
   src/pages/Rivalries.jsx \
+  src/pages/Home.jsx \
+  src/components/TrackIcon.jsx \
   src/pages/Results.jsx \
+  src/pages/Schedule.jsx \
   src/pages/Standings.jsx \
   src/pages/DriverProfile.jsx \
   src/lib/points.js \

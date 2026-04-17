@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { useRaceResultsByRace } from '../hooks/useSupabase';
+import TrackIcon from '../components/TrackIcon';
 
 /**
  * Derive bonus labels from race data
@@ -99,11 +100,13 @@ export default function Results() {
                     onClick={() => toggleExpanded(race.id)}
                     className="w-full px-6 py-6 flex items-center justify-between hover:bg-[#1a1a2e] transition"
                   >
-                    <div className="flex-1 text-left">
-                      <div className="flex items-center gap-4 mb-2">
-                        <span className="text-[#f5a623] font-bold text-sm">Race #{race.raceNumber}</span>
-                        <h3 className="text-2xl font-bold text-white">{race.track}</h3>
-                      </div>
+                    <div className="flex items-center gap-4 flex-1 text-left">
+                      <TrackIcon track={race.track} size={48} />
+                      <div>
+                        <div className="flex items-center gap-4 mb-2">
+                          <span className="text-[#f5a623] font-bold text-sm">Race #{race.raceNumber}</span>
+                          <h3 className="text-2xl font-bold text-white">{race.track}</h3>
+                        </div>
                       <div className="text-[#8a8a9a]">
                         {new Date(race.date).toLocaleDateString('en-US', {
                           month: 'short',
@@ -111,6 +114,7 @@ export default function Results() {
                           year: 'numeric',
                         })}{' '}
                         • {race.series}
+                      </div>
                       </div>
                     </div>
                     <ChevronDown

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Flag, CheckCircle, Clock } from 'lucide-react';
 import { useSchedule } from '../hooks/useSupabase';
+import TrackIcon from '../components/TrackIcon';
 
 export default function Schedule() {
   const { data: schedule, loading } = useSchedule();
@@ -22,17 +23,18 @@ export default function Schedule() {
         isNext ? 'border-[#f5a623]' : 'border-[#2a2a3e]'
       }`}
     >
-      <div className="flex items-start justify-between mb-4">
-        <div>
+      <div className="flex items-start gap-4 mb-4">
+        <TrackIcon track={race.track_name} size={56} showLabel />
+        <div className="flex-1 min-w-0">
           <div className="text-[#8a8a9a] text-xs uppercase font-bold mb-1">Race #{race.race_number}</div>
-          <h3 className="text-2xl font-bold text-white">{race.track_name}</h3>
+          <h3 className="text-2xl font-bold text-white truncate">{race.track_name}</h3>
         </div>
         {race.status === 'completed' ? (
-          <CheckCircle className="text-[#2ec4b6]" size={24} />
+          <CheckCircle className="text-[#2ec4b6] flex-shrink-0" size={24} />
         ) : isNext ? (
-          <Flag className="text-[#f5a623]" size={24} />
+          <Flag className="text-[#f5a623] flex-shrink-0" size={24} />
         ) : (
-          <Clock className="text-[#8a8a9a]" size={24} />
+          <Clock className="text-[#8a8a9a] flex-shrink-0" size={24} />
         )}
       </div>
 
@@ -109,9 +111,12 @@ export default function Schedule() {
               <h2 className="text-3xl font-bold text-[#f5a623]">NEXT RACE</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div>
-                <div className="text-[#8a8a9a] text-sm uppercase font-bold mb-2">Track</div>
-                <div className="text-3xl font-bold text-white">{nextRace.track_name}</div>
+              <div className="flex items-center gap-4">
+                <TrackIcon track={nextRace.track_name} size={72} showLabel />
+                <div>
+                  <div className="text-[#8a8a9a] text-sm uppercase font-bold mb-2">Track</div>
+                  <div className="text-3xl font-bold text-white">{nextRace.track_name}</div>
+                </div>
               </div>
               <div>
                 <div className="text-[#8a8a9a] text-sm uppercase font-bold mb-2">Date</div>

@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { ArrowLeft } from 'lucide-react';
 import { useComputedStandings, useAllRaceResults } from '../hooks/useSupabase';
+import TrackIcon from '../components/TrackIcon';
 
 export default function DriverProfile() {
   const { id } = useParams();
@@ -302,7 +303,12 @@ export default function DriverProfile() {
                       }`}
                     >
                       <td className="px-4 py-4 text-white font-semibold">R{result.raceNumber}</td>
-                      <td className="px-4 py-4 text-white">{result.track}</td>
+                      <td className="px-4 py-4">
+                        <div className="flex items-center gap-2">
+                          <TrackIcon track={result.track} size={28} />
+                          <span className="text-white">{result.track}</span>
+                        </div>
+                      </td>
                       <td className="px-4 py-4 text-right text-white">{result.startPosition}</td>
                       <td className="px-4 py-4 text-right">
                         <span className={`font-bold ${result.finishPosition <= 5 ? 'text-[#f5a623]' : 'text-white'}`}>

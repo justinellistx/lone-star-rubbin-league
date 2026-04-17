@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Flag } from 'lucide-react';
+import TrackIcon from '../components/TrackIcon';
 import {
   useComputedStandings,
   useRaceResultsByRace,
@@ -335,9 +336,12 @@ export default function Home() {
                 <h2 className="text-2xl font-bold text-[#f5a623]">NEXT RACE</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                  <div className="text-[#8a8a9a] text-sm uppercase mb-2">Track</div>
-                  <div className="text-3xl font-bold text-white">{nextRace.track_name}</div>
+                <div className="flex items-center gap-4">
+                  <TrackIcon track={nextRace.track_name} size={64} showLabel />
+                  <div>
+                    <div className="text-[#8a8a9a] text-sm uppercase mb-2">Track</div>
+                    <div className="text-3xl font-bold text-white">{nextRace.track_name}</div>
+                  </div>
                 </div>
                 <div>
                   <div className="text-[#8a8a9a] text-sm uppercase mb-2">Date</div>
