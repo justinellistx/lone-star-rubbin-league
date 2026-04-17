@@ -18,7 +18,7 @@ import {
 
 const TYPE_LABELS = { pre_race: 'Pre-Race', post_race: 'Post-Race' };
 const TYPE_COLORS = {
-  pre_race: { bg: 'bg-[#f5a623]', border: 'border-[#f5a623]', glow: 'shadow-[#f5a623]/10' },
+  pre_race: { bg: 'bg-[#d00000]', border: 'border-[#d00000]', glow: 'shadow-[#f5a623]/10' },
   post_race: { bg: 'bg-[#2ec4b6]', border: 'border-[#2ec4b6]', glow: 'shadow-[#2ec4b6]/10' },
 };
 
@@ -95,10 +95,10 @@ export default function InterviewRoom() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
+      <div className="min-h-screen flex items-center justify-center bg-[#f5f5f5]">
         <div className="text-center">
-          <Mic className="w-8 h-8 text-[#f5a623] animate-pulse mx-auto mb-4" />
-          <p className="text-[#8a8a9a]">Entering media room...</p>
+          <Mic className="w-8 h-8 text-[#d00000] animate-pulse mx-auto mb-4" />
+          <p className="text-[#6c6d6f]">Entering media room...</p>
         </div>
       </div>
     );
@@ -106,10 +106,10 @@ export default function InterviewRoom() {
 
   if (!driver) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
+      <div className="min-h-screen flex items-center justify-center bg-[#f5f5f5]">
         <div className="text-center">
-          <p className="text-[#e63946] text-lg mb-4">Driver not found</p>
-          <Link to="/interviews" className="text-[#f5a623] hover:underline">
+          <p className="text-[#cc0000] text-lg mb-4">Driver not found</p>
+          <Link to="/interviews" className="text-[#d00000] hover:underline">
             Back to Interviews
           </Link>
         </div>
@@ -118,29 +118,29 @@ export default function InterviewRoom() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] py-8 px-4">
+    <div className="min-h-screen bg-[#f5f5f5] py-8 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Back link */}
         <Link
           to="/interviews"
-          className="inline-flex items-center gap-2 text-[#8a8a9a] hover:text-[#f5a623] transition-colors mb-6 text-sm"
+          className="inline-flex items-center gap-2 text-[#6c6d6f] hover:text-[#d00000] transition-colors mb-6 text-sm"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Interviews
         </Link>
 
         {/* Driver Header */}
-        <div className="bg-[#14141f] border border-[#2a2a3e] rounded-xl p-6 mb-8">
+        <div className="bg-white border border-[#e0e0e0] rounded-xl p-6 mb-8">
           <div className="flex items-center gap-5">
-            <div className="w-20 h-20 rounded-full bg-[#1a1a2e] border-2 border-[#f5a623] flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-bold text-2xl">#{driver.car_number}</span>
+            <div className="w-20 h-20 rounded-full bg-[#f0f0f0] border-2 border-[#d00000] flex items-center justify-center flex-shrink-0">
+              <span className="text-[#131313] font-bold text-2xl">#{driver.car_number}</span>
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">{driver.name}</h1>
+              <h1 className="text-3xl font-bold text-[#131313]">{driver.name}</h1>
               {driver.nickname && (
-                <p className="text-[#f5a623] text-lg">"{driver.nickname}"</p>
+                <p className="text-[#d00000] text-lg">"{driver.nickname}"</p>
               )}
-              <p className="text-[#8a8a9a] text-sm mt-1 flex items-center gap-2">
+              <p className="text-[#6c6d6f] text-sm mt-1 flex items-center gap-2">
                 <Mic className="w-4 h-4" />
                 Media Room
               </p>
@@ -149,20 +149,20 @@ export default function InterviewRoom() {
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-[#1a1a2e] border border-[#e63946] rounded-lg flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-[#e63946] flex-shrink-0 mt-0.5" />
-            <p className="text-[#e63946]">{error}</p>
+          <div className="mb-6 p-4 bg-[#f0f0f0] border border-[#e63946] rounded-lg flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-[#cc0000] flex-shrink-0 mt-0.5" />
+            <p className="text-[#cc0000]">{error}</p>
           </div>
         )}
 
         {/* ═══════════ PENDING QUESTIONS ═══════════ */}
         {pending.length > 0 ? (
           <div className="mb-10">
-            <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-[#f5a623]" />
+            <h2 className="text-lg font-bold text-[#131313] mb-1 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-[#d00000]" />
               Your Questions ({pending.length})
             </h2>
-            <p className="text-[#8a8a9a] text-sm mb-5">
+            <p className="text-[#6c6d6f] text-sm mb-5">
               Answer these — your responses will be published for the league to see.
             </p>
 
@@ -176,7 +176,7 @@ export default function InterviewRoom() {
                 return (
                   <div
                     key={q.id}
-                    className={`bg-[#14141f] border rounded-xl p-6 transition-all ${
+                    className={`bg-white border rounded-xl p-6 transition-all ${
                       wasJustSubmitted
                         ? 'border-[#2ec4b6] shadow-lg shadow-[#2ec4b6]/10'
                         : `${colors.border}`
@@ -184,23 +184,23 @@ export default function InterviewRoom() {
                   >
                     {/* Badge row */}
                     <div className="flex items-center gap-3 mb-4">
-                      <span className={`${colors.bg} text-white text-xs font-bold px-2.5 py-1 rounded`}>
+                      <span className={`${colors.bg} text-[#131313] text-xs font-bold px-2.5 py-1 rounded`}>
                         {TYPE_LABELS[q.question_type]}
                       </span>
-                      <span className="text-[#8a8a9a] text-sm">
+                      <span className="text-[#6c6d6f] text-sm">
                         Race {race?.race_number}: {race?.track_name}
                       </span>
                     </div>
 
                     {/* The question */}
-                    <p className="text-white text-xl font-medium leading-relaxed mb-5">
+                    <p className="text-[#131313] text-xl font-medium leading-relaxed mb-5">
                       "{q.question_text}"
                     </p>
 
                     {wasJustSubmitted ? (
                       <div className="flex items-center gap-3 py-3">
-                        <CheckCircle className="w-6 h-6 text-[#2ec4b6]" />
-                        <span className="text-[#2ec4b6] font-semibold text-lg">Answer submitted!</span>
+                        <CheckCircle className="w-6 h-6 text-[#008564]" />
+                        <span className="text-[#008564] font-semibold text-lg">Answer submitted!</span>
                       </div>
                     ) : (
                       <div>
@@ -212,12 +212,12 @@ export default function InterviewRoom() {
                           }}
                           placeholder="Speak your mind... talk trash, hype it up, keep it real."
                           rows="4"
-                          className="w-full px-4 py-3 bg-[#0a0a0f] border border-[#2a2a3e] text-white placeholder-[#8a8a9a] rounded-lg focus:outline-none focus:border-[#f5a623] transition-colors resize-none text-base mb-4"
+                          className="w-full px-4 py-3 bg-[#f5f5f5] border border-[#e0e0e0] text-[#131313] placeholder-[#8a8a9a] rounded-lg focus:outline-none focus:border-[#d00000] transition-colors resize-none text-base mb-4"
                         />
                         <button
                           onClick={() => handleSubmit(q.id)}
                           disabled={isSubmitting || !answers[q.id]?.trim()}
-                          className="flex items-center gap-2 px-8 py-3 bg-[#f5a623] text-[#0a0a0f] font-bold rounded-lg hover:bg-[#e59b1a] transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-base"
+                          className="flex items-center gap-2 px-8 py-3 bg-[#d00000] text-[#0a0a0f] font-bold rounded-lg hover:bg-[#e59b1a] transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-base"
                         >
                           <Send className="w-4 h-4" />
                           {isSubmitting ? 'Submitting...' : 'Submit Answer'}
@@ -230,10 +230,10 @@ export default function InterviewRoom() {
             </div>
           </div>
         ) : (
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-xl p-8 text-center mb-10">
-            <CheckCircle className="w-10 h-10 text-[#2ec4b6] mx-auto mb-3" />
-            <p className="text-white text-lg font-medium">You're all caught up!</p>
-            <p className="text-[#8a8a9a] text-sm mt-1">
+          <div className="bg-white border border-[#e0e0e0] rounded-xl p-8 text-center mb-10">
+            <CheckCircle className="w-10 h-10 text-[#008564] mx-auto mb-3" />
+            <p className="text-[#131313] text-lg font-medium">You're all caught up!</p>
+            <p className="text-[#6c6d6f] text-sm mt-1">
               No pending questions. Check back before the next race.
             </p>
           </div>
@@ -241,12 +241,12 @@ export default function InterviewRoom() {
 
         {/* Previous answers — just a count confirmation, no content shown */}
         {answered.length > 0 && (
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-xl p-6 text-center">
-            <MessageSquare className="w-8 h-8 text-[#2ec4b6] mx-auto mb-2" />
-            <p className="text-white font-medium">
+          <div className="bg-white border border-[#e0e0e0] rounded-xl p-6 text-center">
+            <MessageSquare className="w-8 h-8 text-[#008564] mx-auto mb-2" />
+            <p className="text-[#131313] font-medium">
               You've submitted {answered.length} interview{answered.length !== 1 ? 's' : ''} this season.
             </p>
-            <p className="text-[#8a8a9a] text-sm mt-1">
+            <p className="text-[#6c6d6f] text-sm mt-1">
               Your answers will appear in generated news stories on the News page.
             </p>
           </div>

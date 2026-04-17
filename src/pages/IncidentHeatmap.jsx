@@ -111,10 +111,10 @@ export default function IncidentHeatmap() {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-[#0a0a0f] border border-[#2a2a3e] rounded p-3">
-          <p className="text-white font-bold mb-2">{data.track}</p>
-          <p className="text-[#2ec4b6] text-sm">Total: {data.total}</p>
-          <p className="text-[#f5a623] text-sm">Avg: {data.average}</p>
+        <div className="bg-[#f5f5f5] border border-[#e0e0e0] rounded p-3">
+          <p className="text-[#131313] font-bold mb-2">{data.track}</p>
+          <p className="text-[#008564] text-sm">Total: {data.total}</p>
+          <p className="text-[#d00000] text-sm">Avg: {data.average}</p>
           <p className="text-green-400 text-xs mt-2">Cleanest: {data.cleanest.driver} ({data.cleanest.count})</p>
           <p className="text-red-400 text-xs">Dirtiest: {data.dirtiest.driver} ({data.dirtiest.count})</p>
         </div>
@@ -129,9 +129,9 @@ export default function IncidentHeatmap() {
       <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] to-[#14141f] p-8 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block">
-            <div className="w-12 h-12 border-4 border-[#2a2a3e] border-t-[#f5a623] rounded-full animate-spin mb-4"></div>
+            <div className="w-12 h-12 border-4 border-[#e0e0e0] border-t-[#f5a623] rounded-full animate-spin mb-4"></div>
           </div>
-          <p className="text-[#8a8a9a] text-lg">Loading incident data...</p>
+          <p className="text-[#6c6d6f] text-lg">Loading incident data...</p>
         </div>
       </div>
     );
@@ -142,11 +142,11 @@ export default function IncidentHeatmap() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] to-[#14141f] p-8">
         <div className="mb-8">
-          <h1 className="text-5xl font-black mb-2 text-white">INCIDENT HEATMAP</h1>
-          <p className="text-[#8a8a9a] text-lg">Track incidents by location and driver</p>
+          <h1 className="text-5xl font-black mb-2 text-[#131313]">INCIDENT HEATMAP</h1>
+          <p className="text-[#6c6d6f] text-lg">Track incidents by location and driver</p>
         </div>
-        <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-8 text-center">
-          <p className="text-[#8a8a9a]">No incident data available yet.</p>
+        <div className="bg-white border border-[#e0e0e0] rounded-lg p-8 text-center">
+          <p className="text-[#6c6d6f]">No incident data available yet.</p>
         </div>
       </div>
     );
@@ -156,8 +156,8 @@ export default function IncidentHeatmap() {
     <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] to-[#14141f] p-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-5xl font-black mb-2 text-white">INCIDENT HEATMAP</h1>
-        <p className="text-[#8a8a9a] text-lg">Track incidents by location and driver</p>
+        <h1 className="text-5xl font-black mb-2 text-[#131313]">INCIDENT HEATMAP</h1>
+        <p className="text-[#6c6d6f] text-lg">Track incidents by location and driver</p>
       </div>
 
       {/* View Toggle */}
@@ -166,8 +166,8 @@ export default function IncidentHeatmap() {
           onClick={() => setView('track')}
           className={`px-6 py-3 font-bold uppercase tracking-widest rounded transition-all duration-300 ${
             view === 'track'
-              ? 'bg-[#f5a623] text-black shadow-lg shadow-[#f5a623]/50'
-              : 'bg-[#14141f] text-[#8a8a9a] border border-[#2a2a3e] hover:border-[#f5a623] hover:text-white'
+              ? 'bg-[#d00000] text-black shadow-lg shadow-[#f5a623]/50'
+              : 'bg-white text-[#6c6d6f] border border-[#e0e0e0] hover:border-[#d00000] hover:text-[#131313]'
           }`}
         >
           By Track
@@ -177,7 +177,7 @@ export default function IncidentHeatmap() {
           className={`px-6 py-3 font-bold uppercase tracking-widest rounded transition-all duration-300 ${
             view === 'driver'
               ? 'bg-[#2ec4b6] text-black shadow-lg shadow-[#2ec4b6]/50'
-              : 'bg-[#14141f] text-[#8a8a9a] border border-[#2a2a3e] hover:border-[#2ec4b6] hover:text-white'
+              : 'bg-white text-[#6c6d6f] border border-[#e0e0e0] hover:border-[#2ec4b6] hover:text-[#131313]'
           }`}
         >
           By Driver
@@ -188,8 +188,8 @@ export default function IncidentHeatmap() {
       {view === 'track' && (
         <div className="space-y-8">
           {/* Bar Chart */}
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-8">
-            <h2 className="text-2xl font-black text-white mb-6">League Incidents by Track</h2>
+          <div className="bg-white border border-[#e0e0e0] rounded-lg p-8">
+            <h2 className="text-2xl font-black text-[#131313] mb-6">League Incidents by Track</h2>
             <ResponsiveContainer width="100%" height={400}>
               <BarChart data={trackViewData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#2a2a3e" />
@@ -220,35 +220,35 @@ export default function IncidentHeatmap() {
                   className={`bg-gradient-to-br ${colorClass} border rounded-lg p-6 shadow-lg`}
                 >
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-2xl font-black text-white">{trackData.track}</h3>
+                    <h3 className="text-2xl font-black text-[#131313]">{trackData.track}</h3>
                     <span className="text-4xl font-black text-yellow-300">{trackData.total}</span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 mb-4 pb-4 border-b border-white/20">
                     <div>
-                      <p className="text-xs uppercase font-bold text-white/70 tracking-widest mb-1">
+                      <p className="text-xs uppercase font-bold text-[#131313]/70 tracking-widest mb-1">
                         Avg per Driver
                       </p>
-                      <p className="text-2xl font-black text-white">{trackData.average}</p>
+                      <p className="text-2xl font-black text-[#131313]">{trackData.average}</p>
                     </div>
                     <div>
-                      <p className="text-xs uppercase font-bold text-white/70 tracking-widest mb-1">
+                      <p className="text-xs uppercase font-bold text-[#131313]/70 tracking-widest mb-1">
                         Total Drivers
                       </p>
-                      <p className="text-2xl font-black text-white">{Object.keys(trackData.drivers).length}</p>
+                      <p className="text-2xl font-black text-[#131313]">{Object.keys(trackData.drivers).length}</p>
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
                       <span className="text-sm font-bold text-green-200">Cleanest:</span>
-                      <span className="text-sm font-black text-white">
+                      <span className="text-sm font-black text-[#131313]">
                         {trackData.cleanest.driver} ({trackData.cleanest.count})
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm font-bold text-red-200">Dirtiest:</span>
-                      <span className="text-sm font-black text-white">
+                      <span className="text-sm font-black text-[#131313]">
                         {trackData.dirtiest.driver} ({trackData.dirtiest.count})
                       </span>
                     </div>
@@ -262,24 +262,24 @@ export default function IncidentHeatmap() {
 
       {/* DRIVER VIEW - HEATMAP MATRIX */}
       {view === 'driver' && (
-        <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-8 overflow-x-auto">
-          <h2 className="text-2xl font-black text-white mb-6">Driver Incidents by Track</h2>
+        <div className="bg-white border border-[#e0e0e0] rounded-lg p-8 overflow-x-auto">
+          <h2 className="text-2xl font-black text-[#131313] mb-6">Driver Incidents by Track</h2>
 
           <table className="w-full border-collapse">
             <thead>
               <tr>
-                <th className="bg-[#0a0a0f] border border-[#2a2a3e] px-4 py-3 text-left text-xs uppercase font-black text-[#8a8a9a] tracking-widest">
+                <th className="bg-[#f5f5f5] border border-[#e0e0e0] px-4 py-3 text-left text-xs uppercase font-black text-[#6c6d6f] tracking-widest">
                   Driver
                 </th>
                 {Object.keys(trackIncidents).map(track => (
                   <th
                     key={track}
-                    className="bg-[#0a0a0f] border border-[#2a2a3e] px-3 py-3 text-center text-xs uppercase font-black text-[#8a8a9a] tracking-widest"
+                    className="bg-[#f5f5f5] border border-[#e0e0e0] px-3 py-3 text-center text-xs uppercase font-black text-[#6c6d6f] tracking-widest"
                   >
                     {track}
                   </th>
                 ))}
-                <th className="bg-[#0a0a0f] border border-[#2a2a3e] px-4 py-3 text-center text-xs uppercase font-black text-[#f5a623] tracking-widest">
+                <th className="bg-[#f5f5f5] border border-[#e0e0e0] px-4 py-3 text-center text-xs uppercase font-black text-[#d00000] tracking-widest">
                   Total
                 </th>
               </tr>
@@ -293,7 +293,7 @@ export default function IncidentHeatmap() {
 
                 return (
                   <tr key={dIdx} className="hover:bg-[#1a1a25] transition-colors">
-                    <td className="border border-[#2a2a3e] px-4 py-3 font-bold text-white whitespace-nowrap sticky left-0 bg-[#14141f]">
+                    <td className="border border-[#e0e0e0] px-4 py-3 font-bold text-[#131313] whitespace-nowrap sticky left-0 bg-white">
                       {driverRow.driver}
                     </td>
                     {Object.keys(trackIncidents).map(track => {
@@ -303,13 +303,13 @@ export default function IncidentHeatmap() {
                       return (
                         <td
                           key={`${dIdx}-${track}`}
-                          className={`border border-[#2a2a3e] px-3 py-3 text-center font-black rounded transition-all duration-200 hover:scale-105 ${colorClass}`}
+                          className={`border border-[#e0e0e0] px-3 py-3 text-center font-black rounded transition-all duration-200 hover:scale-105 ${colorClass}`}
                         >
                           {incidents}
                         </td>
                       );
                     })}
-                    <td className="border border-[#2a2a3e] px-4 py-3 text-center font-black text-[#f5a623] bg-[#0a0a0f]">
+                    <td className="border border-[#e0e0e0] px-4 py-3 text-center font-black text-[#d00000] bg-[#f5f5f5]">
                       {totalIncidents}
                     </td>
                   </tr>
@@ -319,22 +319,22 @@ export default function IncidentHeatmap() {
           </table>
 
           {/* Legend */}
-          <div className="mt-8 flex flex-wrap gap-4 pt-6 border-t border-[#2a2a3e]">
+          <div className="mt-8 flex flex-wrap gap-4 pt-6 border-t border-[#e0e0e0]">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 bg-green-900 border border-green-700 rounded"></div>
-              <span className="text-sm text-[#8a8a9a]">Clean (0-33%)</span>
+              <span className="text-sm text-[#6c6d6f]">Clean (0-33%)</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 bg-teal-800 border border-teal-600 rounded"></div>
-              <span className="text-sm text-[#8a8a9a]">Low (33-66%)</span>
+              <span className="text-sm text-[#6c6d6f]">Low (33-66%)</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 bg-yellow-700 border border-yellow-600 rounded"></div>
-              <span className="text-sm text-[#8a8a9a]">Medium (66-100%)</span>
+              <span className="text-sm text-[#6c6d6f]">Medium (66-100%)</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 bg-red-800 border border-red-600 rounded"></div>
-              <span className="text-sm text-[#8a8a9a]">Dirty (Peak incidents)</span>
+              <span className="text-sm text-[#6c6d6f]">Dirty (Peak incidents)</span>
             </div>
           </div>
         </div>

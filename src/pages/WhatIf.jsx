@@ -92,9 +92,9 @@ export default function WhatIf() {
 
   if (standingsLoading || racesLoading) {
     return (
-      <div className="min-h-screen p-6 flex items-center justify-center" style={{ backgroundColor: '#0a0a0f' }}>
+      <div className="min-h-screen p-6 flex items-center justify-center" style={{ backgroundColor: '#f5f5f5' }}>
         <div className="text-center">
-          <p style={{ color: '#f5a623' }} className="text-lg font-semibold">
+          <p style={{ color: '#d00000' }} className="text-lg font-semibold">
             Loading standings...
           </p>
         </div>
@@ -104,21 +104,21 @@ export default function WhatIf() {
 
   if (!standings || standings.length === 0 || raceList.length === 0) {
     return (
-      <div className="min-h-screen p-6 flex items-center justify-center" style={{ backgroundColor: '#0a0a0f' }}>
+      <div className="min-h-screen p-6 flex items-center justify-center" style={{ backgroundColor: '#f5f5f5' }}>
         <div className="text-center">
-          <p style={{ color: '#8a8a9a' }}>No standings data available</p>
+          <p style={{ color: '#6c6d6f' }}>No standings data available</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen p-6" style={{ backgroundColor: '#0a0a0f' }}>
+    <div className="min-h-screen p-6" style={{ backgroundColor: '#f5f5f5' }}>
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold mb-2" style={{ color: '#f5a623' }}>
+        <h1 className="text-4xl font-bold mb-2" style={{ color: '#d00000' }}>
           What-If Standings
         </h1>
-        <p className="mb-8" style={{ color: '#8a8a9a' }}>
+        <p className="mb-8" style={{ color: '#6c6d6f' }}>
           Toggle race results to see how the standings would change
         </p>
 
@@ -130,12 +130,12 @@ export default function WhatIf() {
                 onClick={() => toggleRace(race.id)}
                 className={`px-4 py-2 rounded-lg font-semibold transition-all ${
                   activeRaces.has(race.id)
-                    ? 'text-white'
+                    ? 'text-[#131313]'
                     : 'text-gray-400 opacity-50'
                 }`}
                 style={{
-                  backgroundColor: activeRaces.has(race.id) ? '#f5a623' : 'transparent',
-                  border: `2px solid ${activeRaces.has(race.id) ? '#f5a623' : '#2a2a3e'}`,
+                  backgroundColor: activeRaces.has(race.id) ? '#d00000' : 'transparent',
+                  border: `2px solid ${activeRaces.has(race.id) ? '#d00000' : '#e0e0e0'}`,
                 }}
               >
                 {race.label}
@@ -147,7 +147,7 @@ export default function WhatIf() {
             disabled={isAllActive}
             className="px-6 py-2 rounded-lg font-semibold transition-all disabled:opacity-50"
             style={{
-              backgroundColor: '#e63946',
+              backgroundColor: '#cc0000',
               color: 'white',
             }}
           >
@@ -159,28 +159,28 @@ export default function WhatIf() {
           <div
             className="mb-8 p-4 rounded-lg border"
             style={{
-              backgroundColor: '#14141f',
-              borderColor: '#2a2a3e',
+              backgroundColor: 'white',
+              borderColor: '#e0e0e0',
             }}
           >
-            <h2 className="text-lg font-bold mb-3" style={{ color: '#f5a623' }}>
+            <h2 className="text-lg font-bold mb-3" style={{ color: '#d00000' }}>
               Biggest Movers
             </h2>
             <div className="space-y-2">
               {biggestMovers.map((mover) => (
                 <div key={mover.id} className="flex items-center gap-3">
                   {mover.change > 0 ? (
-                    <TrendingUp size={20} style={{ color: '#2ec4b6' }} />
+                    <TrendingUp size={20} style={{ color: '#008564' }} />
                   ) : (
-                    <TrendingDown size={20} style={{ color: '#e63946' }} />
+                    <TrendingDown size={20} style={{ color: '#cc0000' }} />
                   )}
-                  <span style={{ color: '#8a8a9a' }}>
-                    <span className="font-semibold text-white">#{mover.number}</span> {mover.name}
+                  <span style={{ color: '#6c6d6f' }}>
+                    <span className="font-semibold text-[#131313]">#{mover.number}</span> {mover.name}
                   </span>
                   <span
                     className="ml-auto font-bold"
                     style={{
-                      color: mover.change > 0 ? '#2ec4b6' : '#e63946',
+                      color: mover.change > 0 ? '#008564' : '#cc0000',
                     }}
                   >
                     {mover.change > 0 ? '+' : ''}
@@ -196,19 +196,19 @@ export default function WhatIf() {
           <table className="w-full">
             <thead>
               <tr style={{ borderBottom: '2px solid #2a2a3e' }}>
-                <th className="text-left px-4 py-3" style={{ color: '#f5a623' }}>
+                <th className="text-left px-4 py-3" style={{ color: '#d00000' }}>
                   Position
                 </th>
-                <th className="text-left px-4 py-3" style={{ color: '#f5a623' }}>
+                <th className="text-left px-4 py-3" style={{ color: '#d00000' }}>
                   Driver
                 </th>
-                <th className="text-left px-4 py-3" style={{ color: '#f5a623' }}>
+                <th className="text-left px-4 py-3" style={{ color: '#d00000' }}>
                   Number
                 </th>
-                <th className="text-right px-4 py-3" style={{ color: '#f5a623' }}>
+                <th className="text-right px-4 py-3" style={{ color: '#d00000' }}>
                   Points
                 </th>
-                <th className="text-center px-4 py-3" style={{ color: '#f5a623' }}>
+                <th className="text-center px-4 py-3" style={{ color: '#d00000' }}>
                   Change
                 </th>
               </tr>
@@ -225,11 +225,11 @@ export default function WhatIf() {
                   <tr
                     key={driver.id}
                     className="border-b"
-                    style={{ borderColor: '#2a2a3e' }}
+                    style={{ borderColor: '#e0e0e0' }}
                   >
                     <td
                       className="px-4 py-4 font-bold text-lg"
-                      style={{ color: '#f5a623' }}
+                      style={{ color: '#d00000' }}
                     >
                       {currentPos}
                     </td>
@@ -238,7 +238,7 @@ export default function WhatIf() {
                     </td>
                     <td
                       className="px-4 py-4 font-semibold"
-                      style={{ color: '#2ec4b6' }}
+                      style={{ color: '#008564' }}
                     >
                       #{driver.number}
                     </td>
@@ -252,11 +252,11 @@ export default function WhatIf() {
                             <>
                               <TrendingUp
                                 size={18}
-                                style={{ color: '#2ec4b6' }}
+                                style={{ color: '#008564' }}
                               />
                               <span
                                 className="text-sm font-semibold"
-                                style={{ color: '#2ec4b6' }}
+                                style={{ color: '#008564' }}
                               >
                                 +{change}
                               </span>
@@ -265,11 +265,11 @@ export default function WhatIf() {
                             <>
                               <TrendingDown
                                 size={18}
-                                style={{ color: '#e63946' }}
+                                style={{ color: '#cc0000' }}
                               />
                               <span
                                 className="text-sm font-semibold"
-                                style={{ color: '#e63946' }}
+                                style={{ color: '#cc0000' }}
                               >
                                 {change}
                               </span>
@@ -277,7 +277,7 @@ export default function WhatIf() {
                           )}
                         </div>
                       ) : (
-                        <span style={{ color: '#8a8a9a' }}>—</span>
+                        <span style={{ color: '#6c6d6f' }}>—</span>
                       )}
                     </td>
                   </tr>
@@ -290,11 +290,11 @@ export default function WhatIf() {
         <div
           className="mt-8 p-4 rounded-lg border"
           style={{
-            backgroundColor: '#14141f',
-            borderColor: '#2a2a3e',
+            backgroundColor: 'white',
+            borderColor: '#e0e0e0',
           }}
         >
-          <p className="text-sm" style={{ color: '#8a8a9a' }}>
+          <p className="text-sm" style={{ color: '#6c6d6f' }}>
             Selected races: {activeRaces.size} / {raceList.length}
           </p>
         </div>

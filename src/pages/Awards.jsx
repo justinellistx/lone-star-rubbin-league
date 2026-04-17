@@ -137,11 +137,11 @@ export default function Awards() {
   // Show loading state
   if (racesLoading) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: '#0a0a0f' }}>
+      <div className="min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
         <div className="flex items-center justify-center" style={{ height: '100vh' }}>
           <div className="flex flex-col items-center gap-4">
-            <Loader size={48} style={{ color: '#f5a623' }} className="animate-spin" />
-            <p style={{ color: '#8a8a9a' }}>Loading awards data...</p>
+            <Loader size={48} style={{ color: '#d00000' }} className="animate-spin" />
+            <p style={{ color: '#6c6d6f' }}>Loading awards data...</p>
           </div>
         </div>
       </div>
@@ -149,124 +149,124 @@ export default function Awards() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#0a0a0f' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
       {/* Season Awards Hero Section */}
       <div className="px-4 py-12 md:px-8 md:py-16">
-        <h1 className="text-4xl md:text-5xl font-bold mb-2" style={{ color: '#f5a623' }}>
+        <h1 className="text-4xl md:text-5xl font-bold mb-2" style={{ color: '#d00000' }}>
           Season Awards
         </h1>
-        <p className="text-lg mb-12" style={{ color: '#8a8a9a' }}>
+        <p className="text-lg mb-12" style={{ color: '#6c6d6f' }}>
           Elite achievements across the Lone Star Rubbin' League
         </p>
 
         {/* Season Awards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {/* Iron Man */}
-          <div className="p-6 rounded-lg" style={{ backgroundColor: '#14141f', borderColor: '#2a2a3e', borderWidth: 1 }}>
+          <div className="p-6 rounded-lg" style={{ backgroundColor: 'white', borderColor: '#e0e0e0', borderWidth: 1 }}>
             <div className="flex items-center gap-3 mb-4">
-              <Medal size={24} style={{ color: '#f5a623' }} />
-              <h3 className="text-lg font-semibold" style={{ color: '#f5a623' }}>Iron Man</h3>
+              <Medal size={24} style={{ color: '#d00000' }} />
+              <h3 className="text-lg font-semibold" style={{ color: '#d00000' }}>Iron Man</h3>
             </div>
             {seasonAwards.ironMan ? (
               <div>
-                <p className="text-2xl font-bold mb-2" style={{ color: '#2ec4b6' }}>
+                <p className="text-2xl font-bold mb-2" style={{ color: '#008564' }}>
                   {seasonAwards.ironMan.name}
                 </p>
-                <p className="text-sm" style={{ color: '#8a8a9a' }}>
+                <p className="text-sm" style={{ color: '#6c6d6f' }}>
                   {seasonAwards.ironMan.racesEntered} races completed
                 </p>
               </div>
             ) : (
-              <p style={{ color: '#8a8a9a' }}>No qualifier</p>
+              <p style={{ color: '#6c6d6f' }}>No qualifier</p>
             )}
           </div>
 
           {/* Consistency King */}
-          <div className="p-6 rounded-lg" style={{ backgroundColor: '#14141f', borderColor: '#2a2a3e', borderWidth: 1 }}>
+          <div className="p-6 rounded-lg" style={{ backgroundColor: 'white', borderColor: '#e0e0e0', borderWidth: 1 }}>
             <div className="flex items-center gap-3 mb-4">
-              <TrendingUp size={24} style={{ color: '#f5a623' }} />
-              <h3 className="text-lg font-semibold" style={{ color: '#f5a623' }}>Consistency King</h3>
+              <TrendingUp size={24} style={{ color: '#d00000' }} />
+              <h3 className="text-lg font-semibold" style={{ color: '#d00000' }}>Consistency King</h3>
             </div>
             {seasonAwards.consistencyKing ? (
               <div>
-                <p className="text-2xl font-bold mb-2" style={{ color: '#2ec4b6' }}>
+                <p className="text-2xl font-bold mb-2" style={{ color: '#008564' }}>
                   {seasonAwards.consistencyKing.name}
                 </p>
-                <p className="text-sm" style={{ color: '#8a8a9a' }}>
+                <p className="text-sm" style={{ color: '#6c6d6f' }}>
                   Lowest variance in finishes
                 </p>
               </div>
             ) : (
-              <p style={{ color: '#8a8a9a' }}>No qualifier</p>
+              <p style={{ color: '#6c6d6f' }}>No qualifier</p>
             )}
           </div>
 
           {/* Comeback King */}
-          <div className="p-6 rounded-lg" style={{ backgroundColor: '#14141f', borderColor: '#2a2a3e', borderWidth: 1 }}>
+          <div className="p-6 rounded-lg" style={{ backgroundColor: 'white', borderColor: '#e0e0e0', borderWidth: 1 }}>
             <div className="flex items-center gap-3 mb-4">
-              <Zap size={24} style={{ color: '#f5a623' }} />
-              <h3 className="text-lg font-semibold" style={{ color: '#f5a623' }}>Comeback King</h3>
+              <Zap size={24} style={{ color: '#d00000' }} />
+              <h3 className="text-lg font-semibold" style={{ color: '#d00000' }}>Comeback King</h3>
             </div>
             {seasonAwards.comebackKing ? (
               <div>
-                <p className="text-2xl font-bold mb-2" style={{ color: '#2ec4b6' }}>
+                <p className="text-2xl font-bold mb-2" style={{ color: '#008564' }}>
                   {seasonAwards.comebackKing.name}
                 </p>
-                <p className="text-sm" style={{ color: '#8a8a9a' }}>
+                <p className="text-sm" style={{ color: '#6c6d6f' }}>
                   +{seasonAwards.comebackKing.gain} positions
                 </p>
               </div>
             ) : (
-              <p style={{ color: '#8a8a9a' }}>No qualifier</p>
+              <p style={{ color: '#6c6d6f' }}>No qualifier</p>
             )}
           </div>
 
           {/* Incident Magnet */}
-          <div className="p-6 rounded-lg" style={{ backgroundColor: '#14141f', borderColor: '#2a2a3e', borderWidth: 1 }}>
+          <div className="p-6 rounded-lg" style={{ backgroundColor: 'white', borderColor: '#e0e0e0', borderWidth: 1 }}>
             <div className="flex items-center gap-3 mb-4">
-              <AlertCircle size={24} style={{ color: '#f5a623' }} />
-              <h3 className="text-lg font-semibold" style={{ color: '#f5a623' }}>Incident Magnet</h3>
+              <AlertCircle size={24} style={{ color: '#d00000' }} />
+              <h3 className="text-lg font-semibold" style={{ color: '#d00000' }}>Incident Magnet</h3>
             </div>
             {seasonAwards.incidentMagnet ? (
               <div>
-                <p className="text-2xl font-bold mb-2" style={{ color: '#e63946' }}>
+                <p className="text-2xl font-bold mb-2" style={{ color: '#cc0000' }}>
                   {seasonAwards.incidentMagnet.name}
                 </p>
-                <p className="text-sm" style={{ color: '#8a8a9a' }}>
+                <p className="text-sm" style={{ color: '#6c6d6f' }}>
                   {seasonAwards.incidentMagnet.totalIncidents} total incidents
                 </p>
               </div>
             ) : (
-              <p style={{ color: '#8a8a9a' }}>No qualifier</p>
+              <p style={{ color: '#6c6d6f' }}>No qualifier</p>
             )}
           </div>
         </div>
 
-        <div className="h-px" style={{ backgroundColor: '#2a2a3e' }} />
+        <div className="h-px" style={{ backgroundColor: '#e0e0e0' }} />
       </div>
 
       {/* Per-Race Awards */}
       <div className="px-4 py-12 md:px-8">
-        <h2 className="text-3xl md:text-4xl font-bold mb-12" style={{ color: '#f5a623' }}>
+        <h2 className="text-3xl md:text-4xl font-bold mb-12" style={{ color: '#d00000' }}>
           Per-Race Awards
         </h2>
 
         {raceAwards.length === 0 ? (
-          <p style={{ color: '#8a8a9a' }}>No race data available</p>
+          <p style={{ color: '#6c6d6f' }}>No race data available</p>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {raceAwards.map(({ race, awards }) => (
               <div
                 key={race.raceNumber}
                 className="rounded-lg overflow-hidden"
-                style={{ backgroundColor: '#14141f', borderColor: '#2a2a3e', borderWidth: 1 }}
+                style={{ backgroundColor: 'white', borderColor: '#e0e0e0', borderWidth: 1 }}
               >
                 {/* Race Header */}
-                <div className="p-6" style={{ backgroundColor: '#2a2a3e' }}>
-                  <h3 className="text-2xl font-bold mb-1" style={{ color: '#f5a623' }}>
+                <div className="p-6" style={{ backgroundColor: '#e0e0e0' }}>
+                  <h3 className="text-2xl font-bold mb-1" style={{ color: '#d00000' }}>
                     Race {race.raceNumber}: {race.track}
                   </h3>
-                  <p style={{ color: '#8a8a9a' }}>{race.date}</p>
+                  <p style={{ color: '#6c6d6f' }}>{race.date}</p>
                 </div>
 
                 {/* Awards Grid */}
@@ -274,18 +274,18 @@ export default function Awards() {
                   {/* Hard Charger */}
                   {awards.hardCharger && (
                     <div>
-                      <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#2ec4b6' }}>
+                      <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#008564' }}>
                         Hard Charger
                       </p>
                       <div
                         className="inline-flex items-center gap-2 px-3 py-2 rounded-full"
-                        style={{ backgroundColor: 'rgba(46, 196, 182, 0.1)', borderColor: '#2ec4b6', borderWidth: 1 }}
+                        style={{ backgroundColor: 'rgba(46, 196, 182, 0.1)', borderColor: '#008564', borderWidth: 1 }}
                       >
-                        <Zap size={16} style={{ color: '#2ec4b6' }} />
-                        <span style={{ color: '#2ec4b6' }} className="font-semibold">
+                        <Zap size={16} style={{ color: '#008564' }} />
+                        <span style={{ color: '#008564' }} className="font-semibold">
                           {awards.hardCharger.name}
                         </span>
-                        <span style={{ color: '#8a8a9a' }}>+{awards.hardCharger.gain}</span>
+                        <span style={{ color: '#6c6d6f' }}>+{awards.hardCharger.gain}</span>
                       </div>
                     </div>
                   )}
@@ -293,18 +293,18 @@ export default function Awards() {
                   {/* Tough Luck */}
                   {awards.toughLuck && (
                     <div>
-                      <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#e63946' }}>
+                      <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#cc0000' }}>
                         Tough Luck
                       </p>
                       <div
                         className="inline-flex items-center gap-2 px-3 py-2 rounded-full"
-                        style={{ backgroundColor: 'rgba(230, 57, 70, 0.1)', borderColor: '#e63946', borderWidth: 1 }}
+                        style={{ backgroundColor: 'rgba(230, 57, 70, 0.1)', borderColor: '#cc0000', borderWidth: 1 }}
                       >
-                        <TrendingUp size={16} style={{ color: '#e63946' }} />
-                        <span style={{ color: '#e63946' }} className="font-semibold">
+                        <TrendingUp size={16} style={{ color: '#cc0000' }} />
+                        <span style={{ color: '#cc0000' }} className="font-semibold">
                           {awards.toughLuck.name}
                         </span>
-                        <span style={{ color: '#8a8a9a' }}>-{awards.toughLuck.loss}</span>
+                        <span style={{ color: '#6c6d6f' }}>-{awards.toughLuck.loss}</span>
                       </div>
                     </div>
                   )}
@@ -312,18 +312,18 @@ export default function Awards() {
                   {/* Clean Machine */}
                   {awards.cleanMachine && (
                     <div>
-                      <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#f5a623' }}>
+                      <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#d00000' }}>
                         {awards.cleanMachine.isClean ? 'Perfect Race' : 'Clean Machine'}
                       </p>
                       <div
                         className="inline-flex items-center gap-2 px-3 py-2 rounded-full"
-                        style={{ backgroundColor: 'rgba(245, 166, 35, 0.1)', borderColor: '#f5a623', borderWidth: 1 }}
+                        style={{ backgroundColor: 'rgba(245, 166, 35, 0.1)', borderColor: '#d00000', borderWidth: 1 }}
                       >
-                        <Shield size={16} style={{ color: '#f5a623' }} />
-                        <span style={{ color: '#f5a623' }} className="font-semibold">
+                        <Shield size={16} style={{ color: '#d00000' }} />
+                        <span style={{ color: '#d00000' }} className="font-semibold">
                           {awards.cleanMachine.name}
                         </span>
-                        <span style={{ color: '#8a8a9a' }}>{awards.cleanMachine.incidents} incidents</span>
+                        <span style={{ color: '#6c6d6f' }}>{awards.cleanMachine.incidents} incidents</span>
                       </div>
                     </div>
                   )}
@@ -331,18 +331,18 @@ export default function Awards() {
                   {/* Wrecking Ball */}
                   {awards.wreckingBall && (
                     <div>
-                      <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#e63946' }}>
+                      <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#cc0000' }}>
                         Wrecking Ball
                       </p>
                       <div
                         className="inline-flex items-center gap-2 px-3 py-2 rounded-full"
-                        style={{ backgroundColor: 'rgba(230, 57, 70, 0.1)', borderColor: '#e63946', borderWidth: 1 }}
+                        style={{ backgroundColor: 'rgba(230, 57, 70, 0.1)', borderColor: '#cc0000', borderWidth: 1 }}
                       >
-                        <Wrench size={16} style={{ color: '#e63946' }} />
-                        <span style={{ color: '#e63946' }} className="font-semibold">
+                        <Wrench size={16} style={{ color: '#cc0000' }} />
+                        <span style={{ color: '#cc0000' }} className="font-semibold">
                           {awards.wreckingBall.name}
                         </span>
-                        <span style={{ color: '#8a8a9a' }}>{awards.wreckingBall.incidents} incidents</span>
+                        <span style={{ color: '#6c6d6f' }}>{awards.wreckingBall.incidents} incidents</span>
                       </div>
                     </div>
                   )}

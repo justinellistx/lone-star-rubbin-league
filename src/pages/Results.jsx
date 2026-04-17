@@ -54,18 +54,18 @@ export default function Results() {
   }, [races, expandedRaceId]);
 
   return (
-    <div className="bg-[#0a0a0f] min-h-screen py-12 px-4 md:px-8">
+    <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Page Title */}
         <div className="mb-12">
-          <h1 className="text-5xl md:text-6xl font-black text-white mb-2">RACE RESULTS</h1>
-          <p className="text-[#8a8a9a] text-lg">2026 Season Results</p>
+          <h1 className="text-5xl md:text-6xl font-black text-[#131313] mb-2">RACE RESULTS</h1>
+          <p className="text-[#6c6d6f] text-lg">2026 Season Results</p>
         </div>
 
         {/* Stage Selector */}
         <div className="flex gap-3 mb-12 overflow-x-auto pb-2">
           <button
-            className="px-6 py-3 rounded font-bold whitespace-nowrap transition bg-[#f5a623] text-black"
+            className="px-6 py-3 rounded font-bold whitespace-nowrap transition bg-[#d00000] text-[#131313]"
           >
             All Stages
           </button>
@@ -73,16 +73,16 @@ export default function Results() {
 
         {/* Loading State */}
         {loading && (
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-12 text-center">
-            <p className="text-[#8a8a9a] text-lg">Loading race results...</p>
+          <div className="bg-white border border-[#e0e0e0] rounded-lg p-12 text-center">
+            <p className="text-[#6c6d6f] text-lg">Loading race results...</p>
           </div>
         )}
 
         {/* Error State */}
         {error && (
-          <div className="bg-[#14141f] border border-[#e63946] rounded-lg p-8 text-center">
-            <p className="text-[#e63946] font-semibold">Error loading race results</p>
-            <p className="text-[#8a8a9a] text-sm mt-2">{error}</p>
+          <div className="bg-white border border-[#cc0000] rounded-lg p-8 text-center">
+            <p className="text-[#cc0000] font-semibold">Error loading race results</p>
+            <p className="text-[#6c6d6f] text-sm mt-2">{error}</p>
           </div>
         )}
 
@@ -93,21 +93,21 @@ export default function Results() {
               races.map((race) => (
                 <div
                   key={race.id}
-                  className="bg-[#14141f] border border-[#2a2a3e] rounded-lg overflow-hidden"
+                  className="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden"
                 >
                   {/* Race Header */}
                   <button
                     onClick={() => toggleExpanded(race.id)}
-                    className="w-full px-6 py-6 flex items-center justify-between hover:bg-[#1a1a2e] transition"
+                    className="w-full px-6 py-6 flex items-center justify-between hover:bg-[#f0f0f0] transition"
                   >
                     <div className="flex items-center gap-4 flex-1 text-left">
                       <TrackIcon track={race.track} size={48} />
                       <div>
                         <div className="flex items-center gap-4 mb-2">
-                          <span className="text-[#f5a623] font-bold text-sm">Race #{race.raceNumber}</span>
-                          <h3 className="text-2xl font-bold text-white">{race.track}</h3>
+                          <span className="text-[#d00000] font-bold text-sm">Race #{race.raceNumber}</span>
+                          <h3 className="text-2xl font-bold text-[#131313]">{race.track}</h3>
                         </div>
-                      <div className="text-[#8a8a9a]">
+                      <div className="text-[#6c6d6f]">
                         {new Date(race.date).toLocaleDateString('en-US', {
                           month: 'short',
                           day: 'numeric',
@@ -119,34 +119,34 @@ export default function Results() {
                     </div>
                     <ChevronDown
                       size={24}
-                      className={`text-[#f5a623] transition ${expandedRaceId === race.id ? 'rotate-180' : ''}`}
+                      className={`text-[#d00000] transition ${expandedRaceId === race.id ? 'rotate-180' : ''}`}
                     />
                   </button>
 
                   {/* Race Details - Expanded */}
                   {expandedRaceId === race.id && (
-                    <div className="border-t border-[#2a2a3e] bg-[#0a0a0f]">
+                    <div className="border-t border-[#e0e0e0] bg-[#f5f5f5]">
                       {/* Race Stats */}
-                      <div className="px-6 py-6 border-b border-[#2a2a3e]">
-                        <h4 className="text-white font-bold mb-4">Race Stats</h4>
+                      <div className="px-6 py-6 border-b border-[#e0e0e0]">
+                        <h4 className="text-[#131313] font-bold mb-4">Race Stats</h4>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                           <div>
-                            <div className="text-[#8a8a9a] text-sm uppercase mb-2">Total Laps</div>
-                            <div className="text-2xl font-bold text-white">{race.totalLaps}</div>
+                            <div className="text-[#6c6d6f] text-sm uppercase mb-2">Total Laps</div>
+                            <div className="text-2xl font-bold text-[#131313]">{race.totalLaps}</div>
                           </div>
                           <div>
-                            <div className="text-[#8a8a9a] text-sm uppercase mb-2">Total Drivers</div>
-                            <div className="text-2xl font-bold text-white">{race.results?.length || '—'}</div>
+                            <div className="text-[#6c6d6f] text-sm uppercase mb-2">Total Drivers</div>
+                            <div className="text-2xl font-bold text-[#131313]">{race.results?.length || '—'}</div>
                           </div>
                           <div>
-                            <div className="text-[#8a8a9a] text-sm uppercase mb-2">Series</div>
-                            <div className="text-2xl font-bold text-[#f5a623]">{race.series}</div>
+                            <div className="text-[#6c6d6f] text-sm uppercase mb-2">Series</div>
+                            <div className="text-2xl font-bold text-[#d00000]">{race.series}</div>
                           </div>
                           {race.fastestLap && (
                             <div>
-                              <div className="text-[#8a8a9a] text-sm uppercase mb-2">Fastest Lap (League)</div>
-                              <div className="text-2xl font-bold text-[#2ec4b6]">{race.fastestLap.time}s</div>
-                              <div className="text-sm text-[#8a8a9a]">{race.fastestLap.driver}</div>
+                              <div className="text-[#6c6d6f] text-sm uppercase mb-2">Fastest Lap (League)</div>
+                              <div className="text-2xl font-bold text-[#008564]">{race.fastestLap.time}s</div>
+                              <div className="text-sm text-[#6c6d6f]">{race.fastestLap.driver}</div>
                             </div>
                           )}
                         </div>
@@ -154,30 +154,30 @@ export default function Results() {
 
                       {/* Race Results Table */}
                       <div className="px-6 py-6">
-                        <h4 className="text-white font-bold mb-4">Final Results</h4>
+                        <h4 className="text-[#131313] font-bold mb-4">Final Results</h4>
                         <div className="overflow-x-auto">
                           <table className="w-full">
                             <thead>
-                              <tr className="border-b border-[#2a2a3e]">
-                                <th className="px-4 py-3 text-left text-[#8a8a9a] text-xs font-bold uppercase">
+                              <tr className="border-b border-[#e0e0e0]">
+                                <th className="px-4 py-3 text-left text-[#6c6d6f] text-xs font-bold uppercase">
                                   Fin
                                 </th>
-                                <th className="px-4 py-3 text-left text-[#8a8a9a] text-xs font-bold uppercase">
+                                <th className="px-4 py-3 text-left text-[#6c6d6f] text-xs font-bold uppercase">
                                   Start
                                 </th>
-                                <th className="px-4 py-3 text-left text-[#8a8a9a] text-xs font-bold uppercase">
+                                <th className="px-4 py-3 text-left text-[#6c6d6f] text-xs font-bold uppercase">
                                   Driver
                                 </th>
-                                <th className="px-4 py-3 text-right text-[#8a8a9a] text-xs font-bold uppercase">
+                                <th className="px-4 py-3 text-right text-[#6c6d6f] text-xs font-bold uppercase">
                                   Laps Led
                                 </th>
-                                <th className="px-4 py-3 text-right text-[#8a8a9a] text-xs font-bold uppercase">
+                                <th className="px-4 py-3 text-right text-[#6c6d6f] text-xs font-bold uppercase">
                                   Incidents
                                 </th>
-                                <th className="px-4 py-3 text-right text-[#8a8a9a] text-xs font-bold uppercase">
+                                <th className="px-4 py-3 text-right text-[#6c6d6f] text-xs font-bold uppercase">
                                   Best Lap
                                 </th>
-                                <th className="px-4 py-3 text-right text-[#8a8a9a] text-xs font-bold uppercase">
+                                <th className="px-4 py-3 text-right text-[#6c6d6f] text-xs font-bold uppercase">
                                   Points
                                 </th>
                               </tr>
@@ -189,55 +189,55 @@ export default function Results() {
                                 return (
                                 <tr
                                   key={result.id}
-                                  className="border-b border-[#2a2a3e] hover:bg-[#1a1a2e] transition"
+                                  className="border-b border-[#e0e0e0] hover:bg-[#f0f0f0] transition"
                                 >
                                   <td className="px-4 py-3">
                                     <div
                                       className={`flex items-center justify-center w-8 h-8 rounded font-bold ${
                                         result.finishPosition === 1
-                                          ? 'bg-[#f5a623] text-black'
-                                          : 'bg-[#2a2a3e] text-white'
+                                          ? 'bg-[#d00000] text-[#131313]'
+                                          : 'bg-[#e0e0e0] text-[#131313]'
                                       }`}
                                     >
                                       {result.finishPosition}
                                     </div>
                                   </td>
-                                  <td className="px-4 py-3 text-white font-semibold">
+                                  <td className="px-4 py-3 text-[#131313] font-semibold">
                                     {result.startPosition}
                                   </td>
                                   <td className="px-4 py-3">
-                                    <div className="font-semibold text-white">{result.name}</div>
-                                    <div className="text-sm text-[#8a8a9a]">#{result.number}</div>
+                                    <div className="font-semibold text-[#131313]">{result.name}</div>
+                                    <div className="text-sm text-[#6c6d6f]">#{result.number}</div>
                                   </td>
-                                  <td className="px-4 py-3 text-right text-[#2ec4b6] font-semibold">
+                                  <td className="px-4 py-3 text-right text-[#008564] font-semibold">
                                     {result.lapsLed}
                                   </td>
-                                  <td className="px-4 py-3 text-right text-[#e63946] font-semibold">
+                                  <td className="px-4 py-3 text-right text-[#cc0000] font-semibold">
                                     {result.incidents}
                                   </td>
                                   <td className="px-4 py-3 text-right font-semibold">
                                     {result.bestLap ? (
-                                      <span className={result.bestLap === race.fastestLap?.time ? 'text-[#2ec4b6]' : 'text-white'}>
+                                      <span className={result.bestLap === race.fastestLap?.time ? 'text-[#008564]' : 'text-[#131313]'}>
                                         {result.bestLap}s
                                         {result.bestLap === race.fastestLap?.time && ' ⚡'}
                                       </span>
                                     ) : '—'}
                                   </td>
                                   <td className="px-4 py-3 text-right">
-                                    <div className="text-[#f5a623] font-bold">{totalPts}</div>
-                                    <div className="text-xs text-[#8a8a9a]">
+                                    <div className="text-[#d00000] font-bold">{totalPts}</div>
+                                    <div className="text-xs text-[#6c6d6f]">
                                       {result.posPoints}p
                                       {result.bonusPoints > 0 && (
-                                        <span className="text-[#2ec4b6]"> +{result.bonusPoints}</span>
+                                        <span className="text-[#008564]"> +{result.bonusPoints}</span>
                                       )}
                                       {result.penalty < 0 && (
-                                        <span className="text-[#e63946]"> {result.penalty}</span>
+                                        <span className="text-[#cc0000]"> {result.penalty}</span>
                                       )}
                                     </div>
                                     {bonuses.length > 0 && (
                                       <div className="text-xs mt-1">
                                         {bonuses.map((b, i) => (
-                                          <span key={i} className="inline-block bg-[#2ec4b6]/20 text-[#2ec4b6] rounded px-1 mr-1 mb-0.5">
+                                          <span key={i} className="inline-block bg-[#008564]/10 text-[#008564] rounded px-1 mr-1 mb-0.5">
                                             {b.label}
                                           </span>
                                         ))}
@@ -245,7 +245,7 @@ export default function Results() {
                                     )}
                                     {result.penalty < 0 && (
                                       <div className="text-xs mt-1">
-                                        <span className="inline-block bg-[#e63946]/20 text-[#e63946] rounded px-1">
+                                        <span className="inline-block bg-[#cc0000]/10 text-[#cc0000] rounded px-1">
                                           {result.incidents >= 40 ? '40+ inc' : result.incidents >= 30 ? '30+ inc' : '20+ inc'}
                                         </span>
                                       </div>
@@ -263,8 +263,8 @@ export default function Results() {
                 </div>
               ))
             ) : (
-              <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-8 text-center">
-                <p className="text-[#8a8a9a]">No race results available yet.</p>
+              <div className="bg-white border border-[#e0e0e0] rounded-lg p-8 text-center">
+                <p className="text-[#6c6d6f]">No race results available yet.</p>
               </div>
             )}
           </div>

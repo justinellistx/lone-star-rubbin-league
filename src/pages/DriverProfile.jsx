@@ -85,13 +85,13 @@ export default function DriverProfile() {
 
   if (loading) {
     return (
-      <div className="bg-[#0a0a0f] min-h-screen py-12 px-4 md:px-8">
+      <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
-          <Link to="/drivers" className="flex items-center gap-2 text-[#f5a623] hover:text-white transition mb-8">
+          <Link to="/drivers" className="flex items-center gap-2 text-[#d00000] hover:text-[#131313] transition mb-8">
             <ArrowLeft size={20} /> Back to Drivers
           </Link>
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-12 text-center">
-            <p className="text-[#8a8a9a]">Loading driver profile...</p>
+          <div className="bg-white border border-[#e0e0e0] rounded-lg p-12 text-center">
+            <p className="text-[#6c6d6f]">Loading driver profile...</p>
           </div>
         </div>
       </div>
@@ -100,13 +100,13 @@ export default function DriverProfile() {
 
   if (!driver) {
     return (
-      <div className="bg-[#0a0a0f] min-h-screen py-12 px-4 md:px-8">
+      <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
-          <Link to="/drivers" className="flex items-center gap-2 text-[#f5a623] hover:text-white transition mb-8">
+          <Link to="/drivers" className="flex items-center gap-2 text-[#d00000] hover:text-[#131313] transition mb-8">
             <ArrowLeft size={20} /> Back to Drivers
           </Link>
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-12 text-center">
-            <p className="text-[#8a8a9a]">Driver not found.</p>
+          <div className="bg-white border border-[#e0e0e0] rounded-lg p-12 text-center">
+            <p className="text-[#6c6d6f]">Driver not found.</p>
           </div>
         </div>
       </div>
@@ -130,24 +130,24 @@ export default function DriverProfile() {
   const maxFinish = Math.max(...chartData.map(d => d.finish), 30);
 
   return (
-    <div className="bg-[#0a0a0f] min-h-screen py-12 px-4 md:px-8">
+    <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Back Link */}
-        <Link to="/drivers" className="flex items-center gap-2 text-[#f5a623] hover:text-white transition mb-8">
+        <Link to="/drivers" className="flex items-center gap-2 text-[#d00000] hover:text-[#131313] transition mb-8">
           <ArrowLeft size={20} /> Back to Drivers
         </Link>
 
         {/* Driver Header */}
-        <div className="bg-gradient-to-r from-[#14141f] to-[#1a1a2e] border border-[#2a2a3e] rounded-lg p-8 mb-12">
+        <div className="bg-gradient-to-r from-white to-[#f5f5f5] border border-[#e0e0e0] rounded-lg p-8 mb-12">
           <div className="flex items-start justify-between mb-6">
             <div>
-              <h1 className="text-5xl md:text-6xl font-black text-white mb-2">{driver.name}</h1>
+              <h1 className="text-5xl md:text-6xl font-black text-[#131313] mb-2">{driver.name}</h1>
               {driver.nickname && (
-                <p className="text-[#f5a623] text-xl font-bold mb-1">"{driver.nickname}"</p>
+                <p className="text-[#d00000] text-xl font-bold mb-1">"{driver.nickname}"</p>
               )}
-              <p className="text-[#8a8a9a] text-lg">{driver.team}</p>
+              <p className="text-[#6c6d6f] text-lg">{driver.team}</p>
             </div>
-            <div className="bg-[#f5a623] text-black rounded-lg px-6 py-4 text-center">
+            <div className="bg-[#d00000] text-white rounded-lg px-6 py-4 text-center">
               <div className="text-4xl font-black">{driver.number}</div>
               <div className="text-xs font-bold uppercase mt-1">Car #</div>
             </div>
@@ -156,63 +156,63 @@ export default function DriverProfile() {
 
         {/* Stats Cards Row 1 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-6 hover:border-[#f5a623] transition">
-            <div className="text-[#8a8a9a] text-xs uppercase font-bold mb-2">Points</div>
-            <div className="text-[#f5a623] font-black text-3xl">{driver.points}</div>
-            <div className="text-xs text-[#8a8a9a] mt-2">
+          <div className="bg-white border border-[#e0e0e0] rounded-lg p-6 hover:border-[#d00000] transition">
+            <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Points</div>
+            <div className="text-[#d00000] font-black text-3xl">{driver.points}</div>
+            <div className="text-xs text-[#6c6d6f] mt-2">
               {driver.posPoints}p
-              {driver.bonusPoints > 0 && <span className="text-[#2ec4b6]"> +{driver.bonusPoints}</span>}
-              {driver.penaltyPoints < 0 && <span className="text-[#e63946]"> {driver.penaltyPoints}</span>}
+              {driver.bonusPoints > 0 && <span className="text-[#008564]"> +{driver.bonusPoints}</span>}
+              {driver.penaltyPoints < 0 && <span className="text-[#cc0000]"> {driver.penaltyPoints}</span>}
             </div>
             {driver.droppedPoints > 0 && (
-              <div className="text-xs text-[#e63946] mt-1">-{driver.droppedPoints} dropped</div>
+              <div className="text-xs text-[#cc0000] mt-1">-{driver.droppedPoints} dropped</div>
             )}
           </div>
 
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-6 hover:border-[#2ec4b6] transition">
-            <div className="text-[#8a8a9a] text-xs uppercase font-bold mb-2">Wins</div>
-            <div className="text-[#2ec4b6] font-black text-3xl">{driver.wins}</div>
+          <div className="bg-white border border-[#e0e0e0] rounded-lg p-6 hover:border-[#2ec4b6] transition">
+            <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Wins</div>
+            <div className="text-[#008564] font-black text-3xl">{driver.wins}</div>
           </div>
 
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-6 hover:border-[#e63946] transition">
-            <div className="text-[#8a8a9a] text-xs uppercase font-bold mb-2">Top 5s</div>
-            <div className="text-[#e63946] font-black text-3xl">{driver.top5}</div>
+          <div className="bg-white border border-[#e0e0e0] rounded-lg p-6 hover:border-[#e63946] transition">
+            <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Top 5s</div>
+            <div className="text-[#cc0000] font-black text-3xl">{driver.top5}</div>
           </div>
 
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-6 hover:border-white transition">
-            <div className="text-[#8a8a9a] text-xs uppercase font-bold mb-2">Top 10s</div>
-            <div className="text-white font-black text-3xl">{driver.top10}</div>
+          <div className="bg-white border border-[#e0e0e0] rounded-lg p-6 hover:border-white transition">
+            <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Top 10s</div>
+            <div className="text-[#131313] font-black text-3xl">{driver.top10}</div>
           </div>
         </div>
 
         {/* Stats Cards Row 2 */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-6">
-            <div className="text-[#8a8a9a] text-xs uppercase font-bold mb-2">Avg Finish</div>
-            <div className="text-white font-bold text-2xl">{driver.avgFinish.toFixed(1)}</div>
+          <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
+            <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Avg Finish</div>
+            <div className="text-[#131313] font-bold text-2xl">{driver.avgFinish.toFixed(1)}</div>
           </div>
 
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-6">
-            <div className="text-[#8a8a9a] text-xs uppercase font-bold mb-2">Avg Start</div>
-            <div className="text-white font-bold text-2xl">{avgStart.toFixed(1)}</div>
+          <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
+            <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Avg Start</div>
+            <div className="text-[#131313] font-bold text-2xl">{avgStart.toFixed(1)}</div>
           </div>
 
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-6">
-            <div className="text-[#8a8a9a] text-xs uppercase font-bold mb-2">Laps Led</div>
-            <div className="text-white font-bold text-2xl">{driver.lapsLed}</div>
+          <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
+            <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Laps Led</div>
+            <div className="text-[#131313] font-bold text-2xl">{driver.lapsLed}</div>
           </div>
 
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-6">
-            <div className="text-[#8a8a9a] text-xs uppercase font-bold mb-2">Incidents</div>
-            <div className="text-[#e63946] font-bold text-2xl">{driver.totalIncidents}</div>
+          <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
+            <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Incidents</div>
+            <div className="text-[#cc0000] font-bold text-2xl">{driver.totalIncidents}</div>
           </div>
 
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-6">
-            <div className="text-[#8a8a9a] text-xs uppercase font-bold mb-2">Races</div>
-            <div className="text-white font-bold text-2xl">
+          <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
+            <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Races</div>
+            <div className="text-[#131313] font-bold text-2xl">
               {driver.racesEntered}
               {driver.dnrCount > 0 && (
-                <span className="text-[#8a8a9a] text-sm font-normal ml-1">({driver.dnrCount} DNR)</span>
+                <span className="text-[#6c6d6f] text-sm font-normal ml-1">({driver.dnrCount} DNR)</span>
               )}
             </div>
           </div>
@@ -220,8 +220,8 @@ export default function DriverProfile() {
 
         {/* Performance Chart */}
         {chartData.length > 0 && (
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-8 mb-12">
-            <h2 className="text-2xl font-bold text-white mb-6">Finish Position Trend</h2>
+          <div className="bg-white border border-[#e0e0e0] rounded-lg p-8 mb-12">
+            <h2 className="text-2xl font-bold text-[#131313] mb-6">Finish Position Trend</h2>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#2a2a3e" />
@@ -260,18 +260,18 @@ export default function DriverProfile() {
                 />
               </LineChart>
             </ResponsiveContainer>
-            <div className="mt-2 text-xs text-[#8a8a9a]">
-              <span className="inline-block w-3 h-3 rounded-full bg-[#2a2a3e] border border-[#8a8a9a] mr-1 align-middle"></span>
+            <div className="mt-2 text-xs text-[#6c6d6f]">
+              <span className="inline-block w-3 h-3 rounded-full bg-[#e0e0e0] border border-[#8a8a9a] mr-1 align-middle"></span>
               = dropped race (not counted toward stage totals)
             </div>
           </div>
         )}
 
         {/* Race Results Table */}
-        <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#2a2a3e]">
-            <h2 className="text-2xl font-bold text-white">Season Results</h2>
-            <p className="text-[#8a8a9a] text-sm mt-1">
+        <div className="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden">
+          <div className="px-6 py-4 border-b border-[#e0e0e0]">
+            <h2 className="text-2xl font-bold text-[#131313]">Season Results</h2>
+            <p className="text-[#6c6d6f] text-sm mt-1">
               Worst 3 races dropped per stage. Stats from kept races only.
             </p>
           </div>
@@ -279,15 +279,15 @@ export default function DriverProfile() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#2a2a3e] bg-[#0a0a0f]">
-                  <th className="px-4 py-4 text-left text-[#8a8a9a] text-xs font-bold uppercase">Race</th>
-                  <th className="px-4 py-4 text-left text-[#8a8a9a] text-xs font-bold uppercase">Track</th>
-                  <th className="px-4 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">Start</th>
-                  <th className="px-4 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">Finish</th>
-                  <th className="px-4 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">Laps Led</th>
-                  <th className="px-4 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">Inc</th>
-                  <th className="px-4 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">Points</th>
-                  <th className="px-4 py-4 text-center text-[#8a8a9a] text-xs font-bold uppercase">Status</th>
+                <tr className="border-b border-[#e0e0e0] bg-[#f5f5f5]">
+                  <th className="px-4 py-4 text-left text-[#6c6d6f] text-xs font-bold uppercase">Race</th>
+                  <th className="px-4 py-4 text-left text-[#6c6d6f] text-xs font-bold uppercase">Track</th>
+                  <th className="px-4 py-4 text-right text-[#6c6d6f] text-xs font-bold uppercase">Start</th>
+                  <th className="px-4 py-4 text-right text-[#6c6d6f] text-xs font-bold uppercase">Finish</th>
+                  <th className="px-4 py-4 text-right text-[#6c6d6f] text-xs font-bold uppercase">Laps Led</th>
+                  <th className="px-4 py-4 text-right text-[#6c6d6f] text-xs font-bold uppercase">Inc</th>
+                  <th className="px-4 py-4 text-right text-[#6c6d6f] text-xs font-bold uppercase">Points</th>
+                  <th className="px-4 py-4 text-center text-[#6c6d6f] text-xs font-bold uppercase">Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -296,38 +296,38 @@ export default function DriverProfile() {
                   return (
                     <tr
                       key={result.id}
-                      className={`border-b border-[#2a2a3e] transition ${
+                      className={`border-b border-[#e0e0e0] transition ${
                         result.isDropped
-                          ? 'opacity-40 bg-[#0a0a0f]'
-                          : 'hover:bg-[#1a1a2e]'
+                          ? 'opacity-40 bg-[#f5f5f5]'
+                          : 'hover:bg-[#f0f0f0]'
                       }`}
                     >
-                      <td className="px-4 py-4 text-white font-semibold">R{result.raceNumber}</td>
+                      <td className="px-4 py-4 text-[#131313] font-semibold">R{result.raceNumber}</td>
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-2">
                           <TrackIcon track={result.track} size={28} />
-                          <span className="text-white">{result.track}</span>
+                          <span className="text-[#131313]">{result.track}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-4 text-right text-white">{result.startPosition}</td>
+                      <td className="px-4 py-4 text-right text-[#131313]">{result.startPosition}</td>
                       <td className="px-4 py-4 text-right">
-                        <span className={`font-bold ${result.finishPosition <= 5 ? 'text-[#f5a623]' : 'text-white'}`}>
+                        <span className={`font-bold ${result.finishPosition <= 5 ? 'text-[#d00000]' : 'text-[#131313]'}`}>
                           P{result.finishPosition}
                         </span>
                       </td>
-                      <td className="px-4 py-4 text-right text-[#2ec4b6]">{result.lapsLed}</td>
-                      <td className="px-4 py-4 text-right text-[#e63946]">{result.incidents}</td>
+                      <td className="px-4 py-4 text-right text-[#008564]">{result.lapsLed}</td>
+                      <td className="px-4 py-4 text-right text-[#cc0000]">{result.incidents}</td>
                       <td className="px-4 py-4 text-right">
-                        <div className="text-[#f5a623] font-bold">{result.totalPoints}</div>
-                        <div className="text-xs text-[#8a8a9a]">
+                        <div className="text-[#d00000] font-bold">{result.totalPoints}</div>
+                        <div className="text-xs text-[#6c6d6f]">
                           {result.posPoints}p
-                          {bonusTotal > 0 && <span className="text-[#2ec4b6]"> +{bonusTotal}</span>}
-                          {result.penaltyPoints < 0 && <span className="text-[#e63946]"> {result.penaltyPoints}</span>}
+                          {bonusTotal > 0 && <span className="text-[#008564]"> +{bonusTotal}</span>}
+                          {result.penaltyPoints < 0 && <span className="text-[#cc0000]"> {result.penaltyPoints}</span>}
                         </div>
                         {result.bonuses.length > 0 && (
                           <div className="text-xs mt-1">
                             {result.bonuses.map((b, i) => (
-                              <span key={i} className="inline-block bg-[#2ec4b6]/20 text-[#2ec4b6] rounded px-1 mr-1 mb-0.5">
+                              <span key={i} className="inline-block bg-[#008564]/20 text-[#008564] rounded px-1 mr-1 mb-0.5">
                                 {b.label}
                               </span>
                             ))}
@@ -335,7 +335,7 @@ export default function DriverProfile() {
                         )}
                         {result.penaltyPoints < 0 && (
                           <div className="text-xs mt-1">
-                            <span className="inline-block bg-[#e63946]/20 text-[#e63946] rounded px-1">
+                            <span className="inline-block bg-[#cc0000]/20 text-[#cc0000] rounded px-1">
                               {result.incidents >= 40 ? '40+ inc' : result.incidents >= 30 ? '30+ inc' : '20+ inc'}
                             </span>
                           </div>
@@ -343,11 +343,11 @@ export default function DriverProfile() {
                       </td>
                       <td className="px-4 py-4 text-center">
                         {result.isDropped ? (
-                          <span className="inline-block bg-[#e63946]/20 text-[#e63946] text-xs font-bold rounded px-2 py-1">
+                          <span className="inline-block bg-[#cc0000]/20 text-[#cc0000] text-xs font-bold rounded px-2 py-1">
                             DROPPED
                           </span>
                         ) : (
-                          <span className="inline-block bg-[#2ec4b6]/20 text-[#2ec4b6] text-xs font-bold rounded px-2 py-1">
+                          <span className="inline-block bg-[#008564]/20 text-[#008564] text-xs font-bold rounded px-2 py-1">
                             COUNTED
                           </span>
                         )}

@@ -7,7 +7,7 @@ const CATEGORY_CONFIG = {
   recap: { label: 'Race Recaps', color: '#e63946' },
   highlight: { label: 'Highlights', color: '#2ec4b6' },
   news: { label: 'News', color: '#f5a623' },
-  announcement: { label: 'Announcements', color: '#a78bfa' },
+  announcement: { label: 'Announcements', color: '#004b8d' },
 };
 
 function formatDate(dateStr) {
@@ -29,7 +29,7 @@ function ArticleCard({ article, featured = false }) {
 
   return (
     <div
-      className={`bg-[#14141f] border border-[#2a2a3e] rounded-lg overflow-hidden hover:border-[#f5a623] transition cursor-pointer ${
+      className={`bg-white border border-[#e0e0e0] rounded-lg overflow-hidden hover:border-[#d00000] transition cursor-pointer ${
         featured ? 'md:col-span-2' : ''
       }`}
       onClick={() => setExpanded(!expanded)}
@@ -43,31 +43,31 @@ function ArticleCard({ article, featured = false }) {
           >
             {catConfig.label}
           </span>
-          <div className="flex items-center gap-1 text-[#8a8a9a] text-xs">
+          <div className="flex items-center gap-1 text-[#6c6d6f] text-xs">
             <Clock size={12} />
             {formatDate(article.published_at || article.created_at)}
           </div>
         </div>
 
         {/* Title */}
-        <h3 className={`font-bold text-white mb-2 ${featured ? 'text-2xl' : 'text-lg'}`}>
+        <h3 className={`font-bold text-[#131313] mb-2 ${featured ? 'text-2xl' : 'text-lg'}`}>
           {article.title}
         </h3>
 
         {/* Subtitle */}
         {article.subtitle && (
-          <p className={`text-[#f5a623] mb-3 ${featured ? 'text-base' : 'text-sm'}`}>
+          <p className={`text-[#d00000] mb-3 ${featured ? 'text-base' : 'text-sm'}`}>
             {article.subtitle}
           </p>
         )}
 
         {/* Body preview or full */}
-        <div className="text-[#8a8a9a] text-sm leading-relaxed whitespace-pre-line">
+        <div className="text-[#6c6d6f] text-sm leading-relaxed whitespace-pre-line">
           {expanded ? article.body : previewText}
         </div>
 
         {/* Read more / collapse */}
-        <div className="mt-4 flex items-center gap-1 text-[#f5a623] text-sm font-medium">
+        <div className="mt-4 flex items-center gap-1 text-[#d00000] text-sm font-medium">
           {expanded ? 'Show less' : 'Read more'}
           <ChevronRight size={14} className={`transition-transform ${expanded ? 'rotate-90' : ''}`} />
         </div>
@@ -97,15 +97,15 @@ export default function News() {
   }, [articles]);
 
   return (
-    <div className="bg-[#0a0a0f] min-h-screen py-12 px-4 md:px-8">
+    <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Page Header */}
         <div className="mb-10">
           <div className="flex items-center gap-3 mb-4">
-            <Newspaper className="text-[#f5a623]" size={36} />
-            <h1 className="text-5xl md:text-6xl font-black text-white">NEWS</h1>
+            <Newspaper className="text-[#d00000]" size={36} />
+            <h1 className="text-5xl md:text-6xl font-black text-[#131313]">NEWS</h1>
           </div>
-          <p className="text-[#8a8a9a] text-lg">
+          <p className="text-[#6c6d6f] text-lg">
             Race recaps, driver storylines, and all the drama from the Lone Star Rubbin' League
           </p>
         </div>
@@ -119,7 +119,7 @@ export default function News() {
               className={`px-4 py-2 rounded-full text-sm font-bold transition ${
                 activeCategory === key
                   ? 'text-[#0a0a0f]'
-                  : 'text-[#8a8a9a] hover:text-white bg-[#14141f] border border-[#2a2a3e]'
+                  : 'text-[#6c6d6f] hover:text-[#131313] bg-white border border-[#e0e0e0]'
               }`}
               style={
                 activeCategory === key
@@ -135,8 +135,8 @@ export default function News() {
 
         {/* Loading */}
         {loading ? (
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-12 text-center">
-            <p className="text-[#8a8a9a]">Loading articles...</p>
+          <div className="bg-white border border-[#e0e0e0] rounded-lg p-12 text-center">
+            <p className="text-[#6c6d6f]">Loading articles...</p>
           </div>
         ) : filteredArticles.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -149,8 +149,8 @@ export default function News() {
             ))}
           </div>
         ) : (
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-12 text-center">
-            <p className="text-[#8a8a9a]">No articles in this category yet.</p>
+          <div className="bg-white border border-[#e0e0e0] rounded-lg p-12 text-center">
+            <p className="text-[#6c6d6f]">No articles in this category yet.</p>
           </div>
         )}
       </div>

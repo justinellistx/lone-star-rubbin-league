@@ -6,32 +6,32 @@ function TrendIndicator({ change }) {
   if (change > 0) {
     return (
       <div className="flex items-center gap-1">
-        <TrendingUp size={16} className="text-[#2ec4b6]" />
-        <span className="text-xs font-bold text-[#2ec4b6]">UP {change}</span>
+        <TrendingUp size={16} className="text-[#008564]" />
+        <span className="text-xs font-bold text-[#008564]">UP {change}</span>
       </div>
     );
   } else if (change < 0) {
     return (
       <div className="flex items-center gap-1">
-        <TrendingDown size={16} className="text-[#e63946]" />
-        <span className="text-xs font-bold text-[#e63946]">DOWN {Math.abs(change)}</span>
+        <TrendingDown size={16} className="text-[#cc0000]" />
+        <span className="text-xs font-bold text-[#cc0000]">DOWN {Math.abs(change)}</span>
       </div>
     );
   }
   return (
     <div className="flex items-center gap-1">
-      <Minus size={16} className="text-[#8a8a9a]" />
-      <span className="text-xs font-bold text-[#8a8a9a]">SAME</span>
+      <Minus size={16} className="text-[#6c6d6f]" />
+      <span className="text-xs font-bold text-[#6c6d6f]">SAME</span>
     </div>
   );
 }
 
 function FormBadge({ label, type }) {
   const colors = {
-    hot: 'bg-[#f5a623]/20 text-[#f5a623]',
-    strong: 'bg-[#2ec4b6]/20 text-[#2ec4b6]',
-    steady: 'bg-[#8a8a9a]/20 text-[#8a8a9a]',
-    cold: 'bg-[#e63946]/20 text-[#e63946]',
+    hot: 'bg-[#d00000]/20 text-[#d00000]',
+    strong: 'bg-[#2ec4b6]/20 text-[#008564]',
+    steady: 'bg-[#8a8a9a]/20 text-[#6c6d6f]',
+    cold: 'bg-[#e63946]/20 text-[#cc0000]',
   };
   const icons = {
     hot: <Flame size={12} />,
@@ -215,27 +215,27 @@ export default function PowerRankings() {
 
   if (loading) {
     return (
-      <div className="bg-[#0a0a0f] min-h-screen py-12 px-4 md:px-8 flex items-center justify-center">
-        <p className="text-[#8a8a9a]">Loading power rankings...</p>
+      <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8 flex items-center justify-center">
+        <p className="text-[#6c6d6f]">Loading power rankings...</p>
       </div>
     );
   }
 
   if (!rankingsWithTrend || rankingsWithTrend.length === 0) {
     return (
-      <div className="bg-[#0a0a0f] min-h-screen py-12 px-4 md:px-8 flex items-center justify-center">
-        <p className="text-[#8a8a9a]">No data available yet.</p>
+      <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8 flex items-center justify-center">
+        <p className="text-[#6c6d6f]">No data available yet.</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#0a0a0f] min-h-screen py-12 px-4 md:px-8">
+    <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-12">
-          <h1 className="text-5xl md:text-6xl font-black text-white mb-2">POWER RANKINGS</h1>
-          <p className="text-[#8a8a9a] text-lg">
+          <h1 className="text-5xl md:text-6xl font-black text-[#131313] mb-2">POWER RANKINGS</h1>
+          <p className="text-[#6c6d6f] text-lg">
             Real-time driver assessment — ALL races, no drops. The unfiltered truth.
           </p>
         </div>
@@ -252,7 +252,7 @@ export default function PowerRankings() {
               <div
                 key={driver.id}
                 className={`rounded-lg border overflow-hidden ${
-                  isChamp ? 'border-[#f5a623] ring-1 ring-[#f5a623]' : 'border-[#2a2a3e]'
+                  isChamp ? 'border-[#d00000] ring-1 ring-[#f5a623]' : 'border-[#e0e0e0]'
                 }`}
                 style={{ backgroundColor: isChamp ? '#1a1a24' : '#14141f' }}
               >
@@ -262,7 +262,7 @@ export default function PowerRankings() {
                     <div className="flex-shrink-0">
                       <div
                         className={`w-16 h-16 rounded-lg flex items-center justify-center font-black text-2xl ${
-                          isChamp ? 'bg-[#f5a623] text-black' : 'bg-[#2a2a3e] text-[#f5a623]'
+                          isChamp ? 'bg-[#d00000] text-black' : 'bg-[#e0e0e0] text-[#d00000]'
                         }`}
                       >
                         {driver.rank}
@@ -274,8 +274,8 @@ export default function PowerRankings() {
                       {/* Name + Trend */}
                       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
                         <div>
-                          <h3 className="text-xl font-bold text-white">{driver.name}</h3>
-                          <p className="text-[#2ec4b6] text-sm font-semibold">
+                          <h3 className="text-xl font-bold text-[#131313]">{driver.name}</h3>
+                          <p className="text-[#008564] text-sm font-semibold">
                             #{driver.number} • {driver.nickname || driver.team}
                           </p>
                         </div>
@@ -286,12 +286,12 @@ export default function PowerRankings() {
                       </div>
 
                       {/* Context blurb */}
-                      <p className="text-[#8a8a9a] text-sm leading-relaxed mb-4">
+                      <p className="text-[#6c6d6f] text-sm leading-relaxed mb-4">
                         {driver.trendLabel}.
                         {driver.lastRace && (
                           <> Last out: P{driver.lastRace.finishPosition} at {driver.lastRace.track}
                             {driver.lastRace.incidents > 20 && (
-                              <span className="text-[#e63946]"> ({driver.lastRace.incidents} inc)</span>
+                              <span className="text-[#cc0000]"> ({driver.lastRace.incidents} inc)</span>
                             )}
                           .</>
                         )}
@@ -309,34 +309,34 @@ export default function PowerRankings() {
                       {/* Stats Row */}
                       <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 text-sm">
                         <div>
-                          <div className="text-[#8a8a9a] text-xs uppercase font-bold mb-1">Raw Points</div>
-                          <div className="text-white font-bold text-lg">{driver.rawPoints}</div>
-                          <div className="text-xs text-[#8a8a9a]">
-                            Standings: <span className="text-[#f5a623]">{driver.standingsPoints}</span>
+                          <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-1">Raw Points</div>
+                          <div className="text-[#131313] font-bold text-lg">{driver.rawPoints}</div>
+                          <div className="text-xs text-[#6c6d6f]">
+                            Standings: <span className="text-[#d00000]">{driver.standingsPoints}</span>
                           </div>
                         </div>
                         <div>
-                          <div className="text-[#8a8a9a] text-xs uppercase font-bold mb-1">Last 3 Avg</div>
+                          <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-1">Last 3 Avg</div>
                           <div className={`font-bold text-lg ${
-                            driver.last3Avg !== null && driver.last3Avg <= 10 ? 'text-[#2ec4b6]' :
-                            driver.last3Avg !== null && driver.last3Avg > 20 ? 'text-[#e63946]' : 'text-white'
+                            driver.last3Avg !== null && driver.last3Avg <= 10 ? 'text-[#008564]' :
+                            driver.last3Avg !== null && driver.last3Avg > 20 ? 'text-[#cc0000]' : 'text-[#131313]'
                           }`}>
                             {driver.last3Avg !== null ? `P${driver.last3Avg.toFixed(1)}` : '—'}
                           </div>
                         </div>
                         <div>
-                          <div className="text-[#8a8a9a] text-xs uppercase font-bold mb-1">Season Avg</div>
-                          <div className="text-white font-bold text-lg">P{driver.rawAvgFinish.toFixed(1)}</div>
+                          <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-1">Season Avg</div>
+                          <div className="text-[#131313] font-bold text-lg">P{driver.rawAvgFinish.toFixed(1)}</div>
                         </div>
                         <div>
-                          <div className="text-[#8a8a9a] text-xs uppercase font-bold mb-1">Last 3 Pts</div>
-                          <div className="text-white font-bold text-lg">{driver.last3Pts}</div>
+                          <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-1">Last 3 Pts</div>
+                          <div className="text-[#131313] font-bold text-lg">{driver.last3Pts}</div>
                         </div>
                         <div>
-                          <div className="text-[#8a8a9a] text-xs uppercase font-bold mb-1">Incidents</div>
-                          <div className="text-[#e63946] font-bold text-lg">{driver.rawIncidents}</div>
-                          <div className="text-xs text-[#8a8a9a]">
-                            Last 3: <span className="text-[#e63946]">{driver.last3Inc}</span>
+                          <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-1">Incidents</div>
+                          <div className="text-[#cc0000] font-bold text-lg">{driver.rawIncidents}</div>
+                          <div className="text-xs text-[#6c6d6f]">
+                            Last 3: <span className="text-[#cc0000]">{driver.last3Inc}</span>
                           </div>
                         </div>
                       </div>
@@ -349,14 +349,14 @@ export default function PowerRankings() {
                               key={i}
                               className={`text-xs rounded px-2 py-1 font-semibold ${
                                 r.finishPosition === null
-                                  ? 'bg-[#2a2a3e]/50 text-[#8a8a9a]'
+                                  ? 'bg-[#e0e0e0]/50 text-[#6c6d6f]'
                                   : r.finishPosition <= 5
-                                    ? 'bg-[#f5a623]/20 text-[#f5a623]'
+                                    ? 'bg-[#d00000]/20 text-[#d00000]'
                                     : r.finishPosition <= 10
-                                      ? 'bg-[#2ec4b6]/20 text-[#2ec4b6]'
+                                      ? 'bg-[#2ec4b6]/20 text-[#008564]'
                                       : r.finishPosition <= 20
-                                        ? 'bg-[#2a2a3e] text-white'
-                                        : 'bg-[#e63946]/20 text-[#e63946]'
+                                        ? 'bg-[#e0e0e0] text-[#131313]'
+                                        : 'bg-[#e63946]/20 text-[#cc0000]'
                               }`}
                             >
                               {r.track?.slice(0, 3)} P{r.finishPosition}
@@ -373,9 +373,9 @@ export default function PowerRankings() {
         </div>
 
         {/* Notes */}
-        <div className="mt-12 bg-[#14141f] border border-[#2a2a3e] rounded-lg p-6">
-          <h2 className="text-lg font-bold text-[#f5a623] mb-2">About Power Rankings</h2>
-          <p className="text-[#8a8a9a] text-sm">
+        <div className="mt-12 bg-white border border-[#e0e0e0] rounded-lg p-6">
+          <h2 className="text-lg font-bold text-[#d00000] mb-2">About Power Rankings</h2>
+          <p className="text-[#6c6d6f] text-sm">
             Power Rankings use ALL race data with no drops applied. This is the unfiltered picture —
             every finish, every incident, every bad night counts. A driver might look solid in the
             official standings thanks to dropped races, but their power ranking tells the real story.

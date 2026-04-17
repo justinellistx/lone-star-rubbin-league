@@ -4,26 +4,25 @@ cd /Users/justinellis/Desktop/iracing-league-hub
 
 echo "🏟️  PUSHING ESPN REDESIGN + ALL ACCUMULATED CHANGES..."
 echo ""
-echo "=== ESPN LIGHT THEME REDESIGN ==="
-echo "1. NEW: ESPN light theme (white/gray backgrounds, red accents)"
-echo "2. NEW: ESPN-style black nav bar with red active indicators"
-echo "3. NEW: Scrolling standings ticker strip below nav"
-echo "4. NEW: 2-column Home page (main content + sidebar)"
-echo "5. NEW: Dense headline cards, standings widget, quick links"
-echo "6. NEW: ESPN-style section headers with red/black bottom borders"
+echo "=== ESPN LIGHT THEME REDESIGN (ALL PAGES) ==="
+echo "1. ESPN light theme: white/gray backgrounds, red accents"
+echo "2. Black nav bar with red active tab indicators"
+echo "3. Scrolling standings ticker strip below nav"
+echo "4. 2-column Home page (headlines + sidebar)"
+echo "5. ALL 18 pages converted to light theme"
 echo ""
 echo "=== INTERVIEWS + FEATURES ==="
-echo "7. NEW: Driver Interviews system (public + private media rooms)"
-echo "8. NEW: Admin ManageInterviews (bulk assign + story generator)"
-echo "9. NEW: Post-race question auto-generation on CSV upload"
-echo "10. NEW: Retro pixel art track icons (28 tracks)"
-echo "11. NEW: Arcade game page (iframe embed)"
+echo "6. Driver Interviews system (public + private media rooms)"
+echo "7. Admin ManageInterviews (bulk assign + story generator)"
+echo "8. Post-race question auto-generation on CSV upload"
+echo "9. Retro pixel art track icons (28 tracks)"
+echo "10. Arcade game page (iframe embed)"
 echo ""
 echo "=== FIXES ==="
-echo "12. FIX: Incident penalties (20-29/-1, 30-39/-2, 40+/-3)"
-echo "13. FIX: CSV parser for iRacing paired-row format"
-echo "14. FIX: Rivalries page race_number comparison"
-echo "15. FIX: Pick'em FK + leaderboard scoring"
+echo "11. Incident penalties (20-29/-1, 30-39/-2, 40+/-3)"
+echo "12. CSV parser for iRacing paired-row format"
+echo "13. Rivalries page race_number comparison"
+echo "14. Pick'em FK + leaderboard scoring"
 echo ""
 
 # Remove stale git lock files if present
@@ -39,45 +38,56 @@ git add \
   src/index.css \
   src/styles/layout.css \
   src/components/Layout.jsx \
+  src/components/TrackIcon.jsx \
   src/pages/Home.jsx \
+  src/pages/Standings.jsx \
+  src/pages/Results.jsx \
+  src/pages/Schedule.jsx \
+  src/pages/Drivers.jsx \
+  src/pages/DriverProfile.jsx \
+  src/pages/Teams.jsx \
+  src/pages/News.jsx \
   src/pages/Interviews.jsx \
   src/pages/InterviewRoom.jsx \
+  src/pages/HeadToHead.jsx \
+  src/pages/Rivalries.jsx \
+  src/pages/PowerRankings.jsx \
+  src/pages/Awards.jsx \
+  src/pages/Timeline.jsx \
+  src/pages/IncidentHeatmap.jsx \
+  src/pages/WhatIf.jsx \
+  src/pages/Pickem.jsx \
+  src/pages/Game.jsx \
+  src/pages/NotFound.jsx \
   src/pages/admin/ManageInterviews.jsx \
   src/pages/admin/UploadRace.jsx \
+  src/pages/admin/AdminLayout.jsx \
   src/lib/storyGenerator.js \
   src/lib/postRaceQuestions.js \
   src/lib/csvParser.js \
   src/lib/points.js \
   src/hooks/useSupabase.js \
   src/App.jsx \
-  src/pages/admin/AdminLayout.jsx \
-  src/pages/Pickem.jsx \
-  src/pages/Rivalries.jsx \
-  src/components/TrackIcon.jsx \
-  src/pages/Game.jsx \
-  src/pages/Results.jsx \
-  src/pages/Schedule.jsx \
-  src/pages/Standings.jsx \
-  src/pages/DriverProfile.jsx \
   MEMORY.md \
   PUSH-ESPN-REDESIGN.command
 
 # Create commit
-git commit -m "ESPN light theme redesign + interviews + track icons + fixes
+git commit -m "ESPN light theme redesign (all pages) + interviews + track icons + fixes
 
-ESPN Redesign:
-- Light theme: white/gray backgrounds, ESPN red (#d00000) accents
-- Black nav bar with red active tab indicators
+ESPN Light Theme Redesign:
+- Switched from dark (#0a0a0f) to ESPN light (#f5f5f5) across ALL 18 pages
+- Black nav bar with red (#d00000) active tab indicators
 - Scrolling standings ticker strip below nav (live driver points)
-- Home page: 2-column ESPN layout (headlines + sidebar)
-- Dense headline cards, compact standings widget, quick links
-- ESPN-style section headers with red/black bottom borders
-- Updated global CSS tokens, buttons, badges, tables for light theme
+- Home: 2-column ESPN layout with headline cards + sidebar
+- Tables: dark headers with red bottom border (ESPN style)
+- Cards: white backgrounds, light borders, clean typography
+- Buttons/badges: ESPN red primary, dark green positive, clean red negative
+- Updated global CSS tokens, buttons, badges, tables, inputs
 
 New Features:
 - Driver interviews system (public page + private media rooms)
 - Admin interview management with bulk assign + story generation
-- ESPN-style story generator pulling standings, Pick'em, power rankings
+- ESPN-style story generator (standings + Pick'em + power rankings)
 - Post-race questions auto-generate on CSV upload
 - Pre-race questions auto-assign after post-race recap
 - Retro pixel art track icons (28 tracks with SVG paths)
