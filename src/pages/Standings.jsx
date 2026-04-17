@@ -381,15 +381,15 @@ export default function Standings() {
                   <h4 className="text-white font-bold mb-3">Incident Penalties</h4>
                   <div className="bg-[#14141f] rounded p-4 space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-[#8a8a9a]">Over 20 incidents</span>
+                      <span className="text-[#8a8a9a]">20–29 incidents</span>
                       <span className="text-[#e63946] font-bold">-1 point</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-[#8a8a9a]">Over 30 incidents</span>
+                      <span className="text-[#8a8a9a]">30–39 incidents</span>
                       <span className="text-[#e63946] font-bold">-2 points</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-[#8a8a9a]">Over 40 incidents</span>
+                      <span className="text-[#8a8a9a]">40+ incidents</span>
                       <span className="text-[#e63946] font-bold">-3 points</span>
                     </div>
                   </div>

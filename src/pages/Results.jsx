@@ -242,7 +242,7 @@ export default function Results() {
                                     {result.penalty < 0 && (
                                       <div className="text-xs mt-1">
                                         <span className="inline-block bg-[#e63946]/20 text-[#e63946] rounded px-1">
-                                          {result.incidents > 40 ? '40+ inc' : result.incidents > 30 ? '30+ inc' : '20+ inc'}
+                                          {result.incidents >= 40 ? '40+ inc' : result.incidents >= 30 ? '30+ inc' : '20+ inc'}
                                         </span>
                                       </div>
                                     )}

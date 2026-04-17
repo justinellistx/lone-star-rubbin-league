@@ -78,24 +78,24 @@ export function calculateBonuses(result, allResults) {
 
 /**
  * Calculate incident-based penalty
- * 0-20 incidents = 0 penalty
- * 21-30 incidents = -1
- * 31-40 incidents = -2
- * 41+ incidents = -3
+ * 0-19 incidents = 0 penalty
+ * 20-29 incidents = -1
+ * 30-39 incidents = -2
+ * 40+ incidents = -3
  * Only the highest applicable tier applies (not cumulative)
  * @param {number} incidents - Number of incidents
  * @returns {number} Penalty (negative number)
  */
 export function calculateIncidentPenalty(incidents) {
-  if (incidents <= 20) {
+  if (incidents < 20) {
     return 0;
   }
 
-  if (incidents <= 30) {
+  if (incidents < 30) {
     return -1;
   }
 
-  if (incidents <= 40) {
+  if (incidents < 40) {
     return -2;
   }
 

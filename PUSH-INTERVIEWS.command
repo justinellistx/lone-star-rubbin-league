@@ -37,6 +37,10 @@ git add \
   src/components/Layout.jsx \
   src/pages/admin/AdminLayout.jsx \
   src/pages/Pickem.jsx \
+  src/pages/Results.jsx \
+  src/pages/Standings.jsx \
+  src/pages/DriverProfile.jsx \
+  src/lib/points.js \
   PUSH-INTERVIEWS.command
 
 # Create commit
