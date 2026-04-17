@@ -570,9 +570,57 @@ export default function ManageInterviews() {
 
       if (newsError) throw newsError;
 
+      // ── After post-race recap: auto-assign pre-race questions for next race ──
+      let nextRaceMsg = '';
+      if (type === 'post_race') {
+        try {
+          const nextRace = schedule.find(
+            (s) => s.race_number === race.race_number + 1
+          );
+          if (nextRace && drivers.length > 0) {
+            const bank = QUESTION_BANK.pre_race;
+            const nextTrack = nextRace.track_name || 'the next track';
+
+            // Check which drivers already have pre-race questions for next race
+            const { data: existing } = await supabase
+              .from('interview_questions')
+              .select('driver_id')
+              .eq('schedule_id', nextRace.id)
+              .eq('question_type', 'pre_race');
+
+            const existingIds = new Set((existing || []).map((e) => e.driver_id));
+            const activeDrivers = drivers.filter((d) => d.active && !existingIds.has(d.id));
+
+            if (activeDrivers.length > 0) {
+              const rows = activeDrivers.map((d) => {
+                const template = bank[Math.floor(Math.random() * bank.length)];
+                return {
+                  schedule_id: nextRace.id,
+                  driver_id: d.id,
+                  question_type: 'pre_race',
+                  question_text: template.replace(/\{track\}/g, nextTrack),
+                  published: true,
+                };
+              });
+
+              const { error: preError } = await supabase
+                .from('interview_questions')
+                .upsert(rows, { onConflict: 'schedule_id,driver_id,question_type' });
+
+              if (!preError) {
+                nextRaceMsg = ` + ${rows.length} pre-race questions assigned for Race ${nextRace.race_number} (${nextTrack})!`;
+                fetchAll(); // Refresh to show new questions
+              }
+            }
+          }
+        } catch (preErr) {
+          console.warn('Auto pre-race question assignment failed:', preErr);
+        }
+      }
+
       const label = type === 'pre_race' ? 'Pre-race preview' : 'Post-race recap';
-      setSuccess(`${label} published to News! "${article.title}"`);
-      setTimeout(() => setSuccess(''), 6000);
+      setSuccess(`${label} published to News! "${article.title}"${nextRaceMsg}`);
+      setTimeout(() => setSuccess(''), 8000);
     } catch (err) {
       console.error('Error generating story:', err);
       setError(err.message || 'Failed to generate story');
