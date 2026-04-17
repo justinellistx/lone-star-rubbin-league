@@ -40,6 +40,7 @@ git add \
   src/pages/Rivalries.jsx \
   src/pages/Home.jsx \
   src/components/TrackIcon.jsx \
+  src/pages/Game.jsx \
   src/pages/Results.jsx \
   src/pages/Schedule.jsx \
   src/pages/Standings.jsx \

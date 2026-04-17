@@ -49,6 +49,7 @@ export default function Layout() {
     { label: 'Incident Heatmap', path: '/heatmap' },
     { label: 'Season Timeline', path: '/timeline' },
     { label: "Pick'em", path: '/pickem' },
+    { label: 'Arcade', path: '/game' },
   ];
 
   const isMoreActive = moreLinks.some((link) => location.pathname === link.path);
