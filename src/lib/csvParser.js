@@ -30,11 +30,10 @@ export function parseIRacingCSV(csvText) {
 
     if (!line) continue;
 
-    // Check if this is a header row (contains "Fin Pos" or similar column names)
+    // Check if this is the results header row (must contain "Fin Pos" — the definitive marker)
     if (
       line.includes('Fin Pos') ||
-      line.includes('Car ID') ||
-      line.includes('Name')
+      (line.includes('Car ID') && line.includes('Cust ID'))
     ) {
       headerRowIndex = i;
       // Parse headers
@@ -45,31 +44,30 @@ export function parseIRacingCSV(csvText) {
       break;
     }
 
-    // Parse metadata key=value pairs
-    const parts = line.split(',');
-    if (parts.length >= 2) {
-      const key = parts[0].trim();
-      const value = parts.slice(1).join(',').trim();
+    // Parse metadata — iRacing uses header row + values row pairs
+    // e.g. Row 0: "Start Time,Track,Series,Hosted Session Name"
+    //      Row 1: "2026-04-17T01:34:53Z","Bristol Motor Speedway",..."
+    const metaKeys = parseCSVLine(line).map((k) => k.trim());
+    const nextLine = lines[i + 1]?.trim();
 
-      if (key.includes('Start Time')) {
-        metadata.startTime = value;
-      } else if (key.includes('Track')) {
-        metadata.track = value;
-      } else if (key.includes('Series')) {
-        metadata.series = value;
-      } else if (key.includes('Session Name')) {
-        metadata.sessionName = value;
-      } else if (key.includes('League Name')) {
-        metadata.leagueName = value;
-      } else if (key.includes('League ID')) {
-        metadata.leagueId = value;
-      } else if (key.includes('League Season')) {
-        metadata.leagueSeason = value;
-      } else if (key.includes('League Season ID')) {
-        metadata.leagueSeasonId = value;
-      } else if (key.includes('Points System')) {
-        metadata.pointsSystem = value;
-      }
+    if (nextLine && !nextLine.includes('Fin Pos')) {
+      const metaValues = parseCSVLine(nextLine).map((v) => v.trim());
+
+      metaKeys.forEach((key, idx) => {
+        const value = metaValues[idx] || '';
+        if (key.includes('Start Time')) metadata.startTime = value;
+        else if (key === 'Track') metadata.track = value;
+        else if (key === 'Series') metadata.series = value;
+        else if (key.includes('Session Name')) metadata.sessionName = value;
+        else if (key === 'League Name') metadata.leagueName = value;
+        else if (key === 'League ID') metadata.leagueId = value;
+        else if (key === 'League Season' && !key.includes('ID')) metadata.leagueSeason = value;
+        else if (key.includes('League Season ID')) metadata.leagueSeasonId = value;
+        else if (key.includes('Points System')) metadata.pointsSystem = value;
+      });
+
+      // Skip the values row since we already consumed it
+      i++;
     }
   }
 
@@ -152,6 +150,7 @@ function normalizeHeader(header) {
     name: 'name',
     start_pos: 'startPos',
     car_number: 'carNumber',
+    'car_#': 'carNumber',
     out_id: 'outId',
     out: 'outReason',
     interval: 'interval',

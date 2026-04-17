@@ -31,6 +31,7 @@ git add \
   src/pages/admin/UploadRace.jsx \
   src/lib/storyGenerator.js \
   src/lib/postRaceQuestions.js \
+  src/lib/csvParser.js \
   src/hooks/useSupabase.js \
   src/App.jsx \
   src/components/Layout.jsx \
