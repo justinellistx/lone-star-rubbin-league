@@ -1,4 +1,4 @@
-/* Layout wrapper */
+/* ===== Layout Wrapper ===== */
 .layout-wrapper {
   display: flex;
   flex-direction: column;
@@ -6,117 +6,127 @@
   background-color: var(--bg-primary);
 }
 
-/* Navigation Bar */
+/* ===== ESPN-Style Navigation ===== */
 .navbar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  background-color: var(--bg-secondary);
-  border-bottom: 2px solid var(--border-color);
   z-index: 1000;
-  backdrop-filter: blur(10px);
-  background-color: rgba(20, 20, 31, 0.95);
+  background-color: var(--espn-black);
 }
 
 .navbar-container {
-  max-width: 1400px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 1rem 1.5rem;
+  padding: 0 1rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  height: 48px;
 }
 
 /* Brand */
 .navbar-brand {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  color: var(--text-primary);
+  gap: 0.5rem;
+  color: var(--text-inverse);
   text-decoration: none;
-  font-weight: 700;
-  font-size: 1.25rem;
-  letter-spacing: 0.05em;
-  transition: all 0.3s ease;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  transition: opacity 0.2s;
   white-space: nowrap;
-  margin-right: 2rem;
+  margin-right: 1.5rem;
+  flex-shrink: 0;
+}
+
+.navbar-brand:hover {
+  opacity: 0.9;
+  text-decoration: none;
+  color: var(--text-inverse);
 }
 
 .brand-icon {
-  color: var(--accent-yellow);
+  color: var(--espn-red);
   flex-shrink: 0;
 }
 
 .brand-text {
-  background: linear-gradient(90deg, var(--accent-yellow), var(--accent-red));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.navbar-brand:hover {
-  transform: translateY(-2px);
+  color: var(--text-inverse);
+  -webkit-text-fill-color: unset;
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
 }
 
 /* Desktop Navigation Links */
 .nav-links-desktop {
   display: flex;
-  gap: 2rem;
+  gap: 0;
   flex: 1;
-  justify-content: center;
-  align-items: center;
+  align-items: stretch;
+  height: 48px;
 }
 
 .nav-link {
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: all 0.3s ease;
+  letter-spacing: 0.03em;
+  transition: all 0.15s ease;
   position: relative;
-  padding: 0.5rem 0;
+  padding: 0 0.75rem;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  border-bottom: 3px solid transparent;
 }
 
 .nav-link:hover {
-  color: var(--text-primary);
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.08);
+  text-decoration: none;
 }
 
 .nav-link.active {
-  color: var(--accent-yellow);
+  color: #ffffff;
+  border-bottom-color: var(--espn-red);
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 .nav-link.active::after,
 .nav-link:hover::after {
-  content: '';
-  position: absolute;
-  bottom: -0.5rem;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background-color: var(--accent-yellow);
-  border-radius: 2px;
+  display: none;
 }
 
 /* Admin Link */
 .nav-actions {
   display: flex;
   align-items: center;
+  margin-left: auto;
 }
 
 .admin-link {
-  background-color: rgba(245, 166, 35, 0.1);
-  border: 1px solid var(--accent-yellow);
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  color: var(--accent-yellow);
+  background-color: var(--espn-red);
+  border: none;
+  padding: 0.375rem 0.875rem;
+  border-radius: 0.2rem;
+  color: #ffffff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  height: auto;
+  border-bottom: none;
 }
 
 .admin-link:hover {
-  background-color: rgba(245, 166, 35, 0.2);
-  color: #f59400;
+  background-color: var(--espn-red-dark);
+  color: #ffffff;
+  text-decoration: none;
 }
 
 .admin-link::after {
@@ -126,6 +136,9 @@
 /* More Dropdown */
 .more-dropdown {
   position: relative;
+  height: 48px;
+  display: flex;
+  align-items: stretch;
 }
 
 .more-btn {
@@ -135,6 +148,9 @@
   border: none;
   cursor: pointer;
   font-family: inherit;
+  height: 48px;
+  padding: 0 0.75rem;
+  border-bottom: 3px solid transparent;
 }
 
 .more-btn::after {
@@ -142,55 +158,56 @@
 }
 
 .more-btn.active {
-  color: var(--accent-yellow);
+  color: #ffffff;
+  border-bottom-color: var(--espn-red);
 }
 
 .more-dropdown-menu {
   position: absolute;
-  top: calc(100% + 0.75rem);
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
+  top: 100%;
+  left: 0;
+  background-color: var(--espn-black);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 3px solid var(--espn-red);
   min-width: 200px;
-  padding: 0.5rem 0;
+  padding: 0.375rem 0;
   z-index: 100;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .more-dropdown-item {
   display: block;
-  padding: 0.625rem 1rem;
-  color: var(--text-secondary);
+  padding: 0.5rem 1rem;
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: all 0.2s ease;
+  letter-spacing: 0.04em;
+  transition: all 0.15s ease;
   white-space: nowrap;
 }
 
 .more-dropdown-item:hover {
-  color: var(--text-primary);
-  background-color: rgba(245, 166, 35, 0.08);
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.08);
+  text-decoration: none;
 }
 
 .more-dropdown-item.active {
-  color: var(--accent-yellow);
-  background-color: rgba(245, 166, 35, 0.12);
+  color: #ffffff;
+  background-color: rgba(208, 0, 0, 0.3);
+  border-left: 3px solid var(--espn-red);
 }
 
 /* Mobile Section Label */
 .mobile-section-label {
-  color: var(--accent-yellow);
-  font-size: 0.75rem;
+  color: var(--espn-red);
+  font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  padding: 0.5rem 1rem 0;
-  opacity: 0.7;
+  padding: 0.75rem 1rem 0.25rem;
 }
 
 /* Mobile Menu Button */
@@ -198,126 +215,212 @@
   display: none;
   background: none;
   border: none;
-  color: var(--text-primary);
+  color: var(--text-inverse);
   cursor: pointer;
   padding: 0.5rem;
-  margin-left: 1rem;
-  transition: color 0.3s ease;
+  margin-left: auto;
+  transition: color 0.2s ease;
 }
 
 .mobile-menu-btn:hover {
-  color: var(--accent-yellow);
+  color: var(--espn-red);
 }
 
 /* Mobile Menu */
 .mobile-menu {
   display: none;
-  background-color: var(--bg-tertiary);
-  border-top: 2px solid var(--border-color);
-  max-height: calc(100vh - 64px);
+  background-color: var(--espn-black);
+  border-top: 3px solid var(--espn-red);
+  max-height: calc(100vh - 48px);
   overflow-y: auto;
 }
 
 .mobile-menu-content {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
-  gap: 0.5rem;
+  padding: 0.5rem;
+  gap: 0;
 }
 
 .mobile-nav-link {
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 1rem;
-  border-radius: 0.375rem;
-  transition: all 0.3s ease;
+  letter-spacing: 0.04em;
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
+  transition: all 0.15s ease;
   display: block;
 }
 
 .mobile-nav-link:hover,
 .mobile-nav-link.active {
-  color: var(--accent-yellow);
-  background-color: rgba(245, 166, 35, 0.1);
+  color: #ffffff;
+  background-color: rgba(208, 0, 0, 0.2);
+  text-decoration: none;
 }
 
 .mobile-menu-divider {
-  margin: 0.5rem 0;
+  margin: 0.25rem 0;
   border: none;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Main Content */
+/* ===== Scoreboard Ticker ===== */
+.ticker-bar {
+  background-color: var(--surface-card);
+  border-bottom: 1px solid var(--border-color);
+  height: 40px;
+  overflow: hidden;
+  position: relative;
+}
+
+.ticker-inner {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.ticker-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 1rem;
+  height: 40px;
+  border-right: 1px solid var(--border-color);
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.ticker-item:hover {
+  background-color: var(--surface-hover);
+}
+
+.ticker-item:last-child {
+  border-right: none;
+}
+
+.ticker-pos {
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  min-width: 1rem;
+  text-align: center;
+}
+
+.ticker-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.ticker-points {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--espn-red);
+}
+
+.ticker-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-inverse);
+  background-color: var(--espn-black);
+  padding: 0 0.875rem;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border-color);
+}
+
+/* ===== Main Content ===== */
 .main-content {
   flex: 1;
-  margin-top: 64px;
-  padding: 2rem 1.5rem;
-  max-width: 1400px;
+  margin-top: 88px; /* 48px nav + 40px ticker */
+  padding: 0;
+  max-width: 100%;
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
 }
 
-/* Footer */
+/* ===== Footer ===== */
 .footer {
-  background-color: var(--bg-secondary);
-  border-top: 2px solid var(--border-color);
-  margin-top: 4rem;
-  padding: 3rem 1.5rem;
+  background-color: var(--espn-black);
+  border-top: 3px solid var(--espn-red);
+  margin-top: 0;
+  padding: 2rem 1rem;
 }
 
 .footer-container {
-  max-width: 1400px;
+  max-width: 1280px;
   margin: 0 auto;
 }
 
 .footer-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  margin-bottom: 2rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid var(--border-color);
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .footer-brand h3 {
-  font-size: 1.25rem;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(90deg, var(--accent-yellow), var(--accent-red));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+  color: var(--text-inverse);
+  -webkit-text-fill-color: unset;
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
 }
 
 .footer-season {
   text-align: right;
 }
 
-.footer-season p {
+.footer-season p,
+.footer-brand .text-secondary {
   margin: 0.25rem 0;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .footer-bottom {
   text-align: center;
-  padding-top: 1rem;
+  padding-top: 0.75rem;
 }
 
 .footer-bottom p {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
 }
 
-/* Responsive Design */
+/* ===== Responsive Design ===== */
 @media (max-width: 768px) {
   .navbar-container {
-    padding: 0.75rem 1rem;
+    padding: 0 0.75rem;
+    height: 48px;
   }
 
   .navbar-brand {
     margin-right: 0;
-    font-size: 1rem;
+    font-size: 0.875rem;
   }
 
   .brand-text {
@@ -342,13 +445,33 @@
   }
 
   .main-content {
-    margin-top: 56px;
-    padding: 1.5rem 1rem;
+    margin-top: 88px;
+    padding: 0;
+  }
+
+  .ticker-bar {
+    height: 36px;
+  }
+
+  .ticker-inner {
+    height: 36px;
+  }
+
+  .ticker-item {
+    height: 36px;
+    padding: 0 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .ticker-label {
+    height: 36px;
+    padding: 0 0.625rem;
+    font-size: 0.625rem;
   }
 
   .footer-content {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1rem;
   }
 
   .footer-season {
@@ -356,29 +479,24 @@
   }
 
   .footer {
-    padding: 2rem 1rem;
+    padding: 1.5rem 0.75rem;
   }
 }
 
 @media (max-width: 640px) {
   .navbar-container {
-    padding: 0.5rem 0.75rem;
-  }
-
-  .main-content {
-    padding: 1rem;
+    padding: 0 0.5rem;
   }
 
   .footer {
-    padding: 1.5rem 0.75rem;
+    padding: 1rem 0.5rem;
   }
 
   .footer-content {
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
-  .footer-brand h3,
-  .footer-season p {
+  .footer-brand h3 {
     font-size: 0.875rem;
   }
 }

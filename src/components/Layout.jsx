@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { NavLink, Link, Outlet, useLocation } from 'react-router-dom';
 import { Menu, X, Trophy, ChevronDown } from 'lucide-react';
+import { useComputedStandings } from '../hooks/useSupabase';
 import '../styles/layout.css';
 
 export default function Layout() {
@@ -8,6 +9,7 @@ export default function Layout() {
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const moreMenuRef = useRef(null);
   const location = useLocation();
+  const { standings } = useComputedStandings();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -54,15 +56,17 @@ export default function Layout() {
 
   const isMoreActive = moreLinks.some((link) => location.pathname === link.path);
 
+  const topDrivers = standings ? standings.slice(0, 9) : [];
+
   return (
     <div className="layout-wrapper">
-      {/* Navigation Bar */}
+      {/* ESPN-Style Navigation Bar */}
       <nav className="navbar">
         <div className="navbar-container">
           {/* Logo/Brand */}
           <Link to="/" className="navbar-brand">
-            <Trophy size={24} className="brand-icon" />
-            <span className="brand-text">LONE STAR RUBBIN'</span>
+            <Trophy size={20} className="brand-icon" />
+            <span className="brand-text">LSR LEAGUE</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -85,7 +89,7 @@ export default function Layout() {
                 className={`nav-link more-btn ${isMoreActive ? 'active' : ''}`}
                 onClick={() => setMoreMenuOpen(!moreMenuOpen)}
               >
-                More <ChevronDown size={14} style={{ marginLeft: '2px', transform: moreMenuOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }} />
+                More <ChevronDown size={12} style={{ marginLeft: '3px', transform: moreMenuOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.2s' }} />
               </button>
               {moreMenuOpen && (
                 <div className="more-dropdown-menu">
@@ -120,9 +124,9 @@ export default function Layout() {
             aria-label="Toggle mobile menu"
           >
             {mobileMenuOpen ? (
-              <X size={24} />
+              <X size={22} />
             ) : (
-              <Menu size={24} />
+              <Menu size={22} />
             )}
           </button>
         </div>
@@ -144,7 +148,7 @@ export default function Layout() {
                 </NavLink>
               ))}
               <hr className="mobile-menu-divider" />
-              <span className="mobile-section-label">Features</span>
+              <span className="mobile-section-label">More</span>
               {moreLinks.map((link) => (
                 <NavLink
                   key={link.path}
@@ -170,6 +174,25 @@ export default function Layout() {
         )}
       </nav>
 
+      {/* Scoreboard Ticker Strip */}
+      <div className="ticker-bar" style={{ marginTop: '48px', position: 'fixed', left: 0, right: 0, zIndex: 999 }}>
+        <div className="ticker-inner">
+          <div className="ticker-label">STANDINGS</div>
+          {topDrivers.map((d, i) => (
+            <Link to={`/drivers/${d.id}`} key={d.id} className="ticker-item" style={{ textDecoration: 'none' }}>
+              <span className="ticker-pos">{i + 1}</span>
+              <span className="ticker-name">{d.name}</span>
+              <span className="ticker-points">{d.points}</span>
+            </Link>
+          ))}
+          {topDrivers.length === 0 && (
+            <div className="ticker-item">
+              <span className="ticker-name" style={{ color: 'var(--text-secondary)' }}>Season data loading...</span>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Main Content */}
       <main className="main-content">
         <Outlet />
@@ -185,7 +208,7 @@ export default function Layout() {
             </div>
             <div className="footer-season">
               <p className="text-secondary">Season 2026</p>
-              <p className="text-secondary">© 2026 All rights reserved</p>
+              <p className="text-secondary">&copy; 2026 All rights reserved</p>
             </div>
           </div>
           <div className="footer-bottom">

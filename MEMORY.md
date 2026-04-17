@@ -58,7 +58,8 @@ An ESPN-style iRacing league website for the **Lone Star Rubbin' League**, a com
 | 6 | Darlington | Mar 26, 2026 | e1000000-...-000000000006 |
 | 7 | Martinsville | Apr 3, 2026 | e1000000-...-000000000007 |
 
-**Next race:** Race 8 — Bristol (Thursday, Apr 16, 2026)
+**Next race:** Race 9 — TBD (check schedule table)
+**Last race uploaded:** Race 7 — Martinsville (Bristol race 8 may have been raced Apr 16)
 
 ### Drivers Who Missed Races
 - Ronald Ramsey: only raced Martinsville (race 7)
@@ -83,13 +84,13 @@ Points are based on **true finishing position** (including AI cars in the field)
 | Most Laps Led | +2 | Led the most laps among league drivers |
 | Lowest Incidents | +2 | Fewest incidents among league drivers (if tied: +1 each) |
 
-### Incident Penalties (per race)
+### Incident Penalties (per race — FIXED Apr 17, 2026)
 | Incidents | Penalty |
 |-----------|---------|
-| 0–20 | No penalty |
-| 21–30 | -1 point |
-| 31–40 | -2 points |
-| 41+ | -3 points |
+| 0–19 | No penalty |
+| 20–29 | -1 point |
+| 30–39 | -2 points |
+| 40+ | -3 points |
 
 Only the highest applicable tier applies (not cumulative).
 
@@ -135,7 +136,7 @@ Only the highest applicable tier applies (not cumulative).
 | Backend/DB | Supabase (PostgreSQL + Auth + RLS) |
 | Charts | Recharts |
 | Icons | Lucide React |
-| CSV Parsing | PapaParse |
+| CSV Parsing | Custom parser (csvParser.js) — handles iRacing paired-row metadata format |
 | Hosting | Vercel (free tier) |
 | Domain | TBD (using .vercel.app for now) |
 
@@ -178,14 +179,30 @@ Only the highest applicable tier applies (not cumulative).
 | `useSchedule(seasonId?)` | Schedule entries | Schedule, Home |
 | `useNews(limit)` | Published news articles | Home |
 | `useDriver(driverId)` | Single driver + results | (available but DriverProfile uses useComputedStandings instead) |
+| `useInterviewQuestions(scheduleId)` | Interview Q&A for a schedule entry | Interviews, InterviewRoom, ManageInterviews |
+| `useNews(limit)` | Published news articles | Home, News |
 
 ### Critical Supabase Notes
 - **FK Ambiguity Bug (FIXED):** `drivers` and `teams` have 3 FKs between them (`drivers.team_id → teams.id`, `teams.driver_1_id → drivers.id`, `teams.driver_2_id → drivers.id`). Must use `!drivers_team_id_fkey` hint in Supabase select queries when joining teams from drivers. Without this, Supabase returns an error and hooks silently fail.
 - **RLS Policies:** All tables have public SELECT (`qual: true`). Admin write requires `auth.role() = 'authenticated'`.
 - **Tables with RLS enabled:** All 18 public tables.
 
-### Database Tables (18 total)
-`admin_users`, `bonus_definitions`, `csv_uploads`, `driver_standings`, `drivers`, `incident_penalties`, `news`, `overall_standings`, `points_structure`, `race_bonuses`, `race_results`, `races`, `schedule`, `seasons`, `stages`, `team_standings`, `teams`, `tracks`
+### Database Tables (20 total)
+`admin_users`, `bonus_definitions`, `csv_uploads`, `driver_standings`, `drivers`, `incident_penalties`, `interview_questions`, `news`, `overall_standings`, `pickem_picks`, `points_structure`, `race_bonuses`, `race_results`, `races`, `schedule`, `seasons`, `stages`, `team_standings`, `teams`, `tracks`
+
+### interview_questions columns
+`id`, `schedule_id` (FK → schedule), `driver_id` (FK → drivers), `question`, `answer` (nullable), `question_type` (pre_race/post_race), `created_at`, `answered_at`
+- Unique constraint on (schedule_id, driver_id, question_type)
+- Unanswered questions stay private; answered ones show publicly
+
+### pickem_picks columns
+`id`, `race_id` (FK → schedule), `picker_id`, `pick_position` (1-5), `picked_driver_id` (FK → drivers), `created_at`
+
+### schedule ↔ races relationship
+- `schedule` = pre-season calendar with own UUIDs (created manually)
+- `races` = created when CSV uploaded, different UUIDs
+- `schedule.race_id` column links to `races.id` after upload
+- `schedule.status` set to 'completed' when race CSV uploaded
 
 ### race_results columns
 `id`, `race_id`, `driver_id`, `finish_position`, `start_position`, `laps_completed`, `laps_led`, `incidents`, `average_lap_time`, `fastest_lap_time`, `fastest_lap_number`, `qualify_time`, `interval`, `out_reason`, `car_id`, `car_name`, `car_number`, `iracing_team_id`, `iracing_cust_id`, `race_points`, `bonus_points`, `penalty_points`, `total_points`, `created_at`
@@ -202,7 +219,9 @@ iracing-league-hub/
 │   ├── lib/
 │   │   ├── supabase.js             # Supabase client init
 │   │   ├── points.js               # NASCAR points calculation engine (pole=P1 only)
-│   │   └── csvParser.js            # iRacing CSV parser (parseIRacingCSV, processRaceForUpload)
+│   │   ├── csvParser.js            # iRacing CSV parser (paired-row metadata format)
+│   │   ├── storyGenerator.js       # ESPN-style article generator (pre-race preview + post-race recap)
+│   │   └── postRaceQuestions.js    # Auto-generates post-race interview questions from race results
 │   ├── pages/
 │   │   ├── Home.jsx                # ESPN-style homepage (live data)
 │   │   ├── Standings.jsx           # Drop system display, stage bonus tracker
@@ -216,18 +235,23 @@ iracing-league-hub/
 │   │   ├── HeadToHead.jsx          # H2H comparison tool
 │   │   ├── WhatIf.jsx              # What-if scenario simulator
 │   │   ├── Awards.jsx              # Season awards
-│   │   ├── Pickem.jsx              # Race predictions
+│   │   ├── Pickem.jsx              # Race predictions (FK → schedule, not races)
+│   │   ├── News.jsx                # Published news/stories
+│   │   ├── Interviews.jsx          # Driver interview cards with pending counts
+│   │   ├── InterviewRoom.jsx       # Private per-driver media room (/interviews/:driverId)
+│   │   ├── Game.jsx                # Embedded arcade game (iframe → lonestarrubbinleague.netlify.app)
 │   │   ├── Timeline.jsx            # Season timeline
 │   │   ├── IncidentHeatmap.jsx     # Incident visualization
 │   │   └── admin/
 │   │       ├── AdminLogin.jsx
 │   │       ├── AdminLayout.jsx
 │   │       ├── AdminDashboard.jsx
-│   │       ├── UploadRace.jsx      # CSV upload + preview (exists but needs UI connection)
+│   │       ├── UploadRace.jsx      # CSV upload + auto-generates post-race interview questions
 │   │       ├── ManageDrivers.jsx
 │   │       ├── ManageSchedule.jsx
-│   │       └── ManageNews.jsx
-│   ├── components/                  # Layout, StandingsTable, DriverCard, etc.
+│   │       ├── ManageNews.jsx
+│   │       └── ManageInterviews.jsx # Single + bulk assign questions, story generation
+│   ├── components/                  # Layout, StandingsTable, DriverCard, TrackIcon, etc.
 │   ├── styles/                      # Component CSS files
 │   ├── App.jsx                      # Router config
 │   └── main.jsx                     # Entry point
@@ -264,10 +288,13 @@ The sandbox cannot `git push` (network blocked), so `.command` scripts are creat
 5. Drag & drop the CSV file
 6. Review parsed preview (positions, points, bonuses calculated automatically)
 7. Select the correct stage and race number
-8. Confirm upload
-9. Standings update — public site reflects new results
+8. Confirm upload → race_results inserted, schedule entry linked & marked completed
+9. **Post-race interview questions auto-generate** from race results (categorized by performance)
+10. Standings update — public site reflects new results
+11. Go to ManageInterviews → generate post-race recap story → auto-publishes to News
+12. After recap, pre-race questions for the next race are auto-assigned
 
-**Note:** `csvParser.js` exists and parses iRacing CSVs. The admin `UploadRace.jsx` page exists but may need verification that the full upload flow works end-to-end with Supabase.
+**CSV Format:** iRacing uses paired-row metadata (keys line + values line), then header + data rows. `csvParser.js` handles this. Header detection keys on `Fin Pos` column.
 
 ---
 
@@ -282,12 +309,18 @@ The sandbox cannot `git push` (network blocked), so `.command` scripts are creat
 | Apr 16, 2026 | Driver Profile always showed "not found" | Checked `driver.races` (wrong field) and fell back to demo data keyed by strings not UUIDs — fully rewritten |
 | Apr 16, 2026 | Power Rankings had 0.00 averages | Referenced `r.finish` instead of `r.finishPosition` — fully rewritten |
 | Apr 16, 2026 | No drop system | Implemented: drop worst 3, DNR injection, full stat exclusion |
+| Apr 17, 2026 | `re.rpc(...).catch is not a function` in story generation | Supabase rpc() returns thenable builder, not Promise. Removed rpc call, use existing race_results fallback |
+| Apr 17, 2026 | Stories used raw points (no drops) | Rewrote standings builder in ManageInterviews to sort & drop worst 3 |
+| Apr 17, 2026 | CSV parser "No race results found" | `line.includes('Name')` matched "Session Name" in metadata. Fixed header detection to require `Fin Pos` specifically |
+| Apr 17, 2026 | `Car #` header not mapping to carNumber | Added `'car_#': 'carNumber'` to header normalization in csvParser.js |
+| Apr 17, 2026 | Incident penalty thresholds off by one tier | Changed `<=` to `<` in calculateIncidentPenalty. Retroactively fixed 7 rows via SQL UPDATE |
+| Apr 17, 2026 | Rivalries page missing Bristol data | Compared drivers by array index instead of race_number. Fixed with raceMap keyed by raceNum |
+| Apr 17, 2026 | CSV metadata parsing broken for iRacing format | Rewrote to handle paired-row format (keys line, values line) using parseCSVLine |
 
 ---
 
 ## What's NOT Built Yet / Pending
 
-- [ ] **CSV race result upload flow verification** — csvParser.js and UploadRace.jsx exist but need end-to-end testing with live Supabase. Bristol race is next.
 - [ ] Stage filtering in standings (currently shows all races, not per-stage)
 - [ ] Real-time auto-refresh when new results are posted
 - [ ] Social media share cards for race results
@@ -314,6 +347,52 @@ The sandbox cannot `git push` (network blocked), so `.command` scripts are creat
 | Apr 16, 2026 | Power Rankings use ALL data (no drops) | User requested: shows real trend even when standings mask decline |
 | Apr 16, 2026 | Lowest incidents requires 9+ races | Prevents drivers with few races from winning clean driving bonus |
 | Apr 16, 2026 | Pole = P1 start only | Not "best start among league" — must actually start first |
+| Apr 17, 2026 | Interview system with private/public split | Unanswered questions private; only answered ones show publicly |
+| Apr 17, 2026 | Story generator pulls ALL site data | Standings, Pick'em, Power Rankings, driver forms/trends/streaks woven into narrative |
+| Apr 17, 2026 | Post-race questions auto-generate on CSV upload | Categorizes drivers by result type (winner, podium, gained/lost spots) |
+| Apr 17, 2026 | Auto-assign pre-race questions after post-race recap | Next race gets random questions from QUESTION_BANK with {track} filled in |
+| Apr 17, 2026 | Retro pixel art track icons (TrackIcon.jsx) | 28 tracks with unique SVG paths, glow effects, fuzzy name matching |
+| Apr 17, 2026 | Arcade game embedded as iframe page | External game at lonestarrubbinleague.netlify.app, accessible via "More > Arcade" nav |
+| Apr 17, 2026 | Incident penalties corrected to 20-29/-1, 30-39/-2, 40+/-3 | Previous thresholds were off by one; 7 historical rows retroactively fixed |
+
+---
+
+## Interview System (added Apr 17, 2026)
+
+### Flow
+1. **Pre-race questions** are auto-assigned after a post-race recap is generated (or manually via admin)
+2. Drivers answer questions in their private media room (`/interviews/:driverId`)
+3. Only answered interviews appear publicly on `/interviews`
+4. **Post-race questions** auto-generate when CSV is uploaded via UploadRace.jsx
+5. Questions are categorized by result: winner, podium, gained/lost spots, high incidents, etc.
+6. Admin can also bulk-assign from a NASCAR-style QUESTION_BANK in ManageInterviews.jsx
+
+### Story Generator (storyGenerator.js — ~600 lines)
+- `generatePreRacePreview()` and `generatePostRaceRecap()` produce ESPN-style articles
+- Pulls data from: interviews, drop-adjusted standings, Pick'em predictions, driver power rankings/forms
+- Sections include: Championship Picture, Fans Have Spoken (Pick'em), Power Rankings Watch, driver quotes
+- Post-race adds: Pick'em accuracy report, hard charger, biggest loser
+- Uses template intro arrays (CONFIDENCE_INTROS, RIVALRY_INTROS, WINNER_INTROS, etc.)
+- Generated stories auto-publish to News page
+
+---
+
+## TrackIcon Component (added Apr 17, 2026)
+
+- Reusable: `<TrackIcon track="Bristol" size={64} showLabel />`
+- 28 tracks with unique SVG paths approximating real layouts
+- `normalizeTrackName()` strips suffixes like "Motor Speedway", "- Dual Pit Roads"
+- Each track has: color accent, SVG path, type (superspeedway/speedway/short/road/street)
+- PixelGrid overlay for retro effect, glow filter behind track shape
+- Used on: Schedule (56px), Results (48px), Home (64px), DriverProfile (28px mini)
+
+---
+
+## Arcade Game (added Apr 17, 2026)
+
+- Route: `/game` — accessible via "More > Arcade" in nav
+- Embeds `https://lonestarrubbinleague.netlify.app/` as full-height iframe
+- Header with Gamepad2 icon and "Lone Star Rubbin' League Arcade" title
 
 ---
 
@@ -326,4 +405,4 @@ VITE_SUPABASE_ANON_KEY=<set in .env and Vercel>
 
 ---
 
-*Last updated: April 16, 2026*
+*Last updated: April 17, 2026*

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Flag } from 'lucide-react';
+import { ChevronRight, Flag, Clock, Trophy, Users } from 'lucide-react';
 import TrackIcon from '../components/TrackIcon';
 import {
   useComputedStandings,
@@ -31,14 +31,13 @@ export default function Home() {
 
   const nextRace = upcomingRaces[0] || null;
   const topStandings = useMemo(() => {
-    return standings ? standings.slice(0, 5) : [];
+    return standings ? standings.slice(0, 10) : [];
   }, [standings]);
 
   // Fallback news if none from DB
   const displayNews = useMemo(() => {
     if (news && news.length > 0) return news;
     if (!latestRace) return [];
-    // Generate fallback news from latest race
     const winner = latestRace.results?.[0];
     return [
       {
@@ -55,336 +54,445 @@ export default function Home() {
     ];
   }, [news, latestRace]);
 
+  const categoryColor = (cat) => {
+    switch (cat) {
+      case 'recap': return '#d00000';
+      case 'highlight': return '#008564';
+      case 'announcement': return '#004b8d';
+      case 'preview': return '#d00000';
+      default: return '#d00000';
+    }
+  };
+
+  const categoryLabel = (cat) => {
+    switch (cat) {
+      case 'recap': return 'Race Recap';
+      case 'highlight': return 'Highlight';
+      case 'announcement': return 'Announcement';
+      case 'preview': return 'Preview';
+      default: return 'News';
+    }
+  };
+
   return (
-    <div className="bg-[#0a0a0f] min-h-screen">
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tight">
-              <span className="text-[#f5a623]">LONE STAR</span>
-              <br />
-              <span className="text-white">RUBBIN' LEAGUE</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-[#8a8a9a] mb-8">
-              2026 Season - Stage 1: NASCAR Cup Series
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <div className="bg-[#14141f] border border-[#2a2a3e] rounded px-6 py-3">
-                <div className="text-[#f5a623] font-bold text-lg">36 Races</div>
-                <div className="text-[#8a8a9a] text-sm">Full Season</div>
-              </div>
-              <div className="bg-[#14141f] border border-[#2a2a3e] rounded px-6 py-3">
-                <div className="text-[#f5a623] font-bold text-lg">9 Drivers</div>
-                <div className="text-[#8a8a9a] text-sm">Competing</div>
-              </div>
-              <div className="bg-[#14141f] border border-[#2a2a3e] rounded px-6 py-3">
-                <div className="text-[#f5a623] font-bold text-lg">4 Teams</div>
-                <div className="text-[#8a8a9a] text-sm">In Action</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+    <div style={{ backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+      {/* Page Content: 2-column ESPN layout */}
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '1.25rem 1rem', display: 'flex', gap: '1.25rem', alignItems: 'flex-start' }}>
 
-      {/* Latest Results */}
-      <section className="py-12 px-4 md:px-8 bg-[#14141f] border-y border-[#2a2a3e]">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-white">Latest Results</h2>
-            <Link
-              to="/results"
-              className="flex items-center gap-2 text-[#f5a623] hover:text-white transition"
-            >
-              View All
-              <ChevronRight size={20} />
-            </Link>
-          </div>
+        {/* ===== LEFT COLUMN: Main Content ===== */}
+        <div style={{ flex: 1, minWidth: 0 }}>
 
-          {raceLoading ? (
-            <div className="bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg p-6">
-              <div className="text-[#8a8a9a]">Loading latest race...</div>
-            </div>
-          ) : latestRace ? (
-            <div className="bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg p-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div>
-                  <div className="text-[#8a8a9a] text-sm uppercase tracking-wide mb-2">
-                    Track
-                  </div>
-                  <div className="text-2xl font-bold text-white">
-                    {latestRace.track}
-                  </div>
+          {/* Next Race Banner */}
+          {!scheduleLoading && nextRace && (
+            <div style={{
+              backgroundColor: '#131313',
+              color: '#fff',
+              padding: '1rem 1.25rem',
+              marginBottom: '1.25rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1.25rem',
+              borderLeft: '4px solid #d00000',
+            }}>
+              <Flag size={20} style={{ color: '#d00000', flexShrink: 0 }} />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#d00000', marginBottom: '0.125rem' }}>
+                  Up Next
                 </div>
-                <div>
-                  <div className="text-[#8a8a9a] text-sm uppercase tracking-wide mb-2">
-                    Winner
-                  </div>
-                  <div className="text-2xl font-bold text-[#f5a623]">
-                    {latestRace.results?.[0]?.name || 'TBD'}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[#8a8a9a] text-sm uppercase tracking-wide mb-2">
-                    Series
-                  </div>
-                  <div className="text-2xl font-bold text-[#2ec4b6]">
-                    {latestRace.series}
-                  </div>
+                <div style={{ fontSize: '1.125rem', fontWeight: 800 }}>
+                  {nextRace.track_name}
                 </div>
               </div>
-
-              <div className="grid grid-cols-3 gap-4 text-sm">
-                <div className="border-t border-[#2a2a3e] pt-4">
-                  <div className="text-[#8a8a9a]">Total Laps</div>
-                  <div className="text-white font-bold">{latestRace.totalLaps}</div>
+              <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.6)', marginBottom: '0.125rem' }}>
+                  Race {nextRace.race_number}
                 </div>
-                <div className="border-t border-[#2a2a3e] pt-4">
-                  <div className="text-[#8a8a9a]">Finishers</div>
-                  <div className="text-white font-bold">{latestRace.results?.length || 0}</div>
-                </div>
-                <div className="border-t border-[#2a2a3e] pt-4">
-                  <div className="text-[#8a8a9a]">Race #</div>
-                  <div className="text-white font-bold">{latestRace.raceNumber}</div>
+                <div style={{ fontSize: '0.875rem', fontWeight: 700 }}>
+                  {new Date(nextRace.race_date).toLocaleDateString('en-US', {
+                    weekday: 'short', month: 'short', day: 'numeric',
+                  })}
                 </div>
               </div>
-            </div>
-          ) : (
-            <div className="bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg p-6">
-              <div className="text-[#8a8a9a]">No completed races yet</div>
+              <TrackIcon track={nextRace.track_name} size={48} />
             </div>
           )}
-        </div>
-      </section>
 
-      {/* Top 5 Standings Mini Table */}
-      <section className="py-12 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-white">Current Standings</h2>
-            <Link
-              to="/standings"
-              className="flex items-center gap-2 text-[#f5a623] hover:text-white transition"
-            >
-              Full Standings
-              <ChevronRight size={20} />
-            </Link>
-          </div>
-
-          <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg overflow-hidden">
-            {standingsLoading ? (
-              <div className="px-6 py-8 text-[#8a8a9a]">Loading standings...</div>
-            ) : topStandings.length > 0 ? (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-[#2a2a3e] bg-[#0a0a0f]">
-                      <th className="px-6 py-4 text-left text-[#8a8a9a] text-xs font-bold uppercase">
-                        Pos
-                      </th>
-                      <th className="px-6 py-4 text-left text-[#8a8a9a] text-xs font-bold uppercase">
-                        Driver
-                      </th>
-                      <th className="px-6 py-4 text-left text-[#8a8a9a] text-xs font-bold uppercase">
-                        Team
-                      </th>
-                      <th className="px-6 py-4 text-right text-[#8a8a9a] text-xs font-bold uppercase">
-                        Points
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {topStandings.map((driver, idx) => (
-                      <tr
-                        key={driver.id}
-                        className="border-b border-[#2a2a3e] hover:bg-[#1a1a2e] transition"
-                      >
-                        <td className="px-6 py-4">
-                          <div className="flex items-center justify-center w-8 h-8 bg-[#f5a623] text-black rounded font-bold">
-                            {idx + 1}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="font-semibold text-white">{driver.name}</div>
-                          <div className="text-sm text-[#8a8a9a]">#{driver.number}</div>
-                        </td>
-                        <td className="px-6 py-4 text-[#8a8a9a]">{driver.team}</td>
-                        <td className="px-6 py-4 text-right">
-                          <span className="font-bold text-[#2ec4b6]">{driver.points}</span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <div className="px-6 py-8 text-[#8a8a9a]">No standings data available</div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Headlines Ticker */}
-      <section className="py-12 px-4 md:px-8 bg-[#14141f] border-y border-[#2a2a3e]">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-white">Headlines</h2>
-            <Link
-              to="/news"
-              className="flex items-center gap-2 text-[#f5a623] hover:text-white transition"
-            >
-              All News
-              <ChevronRight size={20} />
-            </Link>
-          </div>
-
-          {newsLoading ? (
-            <div className="text-[#8a8a9a]">Loading headlines...</div>
-          ) : displayNews && displayNews.length > 0 ? (
-            <div className="space-y-4">
-              {/* Featured article */}
-              <Link
-                to="/news"
-                className="block bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg p-6 hover:border-[#f5a623] transition group"
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  <span
-                    className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full"
-                    style={{
-                      color: displayNews[0].category === 'recap' ? '#e63946'
-                        : displayNews[0].category === 'highlight' ? '#2ec4b6'
-                        : displayNews[0].category === 'announcement' ? '#a78bfa'
-                        : '#f5a623',
-                      backgroundColor: (displayNews[0].category === 'recap' ? '#e63946'
-                        : displayNews[0].category === 'highlight' ? '#2ec4b6'
-                        : displayNews[0].category === 'announcement' ? '#a78bfa'
-                        : '#f5a623') + '15',
-                    }}
-                  >
-                    {displayNews[0].category === 'recap' ? 'Race Recap'
-                      : displayNews[0].category === 'highlight' ? 'Highlight'
-                      : displayNews[0].category === 'announcement' ? 'Announcement'
-                      : 'News'}
-                  </span>
-                  <span className="text-[#8a8a9a] text-xs">
-                    {new Date(displayNews[0].published_at || displayNews[0].created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                  </span>
-                </div>
-                <h3 className="text-2xl font-bold text-white group-hover:text-[#f5a623] transition mb-2">
-                  {displayNews[0].title}
-                </h3>
-                {displayNews[0].subtitle && (
-                  <p className="text-[#f5a623] text-sm">{displayNews[0].subtitle}</p>
-                )}
+          {/* Headlines Section */}
+          <div style={{ marginBottom: '1.25rem' }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              borderBottom: '3px solid #d00000', paddingBottom: '0.5rem', marginBottom: '0.875rem',
+            }}>
+              <h2 style={{ fontSize: '1.125rem', fontWeight: 800, textTransform: 'uppercase', color: '#131313', margin: 0 }}>
+                Top Headlines
+              </h2>
+              <Link to="/news" style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#004b8d', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                All News <ChevronRight size={14} />
               </Link>
+            </div>
 
-              {/* Remaining headlines */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {newsLoading ? (
+              <div style={{ padding: '2rem', color: '#6c6d6f', textAlign: 'center' }}>Loading headlines...</div>
+            ) : displayNews && displayNews.length > 0 ? (
+              <div>
+                {/* Featured headline */}
+                <Link
+                  to="/news"
+                  style={{
+                    display: 'block',
+                    backgroundColor: '#fff',
+                    borderBottom: '1px solid #e0e0e0',
+                    padding: '1rem 1.25rem',
+                    textDecoration: 'none',
+                    transition: 'background-color 0.15s',
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.375rem' }}>
+                    <span style={{
+                      fontSize: '0.625rem', fontWeight: 700, textTransform: 'uppercase',
+                      letterSpacing: '0.06em', color: categoryColor(displayNews[0].category),
+                    }}>
+                      {categoryLabel(displayNews[0].category)}
+                    </span>
+                    <span style={{ fontSize: '0.6875rem', color: '#999' }}>
+                      {new Date(displayNews[0].published_at || displayNews[0].created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </span>
+                  </div>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#131313', margin: 0, lineHeight: 1.25 }}>
+                    {displayNews[0].title}
+                  </h3>
+                  {displayNews[0].subtitle && (
+                    <p style={{ fontSize: '0.875rem', color: '#6c6d6f', marginTop: '0.375rem', margin: '0.375rem 0 0 0' }}>
+                      {displayNews[0].subtitle}
+                    </p>
+                  )}
+                </Link>
+
+                {/* Remaining headlines — tight list */}
                 {displayNews.slice(1).map((item) => (
                   <Link
                     key={item.id}
                     to="/news"
-                    className="bg-[#0a0a0f] border border-[#2a2a3e] rounded-lg p-5 hover:border-[#f5a623] transition group flex gap-4"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.75rem',
+                      backgroundColor: '#fff',
+                      borderBottom: '1px solid #e0e0e0',
+                      padding: '0.75rem 1.25rem',
+                      textDecoration: 'none',
+                      transition: 'background-color 0.15s',
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}
                   >
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span
-                          className="text-xs font-bold uppercase"
-                          style={{
-                            color: item.category === 'recap' ? '#e63946'
-                              : item.category === 'highlight' ? '#2ec4b6'
-                              : item.category === 'announcement' ? '#a78bfa'
-                              : '#f5a623',
-                          }}
-                        >
-                          {item.category || 'news'}
-                        </span>
-                        <span className="text-[#8a8a9a] text-xs">
-                          {new Date(item.published_at || item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                        </span>
-                      </div>
-                      <h4 className="font-bold text-white group-hover:text-[#f5a623] transition text-sm leading-snug">
+                    <div style={{
+                      width: '3px', height: '2rem', backgroundColor: categoryColor(item.category),
+                      flexShrink: 0, borderRadius: '1px',
+                    }} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: '#131313', margin: 0, lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {item.title}
                       </h4>
+                      <span style={{ fontSize: '0.6875rem', color: '#999' }}>
+                        {new Date(item.published_at || item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      </span>
                     </div>
-                    <ChevronRight size={16} className="text-[#8a8a9a] group-hover:text-[#f5a623] transition flex-shrink-0 mt-1" />
+                    <ChevronRight size={14} style={{ color: '#ccc', flexShrink: 0 }} />
                   </Link>
                 ))}
               </div>
+            ) : (
+              <div style={{ padding: '2rem', color: '#6c6d6f', backgroundColor: '#fff', textAlign: 'center' }}>
+                No headlines available
+              </div>
+            )}
+          </div>
+
+          {/* Latest Race Results */}
+          <div style={{ marginBottom: '1.25rem' }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              borderBottom: '3px solid #131313', paddingBottom: '0.5rem', marginBottom: '0.875rem',
+            }}>
+              <h2 style={{ fontSize: '1.125rem', fontWeight: 800, textTransform: 'uppercase', color: '#131313', margin: 0 }}>
+                Latest Results
+              </h2>
+              <Link to="/results" style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#004b8d', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                Full Results <ChevronRight size={14} />
+              </Link>
             </div>
-          ) : (
-            <div className="text-[#8a8a9a]">No headlines available</div>
+
+            {raceLoading ? (
+              <div style={{ padding: '2rem', color: '#6c6d6f', backgroundColor: '#fff', textAlign: 'center' }}>
+                Loading latest race...
+              </div>
+            ) : latestRace ? (
+              <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0' }}>
+                {/* Race header */}
+                <div style={{
+                  backgroundColor: '#131313', color: '#fff', padding: '0.75rem 1.25rem',
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <TrackIcon track={latestRace.track} size={32} />
+                    <div>
+                      <div style={{ fontSize: '1rem', fontWeight: 800 }}>{latestRace.track}</div>
+                      <div style={{ fontSize: '0.6875rem', color: 'rgba(255,255,255,0.6)' }}>
+                        Race {latestRace.raceNumber} &middot; {latestRace.series}
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#d00000' }}>FINAL</div>
+                </div>
+
+                {/* Top 5 results */}
+                <div>
+                  {latestRace.results?.slice(0, 5).map((r, idx) => (
+                    <div
+                      key={r.id || idx}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '0.75rem',
+                        padding: '0.5rem 1.25rem',
+                        borderBottom: idx < 4 ? '1px solid #e0e0e0' : 'none',
+                        backgroundColor: idx === 0 ? '#fffde7' : '#fff',
+                      }}
+                    >
+                      <span style={{
+                        fontSize: '0.875rem', fontWeight: 800,
+                        color: idx === 0 ? '#d00000' : '#131313',
+                        minWidth: '1.5rem', textAlign: 'center',
+                      }}>
+                        {idx + 1}
+                      </span>
+                      <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#131313', flex: 1 }}>
+                        {r.name}
+                      </span>
+                      <span style={{ fontSize: '0.75rem', color: '#6c6d6f' }}>
+                        #{r.carNumber}
+                      </span>
+                      <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#008564' }}>
+                        {r.totalPoints} pts
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* View full results link */}
+                <Link
+                  to="/results"
+                  style={{
+                    display: 'block', textAlign: 'center', padding: '0.625rem',
+                    backgroundColor: '#f5f5f5', fontSize: '0.75rem', fontWeight: 700,
+                    textTransform: 'uppercase', color: '#004b8d', textDecoration: 'none',
+                    borderTop: '1px solid #e0e0e0',
+                  }}
+                >
+                  View Complete Results
+                </Link>
+              </div>
+            ) : (
+              <div style={{ padding: '2rem', color: '#6c6d6f', backgroundColor: '#fff', textAlign: 'center' }}>
+                No completed races yet
+              </div>
+            )}
+          </div>
+
+          {/* Upcoming Schedule */}
+          {upcomingRaces.length > 1 && (
+            <div style={{ marginBottom: '1.25rem' }}>
+              <div style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                borderBottom: '3px solid #131313', paddingBottom: '0.5rem', marginBottom: '0.875rem',
+              }}>
+                <h2 style={{ fontSize: '1.125rem', fontWeight: 800, textTransform: 'uppercase', color: '#131313', margin: 0 }}>
+                  Upcoming Schedule
+                </h2>
+                <Link to="/schedule" style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#004b8d', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                  Full Schedule <ChevronRight size={14} />
+                </Link>
+              </div>
+              <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0' }}>
+                {upcomingRaces.slice(0, 3).map((race, idx) => (
+                  <div
+                    key={race.id}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '1rem',
+                      padding: '0.75rem 1.25rem',
+                      borderBottom: idx < upcomingRaces.length - 1 ? '1px solid #e0e0e0' : 'none',
+                    }}
+                  >
+                    <TrackIcon track={race.track_name} size={36} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#131313' }}>
+                        {race.track_name}
+                      </div>
+                      <div style={{ fontSize: '0.6875rem', color: '#6c6d6f' }}>
+                        Race {race.race_number} &middot; {race.series}
+                      </div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#131313' }}>
+                        {new Date(race.race_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      </div>
+                      <div style={{ fontSize: '0.6875rem', color: '#6c6d6f' }}>
+                        {new Date(race.race_date).toLocaleDateString('en-US', { weekday: 'short' })}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
         </div>
-      </section>
 
-      {/* Upcoming Race Callout */}
-      {scheduleLoading ? (
-        <section className="py-12 px-4 md:px-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="bg-gradient-to-r from-[#14141f] to-[#1a1a2e] border-2 border-[#f5a623] rounded-lg p-8">
-              <div className="text-[#8a8a9a]">Loading schedule...</div>
+        {/* ===== RIGHT SIDEBAR ===== */}
+        <div style={{ width: '300px', flexShrink: 0 }}
+             className="hidden md:block"
+        >
+          {/* Standings Widget */}
+          <div style={{ marginBottom: '1.25rem' }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              borderBottom: '3px solid #d00000', paddingBottom: '0.5rem', marginBottom: 0,
+            }}>
+              <h3 style={{ fontSize: '0.875rem', fontWeight: 800, textTransform: 'uppercase', color: '#131313', margin: 0 }}>
+                Standings
+              </h3>
+              <Link to="/standings" style={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', color: '#004b8d', textDecoration: 'none' }}>
+                Full
+              </Link>
+            </div>
+
+            <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0', borderTop: 'none' }}>
+              {standingsLoading ? (
+                <div style={{ padding: '1.5rem', color: '#6c6d6f', textAlign: 'center', fontSize: '0.8125rem' }}>
+                  Loading...
+                </div>
+              ) : topStandings.length > 0 ? (
+                <>
+                  {/* Header row */}
+                  <div style={{
+                    display: 'flex', alignItems: 'center', padding: '0.375rem 0.75rem',
+                    backgroundColor: '#131313', color: '#fff',
+                    fontSize: '0.625rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
+                  }}>
+                    <span style={{ width: '1.5rem' }}>RK</span>
+                    <span style={{ flex: 1 }}>Driver</span>
+                    <span style={{ width: '3rem', textAlign: 'right' }}>PTS</span>
+                  </div>
+                  {topStandings.map((driver, idx) => (
+                    <Link
+                      to={`/drivers/${driver.id}`}
+                      key={driver.id}
+                      style={{
+                        display: 'flex', alignItems: 'center', padding: '0.5rem 0.75rem',
+                        borderBottom: '1px solid #e0e0e0',
+                        textDecoration: 'none',
+                        backgroundColor: idx === 0 ? '#fffde7' : '#fff',
+                        transition: 'background-color 0.15s',
+                      }}
+                      onMouseEnter={(e) => { if (idx !== 0) e.currentTarget.style.backgroundColor = '#f0f0f0'; }}
+                      onMouseLeave={(e) => { if (idx !== 0) e.currentTarget.style.backgroundColor = '#fff'; }}
+                    >
+                      <span style={{
+                        fontSize: '0.75rem', fontWeight: 800, width: '1.5rem',
+                        color: idx === 0 ? '#d00000' : '#131313',
+                      }}>
+                        {idx + 1}
+                      </span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#131313' }}>
+                          {driver.name}
+                        </div>
+                        <div style={{ fontSize: '0.625rem', color: '#999' }}>
+                          #{driver.number} &middot; {driver.team}
+                        </div>
+                      </div>
+                      <span style={{ fontSize: '0.8125rem', fontWeight: 800, color: '#131313', width: '3rem', textAlign: 'right' }}>
+                        {driver.points}
+                      </span>
+                    </Link>
+                  ))}
+                </>
+              ) : (
+                <div style={{ padding: '1.5rem', color: '#6c6d6f', textAlign: 'center', fontSize: '0.8125rem' }}>
+                  No standings data
+                </div>
+              )}
             </div>
           </div>
-        </section>
-      ) : nextRace ? (
-        <section className="py-12 px-4 md:px-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="bg-gradient-to-r from-[#14141f] to-[#1a1a2e] border-2 border-[#f5a623] rounded-lg p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <Flag className="text-[#f5a623]" size={28} />
-                <h2 className="text-2xl font-bold text-[#f5a623]">NEXT RACE</h2>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="flex items-center gap-4">
-                  <TrackIcon track={nextRace.track_name} size={64} showLabel />
-                  <div>
-                    <div className="text-[#8a8a9a] text-sm uppercase mb-2">Track</div>
-                    <div className="text-3xl font-bold text-white">{nextRace.track_name}</div>
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[#8a8a9a] text-sm uppercase mb-2">Date</div>
-                  <div className="text-3xl font-bold text-[#2ec4b6]">
-                    {new Date(nextRace.race_date).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                    })}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[#8a8a9a] text-sm uppercase mb-2">Series</div>
-                  <div className="text-3xl font-bold text-[#e63946]">{nextRace.series}</div>
-                </div>
-              </div>
+
+          {/* Quick Links */}
+          <div style={{ marginBottom: '1.25rem' }}>
+            <div style={{
+              borderBottom: '3px solid #131313', paddingBottom: '0.5rem', marginBottom: 0,
+            }}>
+              <h3 style={{ fontSize: '0.875rem', fontWeight: 800, textTransform: 'uppercase', color: '#131313', margin: 0 }}>
+                Quick Links
+              </h3>
+            </div>
+            <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0', borderTop: 'none' }}>
+              {[
+                { label: "Pick'em Predictions", path: '/pickem', icon: Trophy },
+                { label: 'Power Rankings', path: '/power-rankings', icon: ChevronRight },
+                { label: 'Head-to-Head', path: '/head-to-head', icon: Users },
+                { label: 'Arcade Game', path: '/game', icon: Flag },
+              ].map((link, idx) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '0.625rem',
+                    padding: '0.625rem 0.75rem',
+                    borderBottom: idx < 3 ? '1px solid #e0e0e0' : 'none',
+                    textDecoration: 'none', fontSize: '0.8125rem', fontWeight: 600,
+                    color: '#131313', transition: 'background-color 0.15s',
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}
+                >
+                  <link.icon size={14} style={{ color: '#d00000' }} />
+                  <span style={{ flex: 1 }}>{link.label}</span>
+                  <ChevronRight size={12} style={{ color: '#ccc' }} />
+                </Link>
+              ))}
             </div>
           </div>
-        </section>
-      ) : null}
 
-      {/* Stats Ticker */}
-      <section className="py-8 px-4 md:px-8 bg-[#0a0a0f] border-y border-[#2a2a3e]">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="text-center">
-              <div className="text-[#f5a623] text-3xl font-bold">36</div>
-              <div className="text-[#8a8a9a] text-sm mt-2">Total Races</div>
+          {/* Season Stats */}
+          <div>
+            <div style={{
+              borderBottom: '3px solid #131313', paddingBottom: '0.5rem', marginBottom: 0,
+            }}>
+              <h3 style={{ fontSize: '0.875rem', fontWeight: 800, textTransform: 'uppercase', color: '#131313', margin: 0 }}>
+                Season Stats
+              </h3>
             </div>
-            <div className="text-center">
-              <div className="text-[#2ec4b6] text-3xl font-bold">3</div>
-              <div className="text-[#8a8a9a] text-sm mt-2">Stages</div>
-            </div>
-            <div className="text-center">
-              <div className="text-[#e63946] text-3xl font-bold">9</div>
-              <div className="text-[#8a8a9a] text-sm mt-2">Drivers</div>
-            </div>
-            <div className="text-center">
-              <div className="text-white text-3xl font-bold">4</div>
-              <div className="text-[#8a8a9a] text-sm mt-2">Teams</div>
+            <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0', borderTop: 'none', padding: '0.75rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                {[
+                  { label: 'Total Races', value: '36', color: '#d00000' },
+                  { label: 'Stages', value: '3', color: '#131313' },
+                  { label: 'Drivers', value: '9', color: '#008564' },
+                  { label: 'Teams', value: '4', color: '#004b8d' },
+                ].map((stat) => (
+                  <div key={stat.label} style={{ textAlign: 'center', padding: '0.5rem' }}>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 800, color: stat.color }}>
+                      {stat.value}
+                    </div>
+                    <div style={{ fontSize: '0.625rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#6c6d6f' }}>
+                      {stat.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 }
