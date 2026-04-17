@@ -37,6 +37,7 @@ git add \
   src/components/Layout.jsx \
   src/pages/admin/AdminLayout.jsx \
   src/pages/Pickem.jsx \
+  src/pages/Rivalries.jsx \
   src/pages/Results.jsx \
   src/pages/Standings.jsx \
   src/pages/DriverProfile.jsx \

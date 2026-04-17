@@ -5,28 +5,37 @@ export default function Rivalries() {
   const { standings, loading: standingsLoading } = useComputedStandings();
   const { data: races, loading: racesLoading } = useRaces();
 
-  // Build driver info from standings
+  // Build driver info from standings — keyed by race_number for proper alignment
   const driverInfo = useMemo(() => {
     if (!standings || standings.length === 0) return {};
 
     const info = {};
     standings.forEach((driver) => {
+      // Build a map of raceNum -> finish position (not an array by index)
+      const raceMap = {};
+      (driver.raceByRace || []).forEach((r) => {
+        raceMap[r.raceNum] = { finish: r.finishPosition || null, track: r.track };
+      });
       info[driver.name] = {
         number: driver.number,
         nickname: driver.nickname || '',
-        finishes: (driver.raceByRace || []).map((r) => r.finishPosition || null),
+        raceMap,
       };
     });
     return info;
   }, [standings]);
 
-  // Build track names from races
-  const trackNames = useMemo(() => {
-    if (!races || races.length === 0) return [];
-    return races.map((r) => r.track_name);
-  }, [races]);
+  // Collect all race numbers that have been run
+  const allRaceNumbers = useMemo(() => {
+    if (!standings || standings.length === 0) return [];
+    const nums = new Set();
+    standings.forEach((d) => {
+      (d.raceByRace || []).forEach((r) => nums.add(r.raceNum));
+    });
+    return [...nums].sort((a, b) => a - b);
+  }, [standings]);
 
-  // Calculate rivalries
+  // Calculate rivalries — compare by race number, not array index
   const rivalries = useMemo(() => {
     const rivalryMap = {};
     const drivers = Object.keys(driverInfo);
@@ -38,48 +47,45 @@ export default function Rivalries() {
       for (let j = i + 1; j < drivers.length; j++) {
         const driver1 = drivers[i];
         const driver2 = drivers[j];
-        const finishes1 = driverInfo[driver1].finishes;
-        const finishes2 = driverInfo[driver2].finishes;
+        const map1 = driverInfo[driver1].raceMap;
+        const map2 = driverInfo[driver2].raceMap;
 
         let closeFinishes = 0;
         let driver1Ahead = 0;
         let driver2Ahead = 0;
         let closestDifference = Infinity;
-        let closestTrackIndex = -1;
+        let closestTrack = '';
         const battleLog = [];
 
-        // Check each race
-        for (let raceIdx = 0; raceIdx < finishes1.length; raceIdx++) {
-          const pos1 = finishes1[raceIdx];
-          const pos2 = finishes2[raceIdx];
+        // Check each race by race number — both must have raced
+        allRaceNumbers.forEach((raceNum) => {
+          const r1 = map1[raceNum];
+          const r2 = map2[raceNum];
+          if (!r1 || !r2 || r1.finish === null || r2.finish === null) return;
 
-          // Skip DNF (null)
-          if (pos1 === null || pos2 === null) continue;
+          const difference = Math.abs(r1.finish - r2.finish);
+          const track = r1.track || r2.track || `Race ${raceNum}`;
 
-          const difference = Math.abs(pos1 - pos2);
-
-          // Within 3 positions
+          // Within 3 positions = a battle
           if (difference <= 3) {
             closeFinishes++;
-            if (pos1 < pos2) {
-              driver1Ahead++;
-            } else if (pos2 < pos1) {
-              driver2Ahead++;
-            }
+            if (r1.finish < r2.finish) driver1Ahead++;
+            else if (r2.finish < r1.finish) driver2Ahead++;
 
             battleLog.push({
-              track: trackNames[raceIdx] || `Race ${raceIdx + 1}`,
-              pos1,
-              pos2,
+              track,
+              raceNum,
+              pos1: r1.finish,
+              pos2: r2.finish,
               difference,
             });
 
             if (difference < closestDifference) {
               closestDifference = difference;
-              closestTrackIndex = raceIdx;
+              closestTrack = track;
             }
           }
-        }
+        });
 
         if (closeFinishes > 0) {
           const key = [driver1, driver2].sort().join('-');
@@ -90,7 +96,7 @@ export default function Rivalries() {
             driver1Ahead,
             driver2Ahead,
             closestDifference,
-            closestTrack: trackNames[closestTrackIndex] || `Race ${closestTrackIndex + 1}`,
+            closestTrack,
             battleLog: battleLog.sort((a, b) => a.difference - b.difference),
           };
         }
@@ -98,7 +104,7 @@ export default function Rivalries() {
     }
 
     return Object.values(rivalryMap).sort((a, b) => b.closeFinishes - a.closeFinishes);
-  }, [driverInfo, trackNames]);
+  }, [driverInfo, allRaceNumbers]);
 
   const getIntensityColor = (closeFinishes) => {
     if (closeFinishes >= 6) return 'from-red-600 to-red-500';
