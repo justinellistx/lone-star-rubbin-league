@@ -198,7 +198,7 @@ Only the highest applicable tier applies (not cumulative).
 - **Tables with RLS enabled:** All 18 public tables.
 
 ### Database Tables (20 total)
-`admin_users`, `bonus_definitions`, `csv_uploads`, `driver_standings`, `drivers`, `incident_penalties`, `interview_questions`, `news`, `overall_standings`, `pickem_picks`, `points_structure`, `race_bonuses`, `race_results`, `races`, `schedule`, `seasons`, `stages`, `team_standings`, `teams`, `tracks`
+`admin_users`, `bonus_definitions`, `csv_uploads`, `driver_standings`, `drivers`, `incident_penalties`, `interview_questions`, `news`, `overall_standings`, `pickem_picks`, `podcasts`, `points_structure`, `race_bonuses`, `race_results`, `races`, `schedule`, `seasons`, `stages`, `team_standings`, `teams`, `tracks`
 
 ### interview_questions columns
 `id`, `schedule_id` (FK → schedule), `driver_id` (FK → drivers), `question`, `answer` (nullable), `question_type` (pre_race/post_race), `created_at`, `answered_at`
@@ -249,6 +249,7 @@ iracing-league-hub/
 │   │   ├── News.jsx                # Published news/stories
 │   │   ├── Interviews.jsx          # Driver interview cards with pending counts
 │   │   ├── InterviewRoom.jsx       # Private per-driver media room (/interviews/:driverId)
+│   │   ├── Podcast.jsx              # Public podcast page + PodcastMiniPlayer export
 │   │   ├── Game.jsx                # Embedded arcade game (iframe → lonestarrubbinleague.netlify.app)
 │   │   ├── Timeline.jsx            # Season timeline
 │   │   ├── IncidentHeatmap.jsx     # Incident visualization
@@ -260,11 +261,15 @@ iracing-league-hub/
 │   │       ├── ManageDrivers.jsx
 │   │       ├── ManageSchedule.jsx
 │   │       ├── ManageNews.jsx
-│   │       └── ManageInterviews.jsx # Single + bulk assign questions, story generation
+│   │       ├── ManageInterviews.jsx # Single + bulk assign questions, story generation
+│   │       └── ManagePodcasts.jsx   # Drag-and-drop MP3 upload, episode metadata, publish toggle
 │   ├── components/                  # Layout, StandingsTable, DriverCard, TrackIcon, etc.
 │   ├── styles/                      # Component CSS files
 │   ├── App.jsx                      # Router config
 │   └── main.jsx                     # Entry point
+├── NotebookLM-League-Context.md     # Persistent NotebookLM source (NO sim references)
+├── NotebookLM-Weekly-Prompt.md      # Weekly Customize field template
+├── PUSH-PODCAST.command             # Push script for podcast files
 ├── MEMORY.md                        # THIS FILE
 ├── supabase-schema.sql
 ├── seed-data.sql
@@ -367,6 +372,9 @@ The sandbox cannot `git push` (network blocked), so `.command` scripts are creat
 | Apr 18, 2026 | ESPN light theme redesign (all 18 pages) | Switched from dark to ESPN.com-style light: white bgs, red nav, ticker strip, 2-col home |
 | Apr 18, 2026 | Standings ticker in Layout | Live driver standings scroll below nav bar — useComputedStandings in Layout.jsx |
 | Apr 18, 2026 | 2-column Home page layout | Left: headlines + results + schedule. Right: standings widget + quick links + stats |
+| Apr 18, 2026 | Podcast system via NotebookLM | AI-generated two-host podcast, MP3 uploaded to Supabase Storage, custom player on /podcast |
+| Apr 18, 2026 | Podcast treats league as REAL racing | NO sim/iRacing references ever — hosts sound like real NASCAR broadcast analysts |
+| Apr 18, 2026 | Podcast weaves in ALL website content | News, power rankings, interviews, Pick'em, H2H stats, awards — creates season-long narrative |
 
 ---
 
@@ -423,33 +431,48 @@ VITE_SUPABASE_ANON_KEY=<set in .env and Vercel>
 ### What This Is
 A weekly AI-generated two-host podcast covering the league, produced via Google NotebookLM's Audio Overview feature. The notebook is named "Lone Star Rubbin' League: Season Briefing and Narrative Guide" and lives in Justin's Google account (justinellis@crossfitwillis.com).
 
+### CRITICAL TONE RULE (decided Apr 18, 2026)
+**The podcast treats the league as REAL racing. No references to iRacing, simulators, video games, AI drivers, or computers — EVER.** The hosts sound like they're covering a regional NASCAR touring series with real drivers in real stock cars. Incidents are crashes and bent fenders, not sim incident counts. Both the context document and weekly prompt enforce this rule.
+
+### Podcast System (website integration)
+- **Supabase table:** `podcasts` (id, episode_number, title, description, track, race_number, date, audio_url, duration_seconds, highlights TEXT[], published, created_at, updated_at)
+- **Supabase Storage bucket:** `podcasts` (public read, authenticated write)
+- **Admin page:** `/admin/podcasts` — ManagePodcasts.jsx with drag-and-drop MP3 upload
+- **Public page:** `/podcast` — custom ESPN-themed audio player (play/pause, seek, skip, volume, download)
+- **Home widget:** PodcastMiniPlayer in the right sidebar
+- **Hook:** `usePodcasts()` in useSupabase.js — fetches published episodes ordered by episode_number DESC
+
 ### Files (in iracing-league-hub/)
-- **`NotebookLM-League-Context.md`** — Persistent source document uploaded to NotebookLM. Contains driver bios/nicknames, team info, all race recaps, current standings, key storylines, pronunciation guide, league culture/tone notes, host persona guidance, and track type reference. **Update this file every week** with new race results, standings changes, and evolving storylines before uploading to NotebookLM.
-- **`NotebookLM-Weekly-Prompt.md`** — Reusable template for the Customize field. Contains bracketed blanks to fill in each week (episode number, track, top finishers with stats, updated standings, storylines to hit, next race preview). Also includes a filled-in Bristol example.
+- **`NotebookLM-League-Context.md`** — Persistent source document uploaded to NotebookLM. Contains CRITICAL TONE RULES (no sim references), driver bios/nicknames, team info, all race recaps, current standings, key storylines, host guidance for incorporating website content (news, power rankings, interviews, Pick'em, head-to-head stats, awards), pronunciation guide, and track type reference. **Update this file every week.**
+- **`NotebookLM-Weekly-Prompt.md`** — Reusable template for the Customize field. Contains bracketed blanks for: race data, NEWS FROM THE WEBSITE (pre/post-race articles), POWER RANKINGS, DRIVER INTERVIEWS (quotes with context), PICK'EM PREDICTIONS, HEAD-TO-HEAD MATCHUPS, AWARDS TRACKER, standings, storylines, and next race preview. The more website content pasted in, the richer the podcast.
+- **`src/pages/Podcast.jsx`** — Public podcast page + PodcastMiniPlayer export
+- **`src/pages/admin/ManagePodcasts.jsx`** — Admin podcast management with MP3 upload
+- **`PUSH-PODCAST.command`** — Git push script for podcast-related files
 
 ### Weekly Steps (what Claude should do each race week)
-1. **Query Supabase** for the latest race results and updated standings:
-   - `SELECT * FROM race_results WHERE race_id = (SELECT id FROM races WHERE race_number = [LATEST]) ORDER BY finish_position`
-   - `SELECT d.display_name, d.car_number FROM drivers d WHERE d.is_active = true`
-   - Pull standings from the website or compute via the existing hooks logic
+1. **Gather ALL website content** for this week:
+   - Race results (finishing order, laps led, incidents, points) from Supabase
+   - Updated standings with drops applied
+   - Power rankings (all-race data, no drops) from the website
+   - Post-race interview quotes (the best/most dramatic ones)
+   - Pre-race interview quotes for next week (if posted)
+   - News article (post-race recap) key points
+   - Pick'em results (who picked whom, accuracy, upsets)
+   - Head-to-head stats (notable matchups)
+   - Awards tracker (milestones, leader changes)
 2. **Update `NotebookLM-League-Context.md`**:
-   - Add new race recap to the "Season Results — Race by Race" section
-   - Update the "Current Standings" table with fresh numbers
-   - Update/add any new storylines in "Key Storylines & Narratives"
-   - Update the schedule checklist (mark latest race as done, identify next race)
-3. **Fill in the weekly steering prompt** using the template from `NotebookLM-Weekly-Prompt.md`:
-   - Episode number, race number, track name, date
-   - Top 5 finishers with start position, laps led, incidents, total points
-   - Notable performances (poles, DNFs, high incidents, big movers)
-   - Updated standings with point changes from previous week
-   - 2-4 storylines to hit
-   - Next race preview (track type, who to watch)
-4. **Open NotebookLM** in Chrome (https://notebooklm.google.com):
-   - Navigate to the "Lone Star Rubbin' League" notebook
-   - Delete the old "Pasted Text" source and add the updated context document as a new source
-   - Click Audio Overview → Customize → paste the filled-in steering prompt
-   - Hit Generate
-5. **Wait for generation** (~3-5 minutes), then the podcast is ready to play/share
+   - Add new race recap
+   - Update standings table
+   - Update/add storylines
+   - Update schedule checklist
+3. **Fill in the weekly steering prompt** from `NotebookLM-Weekly-Prompt.md`:
+   - ALL sections including News, Power Rankings, Interviews, Pick'em, H2H, Awards
+   - The more content provided, the better the podcast
+4. **Open NotebookLM** in Chrome:
+   - Navigate to the notebook
+   - Replace the source document with the updated context doc
+   - Audio Overview → Customize → paste the filled-in steering prompt → Generate
+5. **Upload the MP3** to the league website via Admin > Podcasts
 
 ### NotebookLM Notebook Details
 - **URL:** https://notebooklm.google.com (look for "Lone Star Rubbin' League: Season Briefing and Narrative Guide")
@@ -462,7 +485,8 @@ A weekly AI-generated two-host podcast covering the league, produced via Google 
 - The context document is the "brain" — it needs to be comprehensive and current
 - The steering prompt is the "director" — it tells the hosts what to focus on THIS episode
 - NotebookLM auto-generates the podcast from both inputs combined
-- Driver nicknames in the context doc: Nick="The Machine", Nathan="The Flash", Justin="The Commissioner", Blaine="Mr. Consistent", Jordan="The Dark Horse", Ryan="The Veteran", Terry="The Late Bloomer", Sam="The Newcomer", Ronald="The Ghost"
+- **Website content is KEY** — interviews, news, power rankings, and Pick'em data create drama and narrative depth
+- Driver nicknames: Nick="The Machine", Nathan="The Flash", Justin="The Commissioner", Blaine="Mr. Consistent", Jordan="The Dark Horse", Ryan="The Veteran", Terry="The Late Bloomer", Sam="The Rookie", Ronald="The Ghost"
 
 ---
 
