@@ -885,3 +885,37 @@ export async function submitInterviewAnswer(questionId, answerText) {
   if (error) throw error;
   return true;
 }
+
+// ─── Podcast hooks ───────────────────────────────────────────
+
+/**
+ * Fetch published podcasts ordered by episode number descending.
+ */
+export function usePodcasts() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchPodcasts() {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('podcasts')
+          .select('*')
+          .eq('published', true)
+          .order('episode_number', { ascending: false });
+
+        if (error) throw error;
+        setData(data || []);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPodcasts();
+  }, []);
+
+  return { data, loading, error };
+}

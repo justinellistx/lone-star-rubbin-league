@@ -9,6 +9,7 @@ import {
   Calendar,
   FileText,
   Mic,
+  Headphones,
   Menu,
   X,
   Home,
@@ -83,6 +84,7 @@ export default function AdminLayout() {
     { icon: Calendar, label: 'Schedule', path: '/admin/schedule' },
     { icon: FileText, label: 'News', path: '/admin/news' },
     { icon: Mic, label: 'Interviews', path: '/admin/interviews' },
+    { icon: Headphones, label: 'Podcasts', path: '/admin/podcasts' },
   ];
 
   const isActive = (path) => location.pathname === path;
