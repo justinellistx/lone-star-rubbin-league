@@ -142,19 +142,29 @@ Only the highest applicable tier applies (not cumulative).
 
 ---
 
-## Design Theme (ESPN/NASCAR Dark)
+## Design Theme (ESPN Light — redesigned Apr 18, 2026)
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| bg-primary | `#0a0a0f` | Page backgrounds |
-| bg-card | `#14141f` | Card backgrounds |
-| bg-hover | `#1a1a2e` | Card hover states |
-| gold | `#f5a623` | Primary accent, points, leaders |
-| red | `#e63946` | Incidents, penalties, negatives |
-| teal | `#2ec4b6` | Positive stats, gains, bonuses |
-| text-primary | `#ffffff` | Main text |
-| text-secondary | `#8a8a9a` | Labels, subtitles |
-| borders | `#2a2a3e` | Card borders, dividers |
+| bg-primary | `#f5f5f5` | Page backgrounds |
+| bg-secondary (card) | `#ffffff` | Card backgrounds |
+| bg-hover | `#f0f0f0` | Card hover states |
+| espn-red | `#d00000` | Primary accent, active tabs, buttons, section headers |
+| espn-black | `#131313` | Nav bar, table headers, footer |
+| green | `#008564` | Positive stats, gains, bonuses |
+| red-negative | `#cc0000` | Incidents, penalties, negatives |
+| blue-link | `#004b8d` | Links, "view all" CTAs |
+| text-primary | `#131313` | Main text |
+| text-secondary | `#6c6d6f` | Labels, subtitles |
+| borders | `#e0e0e0` | Card borders, dividers |
+
+### ESPN Layout Features
+- **Nav bar:** Black (#131313) fixed top bar, red bottom-border on active tab, compact 48px height
+- **Ticker strip:** Live standings ticker below nav (driver rank, name, points), scrollable, 40px
+- **Home page:** 2-column layout — left: headlines + results + schedule; right: standings widget + quick links
+- **Section headers:** Bold uppercase with 3px red or black bottom border
+- **Tables:** Dark header row (#131313) with 3px red bottom border, white body rows
+- **Previous dark theme colors archived:** bg #0a0a0f/#14141f/#1a1a2e, gold #f5a623, teal #2ec4b6, red #e63946
 
 ---
 
@@ -337,7 +347,7 @@ The sandbox cannot `git push` (network blocked), so `.command` scripts are creat
 | Date | Decision | Rationale |
 |------|----------|-----------|
 | Apr 7, 2026 | React + Supabase stack | Modern, free hosting, real-time capable |
-| Apr 7, 2026 | ESPN dark theme | Matches broadcast feel Justin wants |
+| Apr 7, 2026 | ESPN dark theme (REPLACED Apr 18) | Originally dark; later switched to ESPN light |
 | Apr 7, 2026 | CSV upload (not API) | Simpler, Justin controls when data goes in |
 | Apr 7, 2026 | Vercel free tier | No cost to start, easy deployment |
 | Apr 16, 2026 | Remove all DEMO hardcoded data | All 15 pages wired to live Supabase data |
@@ -354,6 +364,9 @@ The sandbox cannot `git push` (network blocked), so `.command` scripts are creat
 | Apr 17, 2026 | Retro pixel art track icons (TrackIcon.jsx) | 28 tracks with unique SVG paths, glow effects, fuzzy name matching |
 | Apr 17, 2026 | Arcade game embedded as iframe page | External game at lonestarrubbinleague.netlify.app, accessible via "More > Arcade" nav |
 | Apr 17, 2026 | Incident penalties corrected to 20-29/-1, 30-39/-2, 40+/-3 | Previous thresholds were off by one; 7 historical rows retroactively fixed |
+| Apr 18, 2026 | ESPN light theme redesign (all 18 pages) | Switched from dark to ESPN.com-style light: white bgs, red nav, ticker strip, 2-col home |
+| Apr 18, 2026 | Standings ticker in Layout | Live driver standings scroll below nav bar — useComputedStandings in Layout.jsx |
+| Apr 18, 2026 | 2-column Home page layout | Left: headlines + results + schedule. Right: standings widget + quick links + stats |
 
 ---
 
@@ -405,4 +418,52 @@ VITE_SUPABASE_ANON_KEY=<set in .env and Vercel>
 
 ---
 
-*Last updated: April 17, 2026*
+## Weekly NotebookLM Podcast Workflow (added Apr 18, 2026)
+
+### What This Is
+A weekly AI-generated two-host podcast covering the league, produced via Google NotebookLM's Audio Overview feature. The notebook is named "Lone Star Rubbin' League: Season Briefing and Narrative Guide" and lives in Justin's Google account (justinellis@crossfitwillis.com).
+
+### Files (in iracing-league-hub/)
+- **`NotebookLM-League-Context.md`** — Persistent source document uploaded to NotebookLM. Contains driver bios/nicknames, team info, all race recaps, current standings, key storylines, pronunciation guide, league culture/tone notes, host persona guidance, and track type reference. **Update this file every week** with new race results, standings changes, and evolving storylines before uploading to NotebookLM.
+- **`NotebookLM-Weekly-Prompt.md`** — Reusable template for the Customize field. Contains bracketed blanks to fill in each week (episode number, track, top finishers with stats, updated standings, storylines to hit, next race preview). Also includes a filled-in Bristol example.
+
+### Weekly Steps (what Claude should do each race week)
+1. **Query Supabase** for the latest race results and updated standings:
+   - `SELECT * FROM race_results WHERE race_id = (SELECT id FROM races WHERE race_number = [LATEST]) ORDER BY finish_position`
+   - `SELECT d.display_name, d.car_number FROM drivers d WHERE d.is_active = true`
+   - Pull standings from the website or compute via the existing hooks logic
+2. **Update `NotebookLM-League-Context.md`**:
+   - Add new race recap to the "Season Results — Race by Race" section
+   - Update the "Current Standings" table with fresh numbers
+   - Update/add any new storylines in "Key Storylines & Narratives"
+   - Update the schedule checklist (mark latest race as done, identify next race)
+3. **Fill in the weekly steering prompt** using the template from `NotebookLM-Weekly-Prompt.md`:
+   - Episode number, race number, track name, date
+   - Top 5 finishers with start position, laps led, incidents, total points
+   - Notable performances (poles, DNFs, high incidents, big movers)
+   - Updated standings with point changes from previous week
+   - 2-4 storylines to hit
+   - Next race preview (track type, who to watch)
+4. **Open NotebookLM** in Chrome (https://notebooklm.google.com):
+   - Navigate to the "Lone Star Rubbin' League" notebook
+   - Delete the old "Pasted Text" source and add the updated context document as a new source
+   - Click Audio Overview → Customize → paste the filled-in steering prompt
+   - Hit Generate
+5. **Wait for generation** (~3-5 minutes), then the podcast is ready to play/share
+
+### NotebookLM Notebook Details
+- **URL:** https://notebooklm.google.com (look for "Lone Star Rubbin' League: Season Briefing and Narrative Guide")
+- **Source type:** Pasted Text (the context document)
+- **Audio format:** Deep Dive (two-host conversational)
+- **Language:** English
+- **Customize field:** Where the weekly steering prompt goes (under Audio Overview → Customize)
+
+### Key Notes
+- The context document is the "brain" — it needs to be comprehensive and current
+- The steering prompt is the "director" — it tells the hosts what to focus on THIS episode
+- NotebookLM auto-generates the podcast from both inputs combined
+- Driver nicknames in the context doc: Nick="The Machine", Nathan="The Flash", Justin="The Commissioner", Blaine="Mr. Consistent", Jordan="The Dark Horse", Ryan="The Veteran", Terry="The Late Bloomer", Sam="The Newcomer", Ronald="The Ghost"
+
+---
+
+*Last updated: April 18, 2026*

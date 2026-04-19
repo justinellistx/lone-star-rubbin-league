@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Flag, Clock, Trophy, Users } from 'lucide-react';
+import { ChevronRight, Flag, Clock, Trophy, Users, Mic } from 'lucide-react';
+import { PodcastMiniPlayer } from './Podcast';
 import TrackIcon from '../components/TrackIcon';
 import {
   useComputedStandings,
@@ -425,6 +426,22 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Latest Podcast */}
+          <div style={{ marginBottom: '1.25rem' }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              borderBottom: '3px solid #d00000', paddingBottom: '0.5rem', marginBottom: 0,
+            }}>
+              <h3 style={{ fontSize: '0.875rem', fontWeight: 800, textTransform: 'uppercase', color: '#131313', margin: 0, display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                <Mic size={14} style={{ color: '#d00000' }} /> Podcast
+              </h3>
+              <Link to="/podcast" style={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', color: '#004b8d', textDecoration: 'none' }}>
+                All
+              </Link>
+            </div>
+            <PodcastMiniPlayer />
+          </div>
+
           {/* Quick Links */}
           <div style={{ marginBottom: '1.25rem' }}>
             <div style={{
@@ -439,6 +456,7 @@ export default function Home() {
                 { label: "Pick'em Predictions", path: '/pickem', icon: Trophy },
                 { label: 'Power Rankings', path: '/power-rankings', icon: ChevronRight },
                 { label: 'Head-to-Head', path: '/head-to-head', icon: Users },
+                { label: 'Podcast', path: '/podcast', icon: Mic },
                 { label: 'Arcade Game', path: '/game', icon: Flag },
               ].map((link, idx) => (
                 <Link
@@ -447,7 +465,7 @@ export default function Home() {
                   style={{
                     display: 'flex', alignItems: 'center', gap: '0.625rem',
                     padding: '0.625rem 0.75rem',
-                    borderBottom: idx < 3 ? '1px solid #e0e0e0' : 'none',
+                    borderBottom: idx < 4 ? '1px solid #e0e0e0' : 'none',
                     textDecoration: 'none', fontSize: '0.8125rem', fontWeight: 600,
                     color: '#131313', transition: 'background-color 0.15s',
                   }}

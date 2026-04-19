@@ -19,6 +19,7 @@ import Pickem from './pages/Pickem';
 import Interviews from './pages/Interviews';
 import InterviewRoom from './pages/InterviewRoom';
 import Game from './pages/Game';
+import Podcast from './pages/Podcast';
 import NotFound from './pages/NotFound';
 
 // Admin pages
@@ -55,6 +56,7 @@ function App() {
         <Route path="/interviews" element={<Interviews />} />
         <Route path="/interviews/:driverId" element={<InterviewRoom />} />
         <Route path="/game" element={<Game />} />
+        <Route path="/podcast" element={<Podcast />} />
         <Route path="*" element={<NotFound />} />
       </Route>
 

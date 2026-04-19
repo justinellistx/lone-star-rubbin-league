@@ -39,6 +39,7 @@ export default function Layout() {
     { label: 'Drivers', path: '/drivers' },
     { label: 'Schedule', path: '/schedule' },
     { label: 'News', path: '/news' },
+    { label: 'Podcast', path: '/podcast' },
     { label: 'Interviews', path: '/interviews' },
   ];
 
