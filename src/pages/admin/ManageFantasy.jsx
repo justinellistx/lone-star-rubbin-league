@@ -16,8 +16,8 @@ import { supabase } from '../../lib/supabase';
 // ─── Salary Calculation (same as FantasyDraft component) ─────
 const SALARY_CAP = 10000;
 const ROSTER_SIZE = 3;
-const MAX_SALARY = 6000;
-const MIN_SALARY = 1800;
+const MAX_SALARY = 5000;
+const MIN_SALARY = 1400;
 
 function computeSalaries(drivers, allResults) {
   if (!drivers || !allResults || allResults.length === 0) return {};

@@ -213,7 +213,7 @@ Only the highest applicable tier applies (not cumulative).
 - Unique constraint on (race_id, picker_id, driver_id)
 - DFS-style: $10,000 salary cap, pick 3 drivers per race
 - Salaries auto-calculated client-side from driver performance stats (avg finish, win rate, laps led, incidents)
-- Salary range: $1,800 (worst) to $6,000 (best)
+- Salary range: $1,400 (worst) to $5,000 (best)
 - Scoring: Win +10, Top 3 +7, Top 5 +5, Top 8 +3, Top 10 +1, P11+ -2, Fastest Lap +5, Per Lap Led +0.25, Per Incident -0.10
 - Position scoring is highest-tier-only (not stacking)
 - Lineups hidden from others until race results are in (DraftKings style)
