@@ -179,6 +179,34 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
     return computeSalaries(drivers, allResults);
   }, [drivers, allResults]);
 
+  // ── Compute season fantasy averages per driver from actual race data ──
+  const fantasyAverages = useMemo(() => {
+    if (!drivers || !raceResultsData || raceResultsData.length === 0) return {};
+
+    const avgs = {};
+    drivers.forEach((d) => {
+      let totalPts = 0;
+      let raceCount = 0;
+
+      raceResultsData.forEach((race) => {
+        if (!race.results) return;
+        const result = race.results.find((r) => r.id === d.id);
+        if (!result) return;
+        const score = scoreDriver(result, race.results);
+        totalPts += score.total;
+        raceCount += 1;
+      });
+
+      avgs[d.id] = {
+        total: parseFloat(totalPts.toFixed(2)),
+        races: raceCount,
+        avg: raceCount > 0 ? parseFloat((totalPts / raceCount).toFixed(2)) : 0,
+      };
+    });
+
+    return avgs;
+  }, [drivers, raceResultsData]);
+
   // ── Driver salary cards sorted by salary desc ──
   const driverCards = useMemo(() => {
     if (!drivers) return [];
@@ -186,9 +214,12 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
       .map((d) => ({
         ...d,
         salary: salaries[d.id] || MIN_SALARY,
+        fantasyAvg: fantasyAverages[d.id]?.avg || 0,
+        fantasyTotal: fantasyAverages[d.id]?.total || 0,
+        fantasyRaces: fantasyAverages[d.id]?.races || 0,
       }))
       .sort((a, b) => b.salary - a.salary);
-  }, [drivers, salaries]);
+  }, [drivers, salaries, fantasyAverages]);
 
   // ── Load existing lineup for this picker ──
   useEffect(() => {
@@ -622,18 +653,7 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                     const affordable = canAfford(driver.salary);
                     const disabled = submitted || inRoster || (!affordable && !inRoster);
 
-                    // Quick stats
-                    const driverResults = allResults?.filter((r) => r.driver_id === driver.id) || [];
-                    const avgFinish = driverResults.length > 0
-                      ? (driverResults.reduce((s, r) => s + (r.finish_position || 0), 0) / driverResults.length).toFixed(1)
-                      : '—';
-                    const wins = driverResults.filter((r) => r.finish_position === 1).length;
-                    const avgLapsLed = driverResults.length > 0
-                      ? (driverResults.reduce((s, r) => s + (r.laps_led || 0), 0) / driverResults.length).toFixed(1)
-                      : '0';
-                    const avgIncidents = driverResults.length > 0
-                      ? (driverResults.reduce((s, r) => s + (r.incidents || 0), 0) / driverResults.length).toFixed(1)
-                      : '0';
+                    // Stats from precomputed driverCards (salary, fantasyAvg, etc already on driver object)
 
                     return (
                       <button
@@ -663,23 +683,23 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                           )}
                         </div>
 
-                        {/* Stats */}
-                        <div className="hidden md:flex gap-4 text-xs text-center">
-                          <div>
-                            <div className="text-[#6c6d6f] uppercase" style={{ fontSize: '10px' }}>Avg Fin</div>
-                            <div className="font-bold text-[#131313]">{avgFinish}</div>
+                        {/* Fantasy Avg + Stats */}
+                        <div className="hidden md:flex items-center gap-4 text-xs text-center">
+                          <div className="border-r border-[#e0e0e0] pr-4">
+                            <div className="text-[#6c6d6f] uppercase" style={{ fontSize: '10px' }}>FPTS/Race</div>
+                            <div className={`font-black text-base ${
+                              driver.fantasyAvg >= 10 ? 'text-[#008564]' : driver.fantasyAvg >= 5 ? 'text-[#131313]' : 'text-[#cc0000]'
+                            }`}>
+                              {driver.fantasyAvg.toFixed(1)}
+                            </div>
                           </div>
                           <div>
-                            <div className="text-[#6c6d6f] uppercase" style={{ fontSize: '10px' }}>Wins</div>
-                            <div className="font-bold text-[#131313]">{wins}</div>
+                            <div className="text-[#6c6d6f] uppercase" style={{ fontSize: '10px' }}>Season</div>
+                            <div className="font-bold text-[#131313]">{driver.fantasyTotal.toFixed(1)}</div>
                           </div>
                           <div>
-                            <div className="text-[#6c6d6f] uppercase" style={{ fontSize: '10px' }}>Avg Led</div>
-                            <div className="font-bold text-[#131313]">{avgLapsLed}</div>
-                          </div>
-                          <div>
-                            <div className="text-[#6c6d6f] uppercase" style={{ fontSize: '10px' }}>Avg Inc</div>
-                            <div className="font-bold text-[#131313]">{avgIncidents}</div>
+                            <div className="text-[#6c6d6f] uppercase" style={{ fontSize: '10px' }}>Races</div>
+                            <div className="font-bold text-[#131313]">{driver.fantasyRaces}</div>
                           </div>
                         </div>
 

@@ -133,6 +133,30 @@ export default function ManageFantasy() {
     return map;
   }, [raceResultsData]);
 
+  // Compute fantasy averages per driver from actual race-by-race scoring
+  const fantasyAverages = useMemo(() => {
+    if (!drivers || !raceResultsData) return {};
+    const avgs = {};
+    drivers.forEach((d) => {
+      let totalPts = 0;
+      let raceCount = 0;
+      raceResultsData.forEach((race) => {
+        if (!race.results) return;
+        const result = race.results.find((r) => r.id === d.id);
+        if (!result) return;
+        const score = scoreDriver(result, race.results);
+        totalPts += score.total;
+        raceCount += 1;
+      });
+      avgs[d.id] = {
+        total: parseFloat(totalPts.toFixed(2)),
+        races: raceCount,
+        avg: raceCount > 0 ? parseFloat((totalPts / raceCount).toFixed(2)) : 0,
+      };
+    });
+    return avgs;
+  }, [drivers, raceResultsData]);
+
   // Sorted driver salary list
   const salaryList = useMemo(() => {
     if (!drivers) return [];
@@ -143,16 +167,19 @@ export default function ManageFantasy() {
           ? (results.reduce((s, r) => s + (r.finish_position || 0), 0) / results.length).toFixed(1)
           : '—';
         const wins = results.filter((r) => r.finish_position === 1).length;
+        const fAvg = fantasyAverages[d.id] || { total: 0, races: 0, avg: 0 };
         return {
           ...d,
           salary: salaries[d.id] || MIN_SALARY,
           avgFinish,
           wins,
           races: results.length,
+          fantasyAvg: fAvg.avg,
+          fantasyTotal: fAvg.total,
         };
       })
       .sort((a, b) => b.salary - a.salary);
-  }, [drivers, salaries, allResults]);
+  }, [drivers, salaries, allResults, fantasyAverages]);
 
   // Lineups grouped by race
   const lineupsByRace = useMemo(() => {
@@ -258,6 +285,8 @@ export default function ManageFantasy() {
               <th className="px-4 py-3 text-center text-xs font-bold text-[#8a8a9a] uppercase">Races</th>
               <th className="px-4 py-3 text-center text-xs font-bold text-[#8a8a9a] uppercase">Avg Fin</th>
               <th className="px-4 py-3 text-center text-xs font-bold text-[#8a8a9a] uppercase">Wins</th>
+              <th className="px-4 py-3 text-center text-xs font-bold text-[#f5a623] uppercase">FPTS/Race</th>
+              <th className="px-4 py-3 text-center text-xs font-bold text-[#f5a623] uppercase">Season FPTS</th>
               <th className="px-4 py-3 text-right text-xs font-bold text-[#8a8a9a] uppercase">Salary</th>
             </tr>
           </thead>
@@ -273,9 +302,17 @@ export default function ManageFantasy() {
                 <td className="px-4 py-3 text-center text-[#8a8a9a]">{d.races}</td>
                 <td className="px-4 py-3 text-center text-[#8a8a9a]">{d.avgFinish}</td>
                 <td className="px-4 py-3 text-center text-[#8a8a9a]">{d.wins}</td>
+                <td className="px-4 py-3 text-center">
+                  <span className={`font-bold ${
+                    d.fantasyAvg >= 10 ? 'text-[#2ec4b6]' : d.fantasyAvg >= 5 ? 'text-white' : 'text-[#e63946]'
+                  }`}>
+                    {d.fantasyAvg.toFixed(1)}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-center text-[#8a8a9a]">{d.fantasyTotal.toFixed(1)}</td>
                 <td className="px-4 py-3 text-right">
                   <span className={`font-black text-lg ${
-                    d.salary >= 5000 ? 'text-[#f5a623]' : d.salary >= 3500 ? 'text-[#2ec4b6]' : 'text-[#8a8a9a]'
+                    d.salary >= 4500 ? 'text-[#f5a623]' : d.salary >= 3000 ? 'text-[#2ec4b6]' : 'text-[#8a8a9a]'
                   }`}>
                     ${d.salary.toLocaleString()}
                   </span>
