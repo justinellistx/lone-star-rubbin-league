@@ -886,6 +886,110 @@ export async function submitInterviewAnswer(questionId, answerText) {
   return true;
 }
 
+// ─── Fantasy Draft hooks ─────────────────────────────────────
+
+/**
+ * Fetch fantasy lineups for a specific race
+ */
+export function useFantasyLineups(raceId) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    if (!raceId) { setData(null); setLoading(false); return; }
+
+    async function fetchData() {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('fantasy_lineups')
+          .select('*')
+          .eq('race_id', raceId)
+          .order('picker_id')
+          .order('salary', { ascending: false });
+
+        if (error) throw error;
+        setData(data);
+      } catch (err) {
+        setError(err.message);
+        setData(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [raceId, refreshKey]);
+
+  const refresh = () => setRefreshKey((k) => k + 1);
+  return { data, loading, error, refresh };
+}
+
+/**
+ * Fetch ALL fantasy lineups across all races (for leaderboard)
+ */
+export function useAllFantasyLineups() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('fantasy_lineups')
+          .select('*')
+          .order('race_id')
+          .order('picker_id')
+          .order('salary', { ascending: false });
+
+        if (error) throw error;
+        setData(data);
+      } catch (err) {
+        setError(err.message);
+        setData(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  return { data, loading, error };
+}
+
+/**
+ * Submit a fantasy lineup for a race (upserts — replaces existing lineup)
+ * lineup = [{ driverId: '...', salary: 5800 }, ...]
+ */
+export async function submitFantasyLineup(raceId, pickerId, lineup) {
+  // Delete existing lineup for this picker+race
+  const { error: delError } = await supabase
+    .from('fantasy_lineups')
+    .delete()
+    .eq('race_id', raceId)
+    .eq('picker_id', pickerId);
+
+  if (delError) throw delError;
+
+  // Insert new lineup
+  const rows = lineup.map((entry) => ({
+    race_id: raceId,
+    picker_id: pickerId,
+    driver_id: entry.driverId,
+    salary: entry.salary,
+  }));
+
+  const { error: insError } = await supabase
+    .from('fantasy_lineups')
+    .insert(rows);
+
+  if (insError) throw insError;
+  return true;
+}
+
 // ─── Podcast hooks ───────────────────────────────────────────
 
 /**

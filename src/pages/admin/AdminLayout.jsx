@@ -10,6 +10,7 @@ import {
   FileText,
   Mic,
   Headphones,
+  DollarSign,
   Menu,
   X,
   Home,
@@ -85,6 +86,7 @@ export default function AdminLayout() {
     { icon: FileText, label: 'News', path: '/admin/news' },
     { icon: Mic, label: 'Interviews', path: '/admin/interviews' },
     { icon: Headphones, label: 'Podcasts', path: '/admin/podcasts' },
+    { icon: DollarSign, label: 'Fantasy', path: '/admin/fantasy' },
   ];
 
   const isActive = (path) => location.pathname === path;

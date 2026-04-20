@@ -197,8 +197,8 @@ Only the highest applicable tier applies (not cumulative).
 - **RLS Policies:** All tables have public SELECT (`qual: true`). Admin write requires `auth.role() = 'authenticated'`.
 - **Tables with RLS enabled:** All 18 public tables.
 
-### Database Tables (20 total)
-`admin_users`, `bonus_definitions`, `csv_uploads`, `driver_standings`, `drivers`, `incident_penalties`, `interview_questions`, `news`, `overall_standings`, `pickem_picks`, `podcasts`, `points_structure`, `race_bonuses`, `race_results`, `races`, `schedule`, `seasons`, `stages`, `team_standings`, `teams`, `tracks`
+### Database Tables (22 total)
+`admin_users`, `bonus_definitions`, `csv_uploads`, `driver_standings`, `drivers`, `fantasy_lineups`, `incident_penalties`, `interview_questions`, `news`, `overall_standings`, `pickem_picks`, `podcasts`, `points_structure`, `race_bonuses`, `race_results`, `races`, `schedule`, `seasons`, `stages`, `team_standings`, `teams`, `tracks`
 
 ### interview_questions columns
 `id`, `schedule_id` (FK → schedule), `driver_id` (FK → drivers), `question`, `answer` (nullable), `question_type` (pre_race/post_race), `created_at`, `answered_at`
@@ -207,6 +207,17 @@ Only the highest applicable tier applies (not cumulative).
 
 ### pickem_picks columns
 `id`, `race_id` (FK → schedule), `picker_id`, `pick_position` (1-5), `picked_driver_id` (FK → drivers), `created_at`
+
+### fantasy_lineups columns
+`id`, `race_id` (FK → schedule), `picker_id`, `driver_id`, `salary` (snapshot at pick time), `created_at`
+- Unique constraint on (race_id, picker_id, driver_id)
+- DFS-style: $10,000 salary cap, pick 3 drivers per race
+- Salaries auto-calculated client-side from driver performance stats (avg finish, win rate, laps led, incidents)
+- Salary range: $1,800 (worst) to $6,000 (best)
+- Scoring: Win +10, Top 3 +7, Top 5 +5, Top 8 +3, Top 10 +1, P11+ -2, Fastest Lap +5, Per Lap Led +0.25, Per Incident -0.10
+- Position scoring is highest-tier-only (not stacking)
+- Lineups hidden from others until race results are in (DraftKings style)
+- Locks same time as Pick'em
 
 ### schedule ↔ races relationship
 - `schedule` = pre-season calendar with own UUIDs (created manually)
@@ -245,7 +256,7 @@ iracing-league-hub/
 │   │   ├── HeadToHead.jsx          # H2H comparison tool
 │   │   ├── WhatIf.jsx              # What-if scenario simulator
 │   │   ├── Awards.jsx              # Season awards
-│   │   ├── Pickem.jsx              # Race predictions (FK → schedule, not races)
+│   │   ├── Pickem.jsx              # Race predictions + Fantasy Draft tab (FK → schedule, not races)
 │   │   ├── News.jsx                # Published news/stories
 │   │   ├── Interviews.jsx          # Driver interview cards with pending counts
 │   │   ├── InterviewRoom.jsx       # Private per-driver media room (/interviews/:driverId)
@@ -262,8 +273,11 @@ iracing-league-hub/
 │   │       ├── ManageSchedule.jsx
 │   │       ├── ManageNews.jsx
 │   │       ├── ManageInterviews.jsx # Single + bulk assign questions, story generation
-│   │       └── ManagePodcasts.jsx   # Drag-and-drop MP3 upload, episode metadata, publish toggle
-│   ├── components/                  # Layout, StandingsTable, DriverCard, TrackIcon, etc.
+│   │       ├── ManagePodcasts.jsx   # Drag-and-drop MP3 upload, episode metadata, publish toggle
+│   │       └── ManageFantasy.jsx   # View salaries, manage lineups, monitor fantasy scoring
+│   ├── components/
+│   │   ├── FantasyDraft.jsx         # DFS-style fantasy lineup builder (salary cap, scoring, leaderboard)
+│   │   └── ...                      # Layout, StandingsTable, DriverCard, TrackIcon, etc.
 │   ├── styles/                      # Component CSS files
 │   ├── App.jsx                      # Router config
 │   └── main.jsx                     # Entry point
@@ -375,6 +389,9 @@ The sandbox cannot `git push` (network blocked), so `.command` scripts are creat
 | Apr 18, 2026 | Podcast system via NotebookLM | AI-generated two-host podcast, MP3 uploaded to Supabase Storage, custom player on /podcast |
 | Apr 18, 2026 | Podcast treats league as REAL racing | NO sim/iRacing references ever — hosts sound like real NASCAR broadcast analysts |
 | Apr 18, 2026 | Podcast weaves in ALL website content | News, power rankings, interviews, Pick'em, H2H stats, awards — creates season-long narrative |
+| Apr 20, 2026 | Fantasy Draft DFS system | DraftKings-style: $10k cap, pick 3 drivers, auto-salaries from stats, hidden until results |
+| Apr 20, 2026 | Fantasy salaries auto-calculated client-side | No separate salary table needed — computed from race_results on the fly |
+| Apr 20, 2026 | Fantasy scoring: highest position tier only | Win=10, Top3=7, Top5=5, Top8=3, Top10=1, P11+=-2 (non-stacking) + laps led/incidents/FL |
 
 ---
 

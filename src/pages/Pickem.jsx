@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { AlertCircle, CheckCircle, Trophy, BarChart3, Users, ChevronDown, Lock } from 'lucide-react';
+import { AlertCircle, CheckCircle, Trophy, BarChart3, Users, ChevronDown, Lock, DollarSign } from 'lucide-react';
 import {
   useDrivers,
   useRaceResultsByRace,
@@ -9,6 +9,7 @@ import {
   useAllPickemPicks,
   submitPickemPicks,
 } from '../hooks/useSupabase';
+import FantasyDraft from '../components/FantasyDraft';
 
 const POSITION_LABELS = [
   { key: 1, label: '1st Place', emoji: '\u{1F947}' },
@@ -216,9 +217,9 @@ export default function Pickem() {
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-5xl md:text-6xl font-black text-[#131313] mb-2">PICK'EM</h1>
+          <h1 className="text-5xl md:text-6xl font-black text-[#131313] mb-2">PICK'EM & FANTASY</h1>
           <p className="text-[#6c6d6f] text-lg">
-            {nextRace ? `Predict the top 5 for ${nextTrackName}` : 'No upcoming race scheduled'}
+            {nextRace ? `Predict the top 5 and build your fantasy lineup for ${nextTrackName}` : 'No upcoming race scheduled'}
           </p>
         </div>
 
@@ -247,6 +248,7 @@ export default function Pickem() {
             { key: 'picks', label: 'My Picks', icon: CheckCircle },
             { key: 'percentages', label: 'Who\'s Picking Who', icon: BarChart3 },
             { key: 'leaderboard', label: 'Leaderboard', icon: Trophy },
+            { key: 'fantasy', label: 'Fantasy', icon: DollarSign },
           ].map(({ key, label, icon: Icon }) => (
             <button
               key={key}
@@ -523,6 +525,15 @@ export default function Pickem() {
               </div>
             )}
           </div>
+        )}
+
+        {/* ═══ TAB: Fantasy Draft ═══ */}
+        {activeTab === 'fantasy' && (
+          <FantasyDraft
+            pickerId={pickerId}
+            nextRace={nextRace}
+            drivers={drivers}
+          />
         )}
       </div>
     </div>

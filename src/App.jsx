@@ -32,6 +32,7 @@ import ManageSchedule from './pages/admin/ManageSchedule';
 import ManageNews from './pages/admin/ManageNews';
 import ManageInterviews from './pages/admin/ManageInterviews';
 import ManagePodcasts from './pages/admin/ManagePodcasts';
+import ManageFantasy from './pages/admin/ManageFantasy';
 
 function App() {
   return (
@@ -73,6 +74,7 @@ function App() {
         <Route path="news" element={<ManageNews />} />
         <Route path="interviews" element={<ManageInterviews />} />
         <Route path="podcasts" element={<ManagePodcasts />} />
+        <Route path="fantasy" element={<ManageFantasy />} />
       </Route>
     </Routes>
   );
