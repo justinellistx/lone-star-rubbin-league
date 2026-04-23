@@ -71,8 +71,8 @@ function computeSalaries(drivers, allResults) {
 
 // ─── Scoring Engine (same as FantasyDraft) ───────────────────
 const SCORING = {
-  WIN: 10, TOP_3: 7, TOP_5: 5, TOP_8: 3, TOP_10: 1,
-  OUTSIDE_TOP_10: -2, LAPS_LED_PER: 0.25, INCIDENT_PER: -0.10, FASTEST_LAP: 5,
+  WIN_BONUS: 5, TOP_3: 7, TOP_5: 5, TOP_8: 3, TOP_10: 1,
+  OUTSIDE_TOP_10: -1, LAPS_LED_PER: 0.10, INCIDENT_PER: -0.10, FASTEST_LAP: 3,
 };
 
 function scoreDriver(raceResult, allRaceResults) {
@@ -82,7 +82,7 @@ function scoreDriver(raceResult, allRaceResults) {
   const incidents = raceResult.incidents || 0;
 
   let finishPts = 0;
-  if (pos === 1) finishPts = SCORING.WIN;
+  if (pos === 1) finishPts = SCORING.WIN_BONUS + SCORING.TOP_3;
   else if (pos <= 3) finishPts = SCORING.TOP_3;
   else if (pos <= 5) finishPts = SCORING.TOP_5;
   else if (pos <= 8) finishPts = SCORING.TOP_8;

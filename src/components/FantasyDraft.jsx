@@ -22,15 +22,15 @@ const MIN_SALARY = 1400;
 
 // Fantasy scoring rules
 const SCORING = {
-  WIN: 10,
+  WIN_BONUS: 5,       // Stacks WITH Top 3 — a P1 gets 5 + 7 = 12
   TOP_3: 7,
   TOP_5: 5,
   TOP_8: 3,
   TOP_10: 1,
-  OUTSIDE_TOP_10: -2,
-  LAPS_LED_PER: 0.25,
+  OUTSIDE_TOP_10: -1,
+  LAPS_LED_PER: 0.10,
   INCIDENT_PER: -0.10,
-  FASTEST_LAP: 5,
+  FASTEST_LAP: 3,
 };
 
 // ─── Salary Calculation Engine ───────────────────────────────
@@ -113,9 +113,9 @@ function scoreDriver(raceResult, allRaceResults) {
   const lapsLed = raceResult.lapsLed || raceResult.laps_led || 0;
   const incidents = raceResult.incidents || 0;
 
-  // Position scoring (highest tier only, not stacking)
+  // Position scoring (highest tier only for P2+, win BONUS stacks with Top 3)
   let finishPts = 0;
-  if (pos === 1) finishPts = SCORING.WIN;
+  if (pos === 1) finishPts = SCORING.WIN_BONUS + SCORING.TOP_3; // Win bonus + Top 3 = 12
   else if (pos <= 3) finishPts = SCORING.TOP_3;
   else if (pos <= 5) finishPts = SCORING.TOP_5;
   else if (pos <= 8) finishPts = SCORING.TOP_8;
@@ -618,7 +618,7 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                 <h3 className="text-sm font-bold text-[#d00000] uppercase mb-3">Scoring</h3>
                 <div className="space-y-1 text-xs">
                   {[
-                    { label: 'Win (P1)', value: `+${SCORING.WIN}`, color: '#008564' },
+                    { label: 'Win (P1)', value: `+${SCORING.WIN_BONUS + SCORING.TOP_3} (${SCORING.WIN_BONUS}+${SCORING.TOP_3})`, color: '#008564' },
                     { label: 'Top 3 (P2-P3)', value: `+${SCORING.TOP_3}`, color: '#008564' },
                     { label: 'Top 5 (P4-P5)', value: `+${SCORING.TOP_5}`, color: '#008564' },
                     { label: 'Top 8 (P6-P8)', value: `+${SCORING.TOP_8}`, color: '#008564' },

@@ -44,9 +44,9 @@ New Feature: Fantasy Draft (DraftKings/FanDuel style)
 - \$10,000 salary cap, pick 3 drivers per race
 - Salaries auto-calculated from driver stats (avg finish, wins, laps led, incidents)
 - Top driver caps at \$5,000, worst at \$1,400 — forces real roster decisions
-- Scoring: Win +10, Top 3 +7, Top 5 +5, Top 8 +3, Top 10 +1, P11+ -2
-- Bonus: Fastest Lap +5, Per Lap Led +0.25, Per Incident -0.10
-- Position tiers are highest-only (not stacking)
+- Scoring: Win Bonus +5 (stacks with Top 3 = +12), Top 3 +7, Top 5 +5, Top 8 +3, Top 10 +1, P11+ -1
+- Bonus: Fastest Lap +3, Per Lap Led +0.10, Per Incident -0.10
+- Win stacks with Top 3; all other tiers are highest-only
 - Lineups hidden until race results are in (DraftKings style)
 - Locks same time as Pick'em
 

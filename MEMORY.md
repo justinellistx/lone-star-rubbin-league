@@ -18,7 +18,7 @@ An ESPN-style iRacing league website for the **Lone Star Rubbin' League**, a com
 ## League Structure
 
 - **Season:** 36 races, divided into 3 stages of 12 races each
-- **Stage 1:** Truck Series (currently in progress — 7 of 12 races completed)
+- **Stage 1:** Truck Series (currently in progress — 8 of 12 races completed)
 - **Stage 2:** Xfinity Series
 - **Stage 3:** Next Gen Cup Series
 - **iRacing League ID:** 11660
@@ -214,7 +214,7 @@ Only the highest applicable tier applies (not cumulative).
 - DFS-style: $10,000 salary cap, pick 3 drivers per race
 - Salaries auto-calculated client-side from driver performance stats (avg finish, win rate, laps led, incidents)
 - Salary range: $1,400 (worst) to $5,000 (best)
-- Scoring: Win +10, Top 3 +7, Top 5 +5, Top 8 +3, Top 10 +1, P11+ -2, Fastest Lap +5, Per Lap Led +0.25, Per Incident -0.10
+- Scoring: Win Bonus +5 (stacks with Top 3 for +12 total), Top 3 +7, Top 5 +5, Top 8 +3, Top 10 +1, P11+ -1, Fastest Lap +3, Per Lap Led +0.10, Per Incident -0.10
 - Position scoring is highest-tier-only (not stacking)
 - Lineups hidden from others until race results are in (DraftKings style)
 - Locks same time as Pick'em
@@ -282,7 +282,9 @@ iracing-league-hub/
 │   ├── App.jsx                      # Router config
 │   └── main.jsx                     # Entry point
 ├── NotebookLM-League-Context.md     # Persistent NotebookLM source (NO sim references)
-├── NotebookLM-Weekly-Prompt.md      # Weekly Customize field template
+├── NotebookLM-Weekly-Prompt.md      # Weekly Customize field template (post-race episodes)
+├── NotebookLM-Midweek-Update-Prompt.md  # Midweek Customize field template (Wednesday shows)
+├── Midweek-Update-Week9-Kansas.md   # Example filled-in midweek prompt (Week 9)
 ├── PUSH-PODCAST.command             # Push script for podcast files
 ├── MEMORY.md                        # THIS FILE
 ├── supabase-schema.sql
@@ -507,4 +509,45 @@ A weekly AI-generated two-host podcast covering the league, produced via Google 
 
 ---
 
-*Last updated: April 18, 2026*
+## Midweek Update Podcast Workflow (added Apr 21, 2026)
+
+### Overview
+A **Wednesday** midweek podcast show (10-15 minutes) that bridges the gap between last Thursday's race and this Thursday's upcoming race. Shorter and more analytical than the full post-race episode — focused on standings, power rankings debate, driver storylines, and a prediction for the next race.
+
+### Files
+- **`NotebookLM-Midweek-Update-Prompt.md`** — Reusable template for the midweek Customize field. Contains sections for: quick last-race recap, championship standings with context, power rankings debate, 3-4 driver storylines, Pick'em update for next race, next race preview + AI prediction, episode structure, and tone notes.
+- **`Midweek-Update-Week9-Kansas.md`** — Example filled-in prompt (Week 9, Kansas preview). Use as reference for future midweek episodes.
+
+### Midweek Workflow (Wednesdays)
+1. **Pull fresh data from Supabase:**
+   - Current standings (raw points — drops calculated client-side)
+   - All race results for power rankings (avg finish, wins, laps led, incidents)
+   - Pick'em submissions for the upcoming race
+   - Recent news articles and interview quotes
+2. **Fill in the midweek template** from `NotebookLM-Midweek-Update-Prompt.md`:
+   - Standings with context (gaps, trends, drop implications)
+   - Power rankings vs standings debate points
+   - 3-4 compelling driver storylines with stats and quotes
+   - Pick'em breakdown for next race
+   - Next race preview with track analysis and prediction factors
+3. **Open NotebookLM** → Audio Overview → Customize → paste the filled-in midweek prompt → Generate
+4. **Upload the MP3** to the league website via Admin > Podcasts
+
+### Midweek vs Weekly Podcast Differences
+| Aspect | Weekly (Post-Race) | Midweek (Wednesday) |
+|--------|-------------------|---------------------|
+| Template | `NotebookLM-Weekly-Prompt.md` | `NotebookLM-Midweek-Update-Prompt.md` |
+| Length | 10-15 min (full recap) | 10-15 min (stats & storylines) |
+| Focus | Race recap, interviews, results | Standings, power rankings, preview |
+| Energy | Post-race excitement | Relaxed, analytical, sports radio feel |
+| Prediction | Brief next race tease | Full prediction segment with reasoning |
+| When | After Thursday race | Wednesday before Thursday race |
+
+### Key Decision
+| Date | Decision | Details |
+|------|----------|---------|
+| Apr 21, 2026 | Midweek Update podcast show | Wednesday show bridging last race to next race — standings, power rankings, storylines, prediction |
+
+---
+
+*Last updated: April 21, 2026*
