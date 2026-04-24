@@ -24,7 +24,7 @@ export function getPositionPoints(position) {
 
 /**
  * Calculate bonus points for a race result (among league/human drivers only)
- * Each bonus is worth 2 points. Lowest incidents ties split 1 point each.
+ * Each bonus is worth 2 points. Lowest incidents ties split evenly (e.g., 4-way tie = 0.5 each).
  * @param {Object} result - Single race result
  * @param {Array} allResults - All league member results from the race
  * @returns {Object} Bonuses: {pole, fastestLap, mostLapsLed, lowestIncidents}
@@ -66,11 +66,11 @@ export function calculateBonuses(result, allResults) {
     }
   }
 
-  // Lowest incidents bonus (2 points) - split 1-1 if tied
+  // Lowest incidents bonus (2 points) - split evenly among all tied drivers
   const minIncidents = Math.min(...allResults.map((r) => r.incidents || 0));
   const tiedForLowest = allResults.filter((r) => (r.incidents || 0) === minIncidents);
   if ((result.incidents || 0) === minIncidents) {
-    bonuses.lowestIncidents = tiedForLowest.length > 1 ? 1 : 2;
+    bonuses.lowestIncidents = parseFloat((2 / tiedForLowest.length).toFixed(2));
   }
 
   return bonuses;
