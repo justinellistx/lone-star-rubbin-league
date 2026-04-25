@@ -117,6 +117,23 @@ export default function ManageFantasy() {
   const [deleting, setDeleting] = useState(false);
 
   const salaries = useMemo(() => computeSalaries(drivers, allResults), [drivers, allResults]);
+  const { data: allRacesData } = useRaces();
+
+  // Compute PREVIOUS salaries (excluding latest race) for movement tracking
+  const prevSalaries = useMemo(() => {
+    if (!allResults || !allRacesData || allResults.length === 0) return {};
+    const raceIds = [...new Set(allResults.map((r) => r.race_id))];
+    if (raceIds.length <= 1) return {};
+    const raceMap = {};
+    allRacesData.forEach((race) => { raceMap[race.id] = race; });
+    const sortedRaceIds = raceIds
+      .filter((id) => raceMap[id])
+      .sort((a, b) => (raceMap[b]?.race_number || 0) - (raceMap[a]?.race_number || 0));
+    const latestRaceId = sortedRaceIds[0];
+    const prevResults = allResults.filter((r) => r.race_id !== latestRaceId);
+    if (prevResults.length === 0) return {};
+    return computeSalaries(drivers, prevResults);
+  }, [drivers, allResults, allRacesData]);
 
   // Map schedule to race IDs
   const scheduleToRaceId = useMemo(() => {
@@ -168,9 +185,13 @@ export default function ManageFantasy() {
           : '—';
         const wins = results.filter((r) => r.finish_position === 1).length;
         const fAvg = fantasyAverages[d.id] || { total: 0, races: 0, avg: 0 };
+        const prevSal = prevSalaries[d.id] || null;
+        const currSal = salaries[d.id] || MIN_SALARY;
         return {
           ...d,
-          salary: salaries[d.id] || MIN_SALARY,
+          salary: currSal,
+          prevSalary: prevSal,
+          salaryDelta: prevSal !== null ? currSal - prevSal : 0,
           avgFinish,
           wins,
           races: results.length,
@@ -179,7 +200,7 @@ export default function ManageFantasy() {
         };
       })
       .sort((a, b) => b.salary - a.salary);
-  }, [drivers, salaries, allResults, fantasyAverages]);
+  }, [drivers, salaries, prevSalaries, allResults, fantasyAverages]);
 
   // Lineups grouped by race
   const lineupsByRace = useMemo(() => {
@@ -288,6 +309,7 @@ export default function ManageFantasy() {
               <th className="px-4 py-3 text-center text-xs font-bold text-[#f5a623] uppercase">FPTS/Race</th>
               <th className="px-4 py-3 text-center text-xs font-bold text-[#f5a623] uppercase">Season FPTS</th>
               <th className="px-4 py-3 text-right text-xs font-bold text-[#8a8a9a] uppercase">Salary</th>
+              <th className="px-4 py-3 text-right text-xs font-bold text-[#8a8a9a] uppercase">Change</th>
             </tr>
           </thead>
           <tbody>
@@ -316,6 +338,17 @@ export default function ManageFantasy() {
                   }`}>
                     ${d.salary.toLocaleString()}
                   </span>
+                </td>
+                <td className="px-4 py-3 text-right">
+                  {d.salaryDelta !== 0 && d.prevSalary !== null ? (
+                    <span className={`font-bold text-sm ${
+                      d.salaryDelta > 0 ? 'text-[#2ec4b6]' : 'text-[#e63946]'
+                    }`}>
+                      {d.salaryDelta > 0 ? '▲' : '▼'} ${Math.abs(d.salaryDelta).toLocaleString()}
+                    </span>
+                  ) : (
+                    <span className="text-[#8a8a9a] text-sm">—</span>
+                  )}
                 </td>
               </tr>
             ))}

@@ -179,6 +179,40 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
     return computeSalaries(drivers, allResults);
   }, [drivers, allResults]);
 
+  // ── Compute PREVIOUS salaries (excluding latest race) for movement tracking ──
+  const prevSalaries = useMemo(() => {
+    if (!allResults || !allRaces || allResults.length === 0) return {};
+    // Find the latest completed race_id
+    const raceIds = [...new Set(allResults.map((r) => r.race_id))];
+    if (raceIds.length <= 1) return {}; // Only 1 race = no previous data
+    // Find the race with the highest race_number
+    const raceMap = {};
+    allRaces.forEach((race) => { raceMap[race.id] = race; });
+    const sortedRaceIds = raceIds
+      .filter((id) => raceMap[id])
+      .sort((a, b) => (raceMap[b]?.race_number || 0) - (raceMap[a]?.race_number || 0));
+    const latestRaceId = sortedRaceIds[0];
+    // Exclude latest race results
+    const prevResults = allResults.filter((r) => r.race_id !== latestRaceId);
+    if (prevResults.length === 0) return {};
+    return computeSalaries(drivers, prevResults);
+  }, [drivers, allResults, allRaces]);
+
+  // ── Salary deltas (current - previous) ──
+  const salaryDeltas = useMemo(() => {
+    if (!salaries || Object.keys(prevSalaries).length === 0) return {};
+    const deltas = {};
+    Object.keys(salaries).forEach((driverId) => {
+      const curr = salaries[driverId] || MIN_SALARY;
+      const prev = prevSalaries[driverId] || MIN_SALARY;
+      deltas[driverId] = curr - prev;
+    });
+    return deltas;
+  }, [salaries, prevSalaries]);
+
+  // ── Sort state for driver pool ──
+  const [driverSort, setDriverSort] = useState('salary'); // 'salary' | 'movers' | 'value'
+
   // ── Compute season fantasy averages per driver from actual race data ──
   const fantasyAverages = useMemo(() => {
     if (!drivers || !raceResultsData || raceResultsData.length === 0) return {};
@@ -207,19 +241,29 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
     return avgs;
   }, [drivers, raceResultsData]);
 
-  // ── Driver salary cards sorted by salary desc ──
+  // ── Driver salary cards sorted by selected sort ──
   const driverCards = useMemo(() => {
     if (!drivers) return [];
-    return drivers
-      .map((d) => ({
-        ...d,
-        salary: salaries[d.id] || MIN_SALARY,
-        fantasyAvg: fantasyAverages[d.id]?.avg || 0,
-        fantasyTotal: fantasyAverages[d.id]?.total || 0,
-        fantasyRaces: fantasyAverages[d.id]?.races || 0,
-      }))
-      .sort((a, b) => b.salary - a.salary);
-  }, [drivers, salaries, fantasyAverages]);
+    const cards = drivers.map((d) => ({
+      ...d,
+      salary: salaries[d.id] || MIN_SALARY,
+      prevSalary: prevSalaries[d.id] || null,
+      salaryDelta: salaryDeltas[d.id] || 0,
+      fantasyAvg: fantasyAverages[d.id]?.avg || 0,
+      fantasyTotal: fantasyAverages[d.id]?.total || 0,
+      fantasyRaces: fantasyAverages[d.id]?.races || 0,
+    }));
+
+    if (driverSort === 'movers') {
+      // Sort by absolute delta descending (biggest changes first)
+      return cards.sort((a, b) => Math.abs(b.salaryDelta) - Math.abs(a.salaryDelta));
+    } else if (driverSort === 'value') {
+      // Sort by fantasy avg / salary ratio (best value = high pts per $1k)
+      const getVal = (d) => d.salary > 0 ? (d.fantasyAvg / (d.salary / 1000)) : 0;
+      return cards.sort((a, b) => getVal(b) - getVal(a));
+    }
+    return cards.sort((a, b) => b.salary - a.salary);
+  }, [drivers, salaries, prevSalaries, salaryDeltas, fantasyAverages, driverSort]);
 
   // ── Load existing lineup for this picker ──
   useEffect(() => {
@@ -640,11 +684,32 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
             {/* Driver Pool */}
             <div className="lg:col-span-2">
               <div className="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden">
-                <div className="p-4 border-b border-[#e0e0e0] flex items-center justify-between">
-                  <h3 className="text-sm font-bold text-[#131313] uppercase">Driver Pool</h3>
-                  <span className="text-xs text-[#6c6d6f]">
-                    Salary Cap: ${SALARY_CAP.toLocaleString()} | Pick {ROSTER_SIZE}
-                  </span>
+                <div className="p-4 border-b border-[#e0e0e0]">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-bold text-[#131313] uppercase">Driver Pool</h3>
+                    <span className="text-xs text-[#6c6d6f]">
+                      Salary Cap: ${SALARY_CAP.toLocaleString()} | Pick {ROSTER_SIZE}
+                    </span>
+                  </div>
+                  <div className="flex gap-1">
+                    {[
+                      { key: 'salary', label: 'By Salary' },
+                      { key: 'movers', label: 'Biggest Movers' },
+                      { key: 'value', label: 'Best Value' },
+                    ].map(({ key, label }) => (
+                      <button
+                        key={key}
+                        onClick={() => setDriverSort(key)}
+                        className={`px-3 py-1 rounded text-xs font-bold transition ${
+                          driverSort === key
+                            ? 'bg-[#131313] text-white'
+                            : 'bg-[#f5f5f5] text-[#6c6d6f] hover:bg-[#e0e0e0]'
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="divide-y divide-[#e0e0e0]">
@@ -703,9 +768,19 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                           </div>
                         </div>
 
-                        {/* Salary */}
+                        {/* Salary + Movement */}
                         <div className={`text-right ${inRoster ? 'text-[#008564]' : 'text-[#131313]'}`}>
                           <div className="text-lg font-black">${driver.salary.toLocaleString()}</div>
+                          {driver.salaryDelta !== 0 && driver.prevSalary !== null ? (
+                            <div className={`text-xs font-bold flex items-center justify-end gap-0.5 ${
+                              driver.salaryDelta > 0 ? 'text-[#008564]' : 'text-[#cc0000]'
+                            }`}>
+                              <span>{driver.salaryDelta > 0 ? '▲' : '▼'}</span>
+                              <span>${Math.abs(driver.salaryDelta).toLocaleString()}</span>
+                            </div>
+                          ) : driver.prevSalary !== null ? (
+                            <div className="text-xs text-[#6c6d6f]">—</div>
+                          ) : null}
                           {inRoster && <div className="text-xs text-[#008564] font-bold">IN LINEUP</div>}
                           {!inRoster && !affordable && selectedRoster.length < ROSTER_SIZE && (
                             <div className="text-xs text-[#cc0000]">Can't afford</div>
