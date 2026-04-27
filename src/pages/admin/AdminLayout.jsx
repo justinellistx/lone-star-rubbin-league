@@ -11,6 +11,7 @@ import {
   Mic,
   Headphones,
   DollarSign,
+  Trophy,
   Menu,
   X,
   Home,
@@ -87,6 +88,7 @@ export default function AdminLayout() {
     { icon: Mic, label: 'Interviews', path: '/admin/interviews' },
     { icon: Headphones, label: 'Podcasts', path: '/admin/podcasts' },
     { icon: DollarSign, label: 'Fantasy', path: '/admin/fantasy' },
+    { icon: Trophy, label: 'Trophy Room', path: '/admin/trophy-room' },
   ];
 
   const isActive = (path) => location.pathname === path;

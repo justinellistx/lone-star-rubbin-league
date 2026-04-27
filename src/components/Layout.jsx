@@ -44,6 +44,7 @@ export default function Layout() {
   ];
 
   const moreLinks = [
+    { label: 'Trophy Room', path: '/trophy-room' },
     { label: 'Head-to-Head', path: '/head-to-head' },
     { label: 'Power Rankings', path: '/power-rankings' },
     { label: 'Awards', path: '/awards' },

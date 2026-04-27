@@ -20,6 +20,7 @@ import Interviews from './pages/Interviews';
 import InterviewRoom from './pages/InterviewRoom';
 import Game from './pages/Game';
 import Podcast from './pages/Podcast';
+import TrophyRoom from './pages/TrophyRoom';
 import NotFound from './pages/NotFound';
 
 // Admin pages
@@ -33,6 +34,7 @@ import ManageNews from './pages/admin/ManageNews';
 import ManageInterviews from './pages/admin/ManageInterviews';
 import ManagePodcasts from './pages/admin/ManagePodcasts';
 import ManageFantasy from './pages/admin/ManageFantasy';
+import ManageTrophyRoom from './pages/admin/ManageTrophyRoom';
 
 function App() {
   return (
@@ -59,6 +61,7 @@ function App() {
         <Route path="/interviews/:driverId" element={<InterviewRoom />} />
         <Route path="/game" element={<Game />} />
         <Route path="/podcast" element={<Podcast />} />
+        <Route path="/trophy-room" element={<TrophyRoom />} />
         <Route path="*" element={<NotFound />} />
       </Route>
 
@@ -75,6 +78,7 @@ function App() {
         <Route path="interviews" element={<ManageInterviews />} />
         <Route path="podcasts" element={<ManagePodcasts />} />
         <Route path="fantasy" element={<ManageFantasy />} />
+        <Route path="trophy-room" element={<ManageTrophyRoom />} />
       </Route>
     </Routes>
   );
