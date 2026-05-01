@@ -138,6 +138,12 @@ export default function Standings() {
                         Points
                       </th>
                       <th className="px-4 py-4 text-right text-[#6c6d6f] text-xs font-bold uppercase">
+                        Bonus
+                      </th>
+                      <th className="px-4 py-4 text-right text-[#6c6d6f] text-xs font-bold uppercase">
+                        Pen
+                      </th>
+                      <th className="px-4 py-4 text-right text-[#6c6d6f] text-xs font-bold uppercase">
                         Dropped
                       </th>
                       <th className="px-4 py-4 text-right text-[#6c6d6f] text-xs font-bold uppercase">
@@ -188,6 +194,20 @@ export default function Standings() {
                             <div className="text-xs text-[#6c6d6f]">
                               {driver.rawPoints} raw
                             </div>
+                          )}
+                        </td>
+                        <td className="px-4 py-4 text-right">
+                          {driver.bonusPoints > 0 ? (
+                            <span className="text-[#008564] font-semibold">+{driver.bonusPoints % 1 === 0 ? driver.bonusPoints : driver.bonusPoints.toFixed(1)}</span>
+                          ) : (
+                            <span className="text-[#6c6d6f]">—</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-4 text-right">
+                          {driver.penaltyPoints < 0 ? (
+                            <span className="text-[#cc0000] font-semibold">{driver.penaltyPoints}</span>
+                          ) : (
+                            <span className="text-[#6c6d6f]">—</span>
                           )}
                         </td>
                         <td className="px-4 py-4 text-right">
