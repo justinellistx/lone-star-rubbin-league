@@ -62,12 +62,12 @@ export default function Layout() {
 
   return (
     <div className="layout-wrapper">
-      {/* ESPN-Style Navigation Bar */}
+      {/* NASCAR.com-Style Navigation Bar */}
       <nav className="navbar">
         <div className="navbar-container">
           {/* Logo/Brand */}
           <Link to="/" className="navbar-brand">
-            <Trophy size={20} className="brand-icon" />
+            <Trophy size={22} className="brand-icon" />
             <span className="brand-text">LSR LEAGUE</span>
           </Link>
 
@@ -176,8 +176,8 @@ export default function Layout() {
         )}
       </nav>
 
-      {/* Scoreboard Ticker Strip */}
-      <div className="ticker-bar" style={{ marginTop: '48px', position: 'fixed', left: 0, right: 0, zIndex: 999 }}>
+      {/* Standings Ticker Strip */}
+      <div className="ticker-bar" style={{ marginTop: '52px', position: 'fixed', left: 0, right: 0, zIndex: 999 }}>
         <div className="ticker-inner">
           <div className="ticker-label">STANDINGS</div>
           {topDrivers.map((d, i) => (

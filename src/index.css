@@ -1,25 +1,28 @@
 @import "tailwindcss";
 
 :root {
-  /* ESPN Light Theme */
-  --bg-primary: #f5f5f5;
-  --bg-secondary: #ffffff;
+  /* NASCAR.com Color Palette */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f4f4f4;
   --bg-tertiary: #eaeaea;
-  --bg-dark: #1a1a1a;
+  --bg-dark: #1a1a2e;
 
-  /* ESPN Signature Colors */
-  --espn-red: #d00000;
-  --espn-red-dark: #a30000;
-  --espn-black: #131313;
+  /* NASCAR Signature Colors */
+  --nascar-blue: #003DA5;
+  --nascar-blue-dark: #002d7a;
+  --nascar-blue-light: #0051d5;
+  --nascar-black: #1a1a2e;
+  --nascar-yellow: #ffcf00;
+  --nascar-red: #c8102e;
 
   /* Accent Colors */
-  --accent-yellow: #f5a623;
-  --accent-red: #d00000;
+  --accent-yellow: #ffcf00;
+  --accent-red: #c8102e;
   --accent-green: #008564;
-  --accent-blue: #004b8d;
+  --accent-blue: #003DA5;
 
   /* Text */
-  --text-primary: #131313;
+  --text-primary: #1a1a2e;
   --text-secondary: #6c6d6f;
   --text-tertiary: #999999;
   --text-inverse: #ffffff;
@@ -30,8 +33,13 @@
 
   /* Surfaces */
   --surface-card: #ffffff;
-  --surface-hover: #f0f0f0;
-  --surface-active: #e8e8e8;
+  --surface-hover: #f7f7f7;
+  --surface-active: #efefef;
+
+  /* Legacy aliases for backward compatibility */
+  --espn-red: #003DA5;
+  --espn-red-dark: #002d7a;
+  --espn-black: #1a1a2e;
 }
 
 * {
@@ -43,7 +51,7 @@
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -59,20 +67,20 @@ html {
 .card {
   background-color: var(--surface-card);
   border: 1px solid var(--border-color);
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   padding: 1.5rem;
   transition: all 0.2s ease;
 }
 
 .card:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border-color: var(--border-heavy);
 }
 
 .card-compact {
   background-color: var(--surface-card);
   border: 1px solid var(--border-color);
-  border-radius: 0.25rem;
+  border-radius: 0.375rem;
   padding: 1rem;
 }
 
@@ -80,7 +88,7 @@ html {
 .stat-card {
   background: var(--surface-card);
   border: 1px solid var(--border-color);
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   padding: 1.25rem;
   transition: all 0.2s ease;
   position: relative;
@@ -94,11 +102,11 @@ html {
   left: 0;
   right: 0;
   height: 3px;
-  background: var(--espn-red);
+  background: var(--nascar-blue);
 }
 
 .stat-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 61, 165, 0.12);
   transform: translateY(-1px);
 }
 
@@ -120,12 +128,12 @@ html {
 
 /* ===== Buttons ===== */
 .btn-primary {
-  background-color: var(--espn-red);
+  background-color: var(--nascar-blue);
   color: #fff;
   font-weight: 700;
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 0.25rem;
+  border-radius: 0.375rem;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.875rem;
@@ -134,7 +142,7 @@ html {
 }
 
 .btn-primary:hover {
-  background-color: var(--espn-red-dark);
+  background-color: var(--nascar-blue-dark);
 }
 
 .btn-primary:active {
@@ -144,10 +152,10 @@ html {
 .btn-secondary {
   background-color: var(--surface-card);
   color: var(--text-primary);
-  border: 1px solid var(--border-heavy);
+  border: 2px solid var(--nascar-blue);
   font-weight: 600;
   padding: 0.625rem 1.5rem;
-  border-radius: 0.25rem;
+  border-radius: 0.375rem;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.875rem;
@@ -156,8 +164,8 @@ html {
 }
 
 .btn-secondary:hover {
-  background-color: var(--surface-hover);
-  border-color: var(--text-secondary);
+  background-color: rgba(0, 61, 165, 0.05);
+  border-color: var(--nascar-blue-dark);
 }
 
 .btn-danger {
@@ -166,7 +174,7 @@ html {
   font-weight: 700;
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 0.25rem;
+  border-radius: 0.375rem;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.875rem;
@@ -175,7 +183,7 @@ html {
 }
 
 .btn-danger:hover {
-  background-color: var(--espn-red-dark);
+  background-color: #a30d26;
 }
 
 /* ===== Badges ===== */
@@ -190,9 +198,9 @@ html {
 }
 
 .badge-yellow {
-  background-color: #fff3cd;
-  color: #856404;
-  border: 1px solid #ffc107;
+  background-color: rgba(255, 207, 0, 0.15);
+  color: #8a6d00;
+  border: 1px solid var(--nascar-yellow);
 }
 
 .badge-green {
@@ -218,8 +226,8 @@ table {
 }
 
 thead {
-  background-color: var(--espn-black);
-  border-bottom: 3px solid var(--espn-red);
+  background-color: var(--nascar-black);
+  border-bottom: 3px solid var(--nascar-blue);
 }
 
 th {
@@ -314,11 +322,11 @@ h3 {
 
 /* ===== Background Utilities ===== */
 .bg-yellow-tint {
-  background-color: rgba(245, 166, 35, 0.1);
+  background-color: rgba(255, 207, 0, 0.1);
 }
 
 .bg-red-tint {
-  background-color: rgba(208, 0, 0, 0.06);
+  background-color: rgba(200, 16, 46, 0.06);
 }
 
 .bg-green-tint {
@@ -327,7 +335,7 @@ h3 {
 
 /* ===== Gradient Utilities ===== */
 .gradient-yellow-red {
-  background: linear-gradient(90deg, var(--espn-red), var(--accent-yellow));
+  background: linear-gradient(90deg, var(--nascar-blue), var(--nascar-yellow));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -338,7 +346,7 @@ input, textarea, select {
   background-color: var(--surface-card);
   color: var(--text-primary);
   border: 1px solid var(--border-heavy);
-  border-radius: 0.25rem;
+  border-radius: 0.375rem;
   padding: 0.75rem;
   font-size: 1rem;
   transition: all 0.2s ease;
@@ -350,19 +358,19 @@ input::placeholder, textarea::placeholder {
 
 input:focus, textarea:focus, select:focus {
   outline: none;
-  border-color: var(--espn-red);
-  box-shadow: 0 0 0 3px rgba(208, 0, 0, 0.1);
+  border-color: var(--nascar-blue);
+  box-shadow: 0 0 0 3px rgba(0, 61, 165, 0.15);
 }
 
 /* ===== Links ===== */
 a {
-  color: var(--espn-red);
+  color: var(--nascar-blue);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 a:hover {
-  color: var(--espn-red-dark);
+  color: var(--nascar-blue-dark);
   text-decoration: underline;
 }
 
@@ -380,7 +388,7 @@ hr {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -398,7 +406,7 @@ hr {
   width: 20px;
   height: 20px;
   border: 3px solid var(--border-color);
-  border-top-color: var(--espn-red);
+  border-top-color: var(--nascar-blue);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
