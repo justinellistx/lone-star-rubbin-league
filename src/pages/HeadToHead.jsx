@@ -206,7 +206,7 @@ export default function HeadToHead() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-12">
-          <h1 className="text-4xl font-bold text-[#131313] mb-2">Head-to-Head</h1>
+          <h1 className="text-4xl font-bold text-[#1a1a2e] mb-2">Head-to-Head</h1>
           <p className="text-[#6c6d6f]">Compare two drivers across the season</p>
         </div>
 
@@ -214,11 +214,11 @@ export default function HeadToHead() {
         <div className="grid grid-cols-2 gap-6 mb-12">
           {/* Driver A Selection */}
           <div>
-            <label className="block text-[#d00000] font-semibold mb-3">Driver A</label>
+            <label className="block text-[#003DA5] font-semibold mb-3">Driver A</label>
             <select
               value={driverAId}
               onChange={(e) => setDriverAId(e.target.value)}
-              className="w-full bg-white border border-[#e0e0e0] text-[#131313] px-4 py-3 rounded-lg focus:outline-none focus:border-[#d00000] transition"
+              className="w-full bg-white border border-[#e0e0e0] text-[#1a1a2e] px-4 py-3 rounded-lg focus:outline-none focus:border-[#003DA5] transition"
             >
               <option value="">Select Driver A</option>
               {driverList.map((driver) => (
@@ -235,7 +235,7 @@ export default function HeadToHead() {
             <select
               value={driverBId}
               onChange={(e) => setDriverBId(e.target.value)}
-              className="w-full bg-white border border-[#e0e0e0] text-[#131313] px-4 py-3 rounded-lg focus:outline-none focus:border-[#2ec4b6] transition"
+              className="w-full bg-white border border-[#e0e0e0] text-[#1a1a2e] px-4 py-3 rounded-lg focus:outline-none focus:border-[#2ec4b6] transition"
             >
               <option value="">Select Driver B</option>
               {driverList.map((driver) => (
@@ -251,25 +251,25 @@ export default function HeadToHead() {
           <>
             {/* VS Card */}
             <div className="mb-12">
-              <div className="bg-gradient-to-r from-white to-[#f5f5f5] border border-[#e0e0e0] rounded-lg p-8 shadow-2xl">
+              <div className="bg-gradient-to-r from-white to-[#ffffff] border border-[#e0e0e0] rounded-lg p-8 shadow-2xl">
                 <div className="grid grid-cols-3 gap-8 items-center">
                   {/* Driver A */}
                   <div className="text-center border-r border-[#e0e0e0]">
-                    <div className="text-6xl font-bold text-[#d00000] mb-2">{driverA.number}</div>
-                    <h2 className="text-2xl font-bold text-[#131313] mb-1">{driverA.name}</h2>
+                    <div className="text-6xl font-bold text-[#003DA5] mb-2">{driverA.number}</div>
+                    <h2 className="text-2xl font-bold text-[#1a1a2e] mb-1">{driverA.name}</h2>
                     <p className="text-[#6c6d6f] italic">{driverA.nickname}</p>
                   </div>
 
                   {/* VS */}
                   <div className="text-center">
-                    <div className="text-5xl font-black text-[#cc0000] mb-4">VS</div>
+                    <div className="text-5xl font-black text-[#c8102e] mb-4">VS</div>
                     <div className="h-1 bg-gradient-to-r from-[#f5a623] via-[#e63946] to-[#2ec4b6] rounded-full"></div>
                   </div>
 
                   {/* Driver B */}
                   <div className="text-center border-l border-[#e0e0e0]">
                     <div className="text-6xl font-bold text-[#008564] mb-2">{driverB.number}</div>
-                    <h2 className="text-2xl font-bold text-[#131313] mb-1">{driverB.name}</h2>
+                    <h2 className="text-2xl font-bold text-[#1a1a2e] mb-1">{driverB.name}</h2>
                     <p className="text-[#6c6d6f] italic">{driverB.nickname}</p>
                   </div>
                 </div>
@@ -279,7 +279,7 @@ export default function HeadToHead() {
             {/* Stat Comparison */}
             <div className="mb-12">
               <div className="bg-white border border-[#e0e0e0] rounded-lg p-8">
-                <h3 className="text-2xl font-bold text-[#131313] mb-8">Season Statistics</h3>
+                <h3 className="text-2xl font-bold text-[#1a1a2e] mb-8">Season Statistics</h3>
                 <div className="space-y-6">
                   {stats.map((stat, idx) => {
                     const { aWidth, bWidth } = getBarWidth(stat.aValue, stat.bValue, stat.lowerIsBetter);
@@ -287,7 +287,7 @@ export default function HeadToHead() {
                       <div key={idx}>
                         <div className="flex justify-between mb-2">
                           <div className="flex-1 text-right pr-4">
-                            <span className="text-[#d00000] font-semibold">{stat.aValue}</span>
+                            <span className="text-[#003DA5] font-semibold">{stat.aValue}</span>
                           </div>
                           <div className="text-center">
                             <span className="text-[#6c6d6f] font-semibold text-sm">{stat.label}</span>
@@ -298,7 +298,7 @@ export default function HeadToHead() {
                         </div>
                         <div className="flex gap-2 h-8">
                           {/* Driver A Bar */}
-                          <div className="flex-1 bg-[#f5f5f5] border border-[#e0e0e0] rounded overflow-hidden">
+                          <div className="flex-1 bg-[#ffffff] border border-[#e0e0e0] rounded overflow-hidden">
                             <div
                               style={{ width: `${aWidth}%` }}
                               className="h-full bg-gradient-to-r from-[#f5a623] to-[#e8a000] transition-all duration-300"
@@ -306,7 +306,7 @@ export default function HeadToHead() {
                           </div>
 
                           {/* Driver B Bar */}
-                          <div className="flex-1 bg-[#f5f5f5] border border-[#e0e0e0] rounded overflow-hidden">
+                          <div className="flex-1 bg-[#ffffff] border border-[#e0e0e0] rounded overflow-hidden">
                             <div
                               style={{ width: `${bWidth}%`, marginLeft: 'auto' }}
                               className="h-full bg-gradient-to-l from-[#2ec4b6] to-[#1fa39f] transition-all duration-300"
@@ -323,7 +323,7 @@ export default function HeadToHead() {
             {/* Finish Position Chart */}
             <div className="mb-12">
               <div className="bg-white border border-[#e0e0e0] rounded-lg p-8">
-                <h3 className="text-2xl font-bold text-[#131313] mb-8">Finish Position Across Season</h3>
+                <h3 className="text-2xl font-bold text-[#1a1a2e] mb-8">Finish Position Across Season</h3>
                 <ResponsiveContainer width="100%" height={400}>
                   <LineChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#2a2a3e" />
@@ -374,14 +374,14 @@ export default function HeadToHead() {
             {/* Race-by-Race Matchup Table */}
             <div className="mb-12">
               <div className="bg-white border border-[#e0e0e0] rounded-lg p-8">
-                <h3 className="text-2xl font-bold text-[#131313] mb-8">Race-by-Race Matchup</h3>
+                <h3 className="text-2xl font-bold text-[#1a1a2e] mb-8">Race-by-Race Matchup</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-[#e0e0e0]">
                         <th className="text-left py-3 px-4 text-[#6c6d6f] font-semibold">Race</th>
                         <th className="text-left py-3 px-4 text-[#6c6d6f] font-semibold">Track</th>
-                        <th className="text-center py-3 px-4 text-[#d00000] font-semibold">{driverA.name}</th>
+                        <th className="text-center py-3 px-4 text-[#003DA5] font-semibold">{driverA.name}</th>
                         <th className="text-center py-3 px-4 text-[#6c6d6f] font-semibold">Winner</th>
                         <th className="text-center py-3 px-4 text-[#008564] font-semibold">{driverB.name}</th>
                         <th className="text-right py-3 px-4 text-[#6c6d6f] font-semibold">Tally</th>
@@ -395,16 +395,16 @@ export default function HeadToHead() {
                           race.raced && race.winner === 'A' ? 'A' : race.raced && race.winner === 'B' ? 'B' : '-';
                         const winnerColor =
                           race.raced && race.winner === 'A'
-                            ? 'text-[#d00000]'
+                            ? 'text-[#003DA5]'
                             : race.raced && race.winner === 'B'
                             ? 'text-[#008564]'
                             : 'text-[#6c6d6f]';
 
                         return (
-                          <tr key={race.race} className="border-b border-[#e0e0e0] hover:bg-[#f0f0f0] transition">
-                            <td className="py-3 px-4 text-[#131313] font-semibold">Race {race.race}</td>
+                          <tr key={race.race} className="border-b border-[#e0e0e0] hover:bg-[#f7f7f7] transition">
+                            <td className="py-3 px-4 text-[#1a1a2e] font-semibold">Race {race.race}</td>
                             <td className="py-3 px-4 text-[#6c6d6f]">{race.track}</td>
-                            <td className="py-3 px-4 text-center text-[#d00000]">{aPos}</td>
+                            <td className="py-3 px-4 text-center text-[#003DA5]">{aPos}</td>
                             <td className={`py-3 px-4 text-center font-bold text-lg ${winnerColor}`}>
                               {winnerText}
                             </td>
@@ -423,13 +423,13 @@ export default function HeadToHead() {
 
             {/* Who Wins Summary */}
             <div className="mb-12">
-              <div className="bg-gradient-to-r from-white to-[#f5f5f5] border border-[#e0e0e0] rounded-lg p-8 text-center">
-                <h3 className="text-2xl font-bold text-[#131313] mb-4">Who Wins?</h3>
+              <div className="bg-gradient-to-r from-white to-[#ffffff] border border-[#e0e0e0] rounded-lg p-8 text-center">
+                <h3 className="text-2xl font-bold text-[#1a1a2e] mb-4">Who Wins?</h3>
                 <p className="text-xl text-[#6c6d6f]">
-                  <span className="text-[#d00000] font-bold">{driverA.name}</span> beats{' '}
+                  <span className="text-[#003DA5] font-bold">{driverA.name}</span> beats{' '}
                   <span className="text-[#008564] font-bold">{driverB.name}</span> in{' '}
-                  <span className="text-[#131313] font-bold text-2xl">{headToHeadWins.aWins}</span> of{' '}
-                  <span className="text-[#131313] font-bold text-2xl">{headToHeadWins.totalRaces}</span> races
+                  <span className="text-[#1a1a2e] font-bold text-2xl">{headToHeadWins.aWins}</span> of{' '}
+                  <span className="text-[#1a1a2e] font-bold text-2xl">{headToHeadWins.totalRaces}</span> races
                 </p>
               </div>
             </div>

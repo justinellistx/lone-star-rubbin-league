@@ -7,7 +7,7 @@ const CATEGORY_CONFIG = {
   recap: { label: 'Race Recaps', color: '#e63946' },
   highlight: { label: 'Highlights', color: '#2ec4b6' },
   news: { label: 'News', color: '#f5a623' },
-  announcement: { label: 'Announcements', color: '#004b8d' },
+  announcement: { label: 'Announcements', color: '#003DA5' },
 };
 
 function formatDate(dateStr) {
@@ -29,7 +29,7 @@ function ArticleCard({ article, featured = false }) {
 
   return (
     <div
-      className={`bg-white border border-[#e0e0e0] rounded-lg overflow-hidden hover:border-[#d00000] transition cursor-pointer ${
+      className={`bg-white border border-[#e0e0e0] rounded-lg overflow-hidden hover:border-[#003DA5] transition cursor-pointer ${
         featured ? 'md:col-span-2' : ''
       }`}
       onClick={() => setExpanded(!expanded)}
@@ -50,13 +50,13 @@ function ArticleCard({ article, featured = false }) {
         </div>
 
         {/* Title */}
-        <h3 className={`font-bold text-[#131313] mb-2 ${featured ? 'text-2xl' : 'text-lg'}`}>
+        <h3 className={`font-bold text-[#1a1a2e] mb-2 ${featured ? 'text-2xl' : 'text-lg'}`}>
           {article.title}
         </h3>
 
         {/* Subtitle */}
         {article.subtitle && (
-          <p className={`text-[#d00000] mb-3 ${featured ? 'text-base' : 'text-sm'}`}>
+          <p className={`text-[#003DA5] mb-3 ${featured ? 'text-base' : 'text-sm'}`}>
             {article.subtitle}
           </p>
         )}
@@ -67,7 +67,7 @@ function ArticleCard({ article, featured = false }) {
         </div>
 
         {/* Read more / collapse */}
-        <div className="mt-4 flex items-center gap-1 text-[#d00000] text-sm font-medium">
+        <div className="mt-4 flex items-center gap-1 text-[#003DA5] text-sm font-medium">
           {expanded ? 'Show less' : 'Read more'}
           <ChevronRight size={14} className={`transition-transform ${expanded ? 'rotate-90' : ''}`} />
         </div>
@@ -97,13 +97,13 @@ export default function News() {
   }, [articles]);
 
   return (
-    <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8">
+    <div className="bg-[#ffffff] min-h-screen py-12 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Page Header */}
         <div className="mb-10">
           <div className="flex items-center gap-3 mb-4">
-            <Newspaper className="text-[#d00000]" size={36} />
-            <h1 className="text-5xl md:text-6xl font-black text-[#131313]">NEWS</h1>
+            <Newspaper className="text-[#003DA5]" size={36} />
+            <h1 className="text-5xl md:text-6xl font-black text-[#1a1a2e]">NEWS</h1>
           </div>
           <p className="text-[#6c6d6f] text-lg">
             Race recaps, driver storylines, and all the drama from the Lone Star Rubbin' League
@@ -119,7 +119,7 @@ export default function News() {
               className={`px-4 py-2 rounded-full text-sm font-bold transition ${
                 activeCategory === key
                   ? 'text-[#0a0a0f]'
-                  : 'text-[#6c6d6f] hover:text-[#131313] bg-white border border-[#e0e0e0]'
+                  : 'text-[#6c6d6f] hover:text-[#1a1a2e] bg-white border border-[#e0e0e0]'
               }`}
               style={
                 activeCategory === key

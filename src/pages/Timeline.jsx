@@ -16,7 +16,7 @@ export default function Timeline() {
       let description = '';
       let stat = '';
       let icon = 'award';
-      let accentColor = '#d00000';
+      let accentColor = '#003DA5';
 
       if (winner) {
         title = `${winner.name} Wins at ${race.track || 'Race ' + (idx + 1)}`;
@@ -31,7 +31,7 @@ export default function Timeline() {
           if (gap < 3) {
             description = `${winner.name} takes the checkered flag at ${race.track || 'the track'} in a nail-biting finish. A commanding drive secures the victory. ${secondPlace.name} finishes P2.`;
             stat = `${winner.name}: P1 | Close finish`;
-            accentColor = '#cc0000';
+            accentColor = '#c8102e';
           }
         }
 
@@ -86,17 +86,17 @@ export default function Timeline() {
 
   if (loading) {
     return (
-      <div className="min-h-screen p-6 flex items-center justify-center" style={{ backgroundColor: '#f5f5f5' }}>
+      <div className="min-h-screen p-6 flex items-center justify-center" style={{ backgroundColor: '#ffffff' }}>
         <p style={{ color: '#6c6d6f' }}>Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen py-16 px-4 md:px-8" style={{ backgroundColor: '#f5f5f5' }}>
+    <div className="min-h-screen py-16 px-4 md:px-8" style={{ backgroundColor: '#ffffff' }}>
       {/* Header */}
       <div className="max-w-4xl mx-auto mb-16">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#d00000' }}>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#003DA5' }}>
           Season Timeline
         </h1>
         <p className="text-lg" style={{ color: '#6c6d6f' }}>
@@ -113,7 +113,7 @@ export default function Timeline() {
         <div className="space-y-12 md:space-y-0">
           {timelineEntries.map((entry, index) => {
             const isEven = index % 2 === 0;
-            const accentColor = entry.accentColor || '#d00000';
+            const accentColor = entry.accentColor || '#003DA5';
 
             return (
               <div key={entry.id} className="relative">
@@ -121,7 +121,7 @@ export default function Timeline() {
                 <div
                   className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-6 w-6 h-6 rounded-full border-4 items-center justify-center z-10"
                   style={{
-                    backgroundColor: '#f5f5f5',
+                    backgroundColor: '#ffffff',
                     borderColor: accentColor,
                     top: '3rem',
                   }}
@@ -145,9 +145,9 @@ export default function Timeline() {
                       }}
                     >
                       {/* Date Badge */}
-                      <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full" style={{ backgroundColor: 'rgba(208, 0, 0, 0.1)' }}>
-                        <Calendar size={14} style={{ color: '#d00000' }} />
-                        <span className="text-sm font-semibold" style={{ color: '#d00000' }}>
+                      <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full" style={{ backgroundColor: 'rgba(0, 61, 165, 0.1)' }}>
+                        <Calendar size={14} style={{ color: '#003DA5' }} />
+                        <span className="text-sm font-semibold" style={{ color: '#003DA5' }}>
                           {entry.date}
                         </span>
                       </div>
@@ -166,7 +166,7 @@ export default function Timeline() {
                       <div
                         className="p-3 rounded border-l-4"
                         style={{
-                          backgroundColor: 'rgba(208, 0, 0, 0.05)',
+                          backgroundColor: 'rgba(0, 61, 165, 0.05)',
                           borderLeftColor: accentColor,
                         }}
                       >
@@ -182,7 +182,7 @@ export default function Timeline() {
                     <div
                       className="p-4 rounded-lg flex items-center justify-center"
                       style={{
-                        backgroundColor: `rgba(${accentColor === '#d00000' ? '208, 0, 0' : accentColor === '#008564' ? '0, 133, 100' : '204, 0, 0'}, 0.1)`,
+                        backgroundColor: `rgba(${accentColor === '#003DA5' ? '0, 61, 165' : accentColor === '#008564' ? '0, 133, 100' : '200, 16, 46'}, 0.1)`,
                         borderColor: accentColor,
                         borderWidth: 2,
                         width: 'fit-content',
@@ -201,7 +201,7 @@ export default function Timeline() {
 
         {/* Bottom Message */}
         <div className="mt-16 p-6 rounded-lg text-center" style={{ backgroundColor: 'white', borderColor: '#e0e0e0', borderWidth: 1 }}>
-          <h3 className="text-2xl font-bold mb-2" style={{ color: '#d00000' }}>
+          <h3 className="text-2xl font-bold mb-2" style={{ color: '#003DA5' }}>
             Stage 1 Championship Coming Soon
           </h3>
           <p style={{ color: '#6c6d6f' }}>

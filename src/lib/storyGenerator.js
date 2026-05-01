@@ -1,5 +1,5 @@
 /**
- * Story Generator — builds ESPN-style articles from interview answers + race data.
+ * Story Generator — builds NASCAR-style articles from interview answers + race data.
  *
  * Pulls from ALL site data:
  *   - Driver interviews (pre-race + post-race answers)
