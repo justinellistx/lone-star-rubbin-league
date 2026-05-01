@@ -27,9 +27,11 @@ export function getPositionPoints(position) {
  * Each bonus is worth 2 points. Lowest incidents ties split evenly (e.g., 4-way tie = 0.5 each).
  * @param {Object} result - Single race result
  * @param {Array} allResults - All league member results from the race
+ * @param {Array} allFieldResults - ALL results from the race (including AI cars), used to check
+ *   if a human actually had the overall fastest lap. If omitted, falls back to league-only comparison.
  * @returns {Object} Bonuses: {pole, fastestLap, mostLapsLed, lowestIncidents}
  */
-export function calculateBonuses(result, allResults) {
+export function calculateBonuses(result, allResults, allFieldResults = null) {
   const bonuses = {
     pole: 0,
     fastestLap: 0,
@@ -46,12 +48,28 @@ export function calculateBonuses(result, allResults) {
     bonuses.pole = 2;
   }
 
-  // Fastest lap bonus (2 points) - best lap time among league members
+  // Fastest lap bonus (2 points) - only awarded if a league member had the
+  // overall fastest lap in the race (not just fastest among league members).
+  // When allFieldResults is provided, we compare against the entire field.
   const fastestLapWinner = allResults.reduce((best, r) => {
     if (!best.fastestLapTime || !r.fastestLapTime) return best;
     return parseFloat(r.fastestLapTime) < parseFloat(best.fastestLapTime) ? r : best;
   });
-  if (fastestLapWinner.custId === result.custId) {
+
+  // Check if a league member actually had the fastest lap in the full field
+  let leagueHadFastestOverall = true;
+  if (allFieldResults && allFieldResults.length > 0) {
+    const overallFastest = allFieldResults.reduce((best, r) => {
+      if (!best.fastestLapTime || !r.fastestLapTime) return best;
+      return parseFloat(r.fastestLapTime) < parseFloat(best.fastestLapTime) ? r : best;
+    });
+    // Compare the overall fastest lap time to the league fastest lap time
+    if (overallFastest.fastestLapTime && fastestLapWinner.fastestLapTime) {
+      leagueHadFastestOverall = parseFloat(fastestLapWinner.fastestLapTime) <= parseFloat(overallFastest.fastestLapTime);
+    }
+  }
+
+  if (leagueHadFastestOverall && fastestLapWinner.custId === result.custId) {
     bonuses.fastestLap = 2;
   }
 

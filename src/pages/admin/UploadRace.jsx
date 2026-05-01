@@ -160,8 +160,8 @@ export default function UploadRace() {
     const previewResults = result.results.map((r) => {
       const positionPts = getPositionPoints(r.finPos);
       const { driverId, matchType } = resolveDriverId(r, driverMap);
-      // Bonuses only among league members
-      const bonuses = driverId ? calculateBonuses(r, leagueResults) : {};
+      // Bonuses only among league members; pass full field for fastest lap check
+      const bonuses = driverId ? calculateBonuses(r, leagueResults, result.results) : {};
       const incidentPts = calculateIncidentPenalty(r.incidents || 0);
       return {
         ...r,
@@ -233,8 +233,8 @@ export default function UploadRace() {
           if (!driverId) return null;
 
           const positionPts = getPositionPoints(result.finPos);
-          // Calculate bonuses only among league members
-          const bonusObj = calculateBonuses(result, leagueResults);
+          // Calculate bonuses only among league members; pass full field for fastest lap check
+          const bonusObj = calculateBonuses(result, leagueResults, parsed.results);
           const bonusPts = Object.values(bonusObj).reduce((a, b) => a + b, 0);
           const incidentPts = calculateIncidentPenalty(result.incidents || 0);
 

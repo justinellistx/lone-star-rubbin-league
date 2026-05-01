@@ -4,19 +4,18 @@ import { useRaceResultsByRace } from '../hooks/useSupabase';
 import TrackIcon from '../components/TrackIcon';
 
 /**
- * Derive bonus labels from race data
+ * Derive bonus labels from race data.
+ * Uses stored bonusPoints to verify — if a bonus (like fastest lap) wasn't
+ * actually awarded (e.g., an AI car had the real fastest lap), the label won't show.
  */
 function computeBonusLabels(result, race, allResults) {
   const bonuses = [];
+  let expectedBonus = 0;
 
   // Pole: startPosition === 1
   if (result.startPosition === 1) {
     bonuses.push({ label: 'Pole' });
-  }
-
-  // Fast Lap: bestLap matches race's fastestLap time
-  if (race.fastestLap && result.bestLap === race.fastestLap.time) {
-    bonuses.push({ label: 'Fast Lap' });
+    expectedBonus += 2;
   }
 
   // Most Led: highest lapsLed in this race
@@ -24,6 +23,7 @@ function computeBonusLabels(result, race, allResults) {
     const maxLapsLed = Math.max(...allResults.map(r => r.lapsLed || 0));
     if (result.lapsLed === maxLapsLed) {
       bonuses.push({ label: 'Most Led' });
+      expectedBonus += 2;
     }
   }
 
@@ -31,7 +31,19 @@ function computeBonusLabels(result, race, allResults) {
   if (allResults) {
     const minIncidents = Math.min(...allResults.map(r => r.incidents || 0));
     if (result.incidents === minIncidents) {
+      const tiedCount = allResults.filter(r => r.incidents === minIncidents).length;
       bonuses.push({ label: 'Low Inc' });
+      expectedBonus += 2 / tiedCount;
+    }
+  }
+
+  // Fast Lap: only show if the driver's actual bonusPoints exceeds what we can
+  // account for from pole + most led + low inc. This means the fastest lap bonus
+  // was actually awarded (i.e., a human had the overall fastest lap, not an AI car).
+  if (race.fastestLap && result.bestLap === race.fastestLap.time) {
+    const actualBonus = result.bonusPoints || 0;
+    if (actualBonus > expectedBonus + 0.01) {
+      bonuses.push({ label: 'Fast Lap' });
     }
   }
 
