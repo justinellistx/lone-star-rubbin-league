@@ -41,9 +41,9 @@ export default function Teams() {
 
   if (loading) {
     return (
-      <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8 flex items-center justify-center">
+      <div className="bg-[#ffffff] min-h-screen py-12 px-4 md:px-8 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-[#131313] text-2xl font-bold mb-4">Loading Teams...</div>
+          <div className="text-[#1a1a2e] text-2xl font-bold mb-4">Loading Teams...</div>
           <div className="text-[#6c6d6f]">Fetching standings and race data</div>
         </div>
       </div>
@@ -52,9 +52,9 @@ export default function Teams() {
 
   if (!teamStandings || teamStandings.length === 0) {
     return (
-      <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8 flex items-center justify-center">
+      <div className="bg-[#ffffff] min-h-screen py-12 px-4 md:px-8 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-[#131313] text-2xl font-bold mb-4">No Teams Data</div>
+          <div className="text-[#1a1a2e] text-2xl font-bold mb-4">No Teams Data</div>
           <div className="text-[#6c6d6f]">Teams will appear here once season data is available</div>
         </div>
       </div>
@@ -71,11 +71,11 @@ export default function Teams() {
   }));
 
   return (
-    <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8">
+    <div className="bg-[#ffffff] min-h-screen py-12 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Page Title */}
         <div className="mb-12">
-          <h1 className="text-5xl md:text-6xl font-black text-[#131313] mb-2">TEAM WAR ROOM</h1>
+          <h1 className="text-5xl md:text-6xl font-black text-[#1a1a2e] mb-2">TEAM WAR ROOM</h1>
           <p className="text-[#6c6d6f] text-lg">2026 Season - Stage 1 Team Breakdown</p>
         </div>
 
@@ -102,23 +102,23 @@ export default function Teams() {
               <div
                 key={team.id}
                 className={`bg-white border rounded-lg p-6 ${
-                  idx === 0 ? 'border-[#d00000]' : 'border-[#e0e0e0]'
+                  idx === 0 ? 'border-[#003DA5]' : 'border-[#e0e0e0]'
                 }`}
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div
                     className={`flex items-center justify-center w-10 h-10 rounded-lg font-black text-lg ${
-                      idx === 0 ? 'bg-[#d00000] text-white' : 'bg-[#e0e0e0] text-[#131313]'
+                      idx === 0 ? 'bg-[#003DA5] text-white' : 'bg-[#e0e0e0] text-[#1a1a2e]'
                     }`}
                   >
                     {idx + 1}
                   </div>
                   <div>
-                    <div className="text-[#131313] font-bold text-lg">{team.name}</div>
+                    <div className="text-[#1a1a2e] font-bold text-lg">{team.name}</div>
                     <div className="text-[#6c6d6f] text-xs">{team.drivers.length} drivers</div>
                   </div>
                 </div>
-                <div className="text-[#d00000] font-black text-3xl mb-4">{team.points} pts</div>
+                <div className="text-[#003DA5] font-black text-3xl mb-4">{team.points} pts</div>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-[#6c6d6f]">Total Wins</span>
@@ -126,15 +126,15 @@ export default function Teams() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#6c6d6f]">Laps Led</span>
-                    <span className="text-[#131313] font-bold">{team.combinedLapsLed}</span>
+                    <span className="text-[#1a1a2e] font-bold">{team.combinedLapsLed}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#6c6d6f]">Team Incidents</span>
-                    <span className="text-[#cc0000] font-bold">{totalIncidents}</span>
+                    <span className="text-[#c8102e] font-bold">{totalIncidents}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#6c6d6f]">Last 3 Races (pos pts)</span>
-                    <span className="text-[#d00000] font-bold">{last3Total}</span>
+                    <span className="text-[#003DA5] font-bold">{last3Total}</span>
                   </div>
                 </div>
               </div>
@@ -154,19 +154,19 @@ export default function Teams() {
               <div
                 key={team.id}
                 className={`bg-white border rounded-lg overflow-hidden ${
-                  teamIdx === 0 ? 'border-[#d00000]' : 'border-[#e0e0e0]'
+                  teamIdx === 0 ? 'border-[#003DA5]' : 'border-[#e0e0e0]'
                 }`}
               >
                 {/* Team Header */}
                 <button
                   onClick={() => toggleExpanded(team.id)}
-                  className="w-full px-6 py-6 flex items-center justify-between hover:bg-[#f0f0f0] transition"
+                  className="w-full px-6 py-6 flex items-center justify-between hover:bg-[#f7f7f7] transition"
                 >
                   <div className="flex-1 text-left">
                     <div className="flex items-center gap-3 mb-1">
-                      <Swords size={20} className="text-[#d00000]" />
-                      <h3 className="text-2xl font-bold text-[#131313]">{team.name}</h3>
-                      <span className="text-[#d00000] font-bold">{team.points} pts</span>
+                      <Swords size={20} className="text-[#003DA5]" />
+                      <h3 className="text-2xl font-bold text-[#1a1a2e]">{team.name}</h3>
+                      <span className="text-[#003DA5] font-bold">{team.points} pts</span>
                     </div>
                     <div className="text-[#6c6d6f] text-sm">
                       {team.drivers.map((d) => `${d.name} "${d.nickname}"`).join(' & ')}
@@ -174,7 +174,7 @@ export default function Teams() {
                   </div>
                   <ChevronDown
                     size={24}
-                    className={`text-[#d00000] transition ${isExpanded ? 'rotate-180' : ''}`}
+                    className={`text-[#003DA5] transition ${isExpanded ? 'rotate-180' : ''}`}
                   />
                 </button>
 
@@ -182,29 +182,29 @@ export default function Teams() {
                   <div className="border-t border-[#e0e0e0]">
                     {/* Teammate Head-to-Head */}
                     {h2h && d2 && (
-                      <div className="px-6 py-6 border-b border-[#e0e0e0] bg-[#f5f5f5]">
-                        <h4 className="text-[#131313] font-bold mb-4 flex items-center gap-2">
-                          <Swords size={16} className="text-[#cc0000]" />
+                      <div className="px-6 py-6 border-b border-[#e0e0e0] bg-[#ffffff]">
+                        <h4 className="text-[#1a1a2e] font-bold mb-4 flex items-center gap-2">
+                          <Swords size={16} className="text-[#c8102e]" />
                           Teammate Head-to-Head
                         </h4>
                         <div className="flex items-center justify-between mb-4">
                           <div className="text-center flex-1">
-                            <div className="text-[#131313] font-bold text-lg">{d1.name}</div>
+                            <div className="text-[#1a1a2e] font-bold text-lg">{d1.name}</div>
                             <div className="text-[#6c6d6f] text-sm">#{d1.number}</div>
                           </div>
                           <div className="px-6">
                             <div className="flex items-center gap-3">
-                              <span className={`text-3xl font-black ${h2h.aWins > h2h.bWins ? 'text-[#d00000]' : 'text-[#131313]'}`}>
+                              <span className={`text-3xl font-black ${h2h.aWins > h2h.bWins ? 'text-[#003DA5]' : 'text-[#1a1a2e]'}`}>
                                 {h2h.aWins}
                               </span>
                               <span className="text-[#6c6d6f] text-xl">-</span>
-                              <span className={`text-3xl font-black ${h2h.bWins > h2h.aWins ? 'text-[#d00000]' : 'text-[#131313]'}`}>
+                              <span className={`text-3xl font-black ${h2h.bWins > h2h.aWins ? 'text-[#003DA5]' : 'text-[#1a1a2e]'}`}>
                                 {h2h.bWins}
                               </span>
                             </div>
                           </div>
                           <div className="text-center flex-1">
-                            <div className="text-[#131313] font-bold text-lg">{d2.name}</div>
+                            <div className="text-[#1a1a2e] font-bold text-lg">{d2.name}</div>
                             <div className="text-[#6c6d6f] text-sm">#{d2.number}</div>
                           </div>
                         </div>
@@ -221,7 +221,7 @@ export default function Teams() {
                     {/* Side-by-Side Stats */}
                     {d2 && (
                       <div className="px-6 py-6 border-b border-[#e0e0e0]">
-                        <h4 className="text-[#131313] font-bold mb-4 flex items-center gap-2">
+                        <h4 className="text-[#1a1a2e] font-bold mb-4 flex items-center gap-2">
                           <Shield size={16} className="text-[#008564]" />
                           Stat Comparison
                         </h4>
@@ -241,13 +241,13 @@ export default function Teams() {
                             const tie = stat.a === stat.b;
                             return (
                               <div key={stat.label} className="flex items-center gap-4">
-                                <div className={`w-20 text-right font-bold ${aWins ? 'text-[#d00000]' : tie ? 'text-[#131313]' : 'text-[#6c6d6f]'}`}>
+                                <div className={`w-20 text-right font-bold ${aWins ? 'text-[#003DA5]' : tie ? 'text-[#1a1a2e]' : 'text-[#6c6d6f]'}`}>
                                   {typeof stat.a === 'number' && stat.label === 'Avg Finish' ? stat.a.toFixed(1) : stat.a}
                                 </div>
                                 <div className="flex-1 text-center text-[#6c6d6f] text-xs uppercase font-bold">
                                   {stat.label}
                                 </div>
-                                <div className={`w-20 text-left font-bold ${bWins ? 'text-[#d00000]' : tie ? 'text-[#131313]' : 'text-[#6c6d6f]'}`}>
+                                <div className={`w-20 text-left font-bold ${bWins ? 'text-[#003DA5]' : tie ? 'text-[#1a1a2e]' : 'text-[#6c6d6f]'}`}>
                                   {typeof stat.b === 'number' && stat.label === 'Avg Finish' ? stat.b.toFixed(1) : stat.b}
                                 </div>
                               </div>
@@ -259,8 +259,8 @@ export default function Teams() {
 
                     {/* Race-by-Race Comparison */}
                     <div className="px-6 py-6 border-b border-[#e0e0e0]">
-                      <h4 className="text-[#131313] font-bold mb-4 flex items-center gap-2">
-                        <Zap size={16} className="text-[#d00000]" />
+                      <h4 className="text-[#1a1a2e] font-bold mb-4 flex items-center gap-2">
+                        <Zap size={16} className="text-[#003DA5]" />
                         Race-by-Race Finishes
                       </h4>
                       <div className="overflow-x-auto">
@@ -283,7 +283,7 @@ export default function Teams() {
                             {team.drivers.map((driver) => (
                               <tr key={driver.id} className="border-b border-[#e0e0e0]">
                                 <td className="px-3 py-2">
-                                  <span className="text-[#131313] font-semibold">{driver.name.split(' ')[0]}</span>
+                                  <span className="text-[#1a1a2e] font-semibold">{driver.name.split(' ')[0]}</span>
                                   <span className="text-[#6c6d6f] ml-1">#{driver.number}</span>
                                 </td>
                                 {driver.raceByRace && driver.raceByRace.length > 0 ? (
@@ -311,10 +311,10 @@ export default function Teams() {
                                           pos === null
                                             ? 'text-[#6c6d6f]'
                                             : beatAll
-                                              ? 'text-[#d00000]'
+                                              ? 'text-[#003DA5]'
                                               : pos <= 5
                                                 ? 'text-[#008564]'
-                                                : 'text-[#131313]'
+                                                : 'text-[#1a1a2e]'
                                         }`}
                                       >
                                         {pos === null ? 'DNR' : `P${pos}`}
@@ -331,46 +331,46 @@ export default function Teams() {
                         </table>
                       </div>
                       <div className="mt-2 text-xs text-[#6c6d6f]">
-                        <span className="text-[#d00000]">★</span> = beat teammate(s) that race
+                        <span className="text-[#003DA5]">★</span> = beat teammate(s) that race
                       </div>
                     </div>
 
                     {/* Driver Cards */}
                     <div className="px-6 py-6">
-                      <h4 className="text-[#131313] font-bold mb-4 flex items-center gap-2">
-                        <Trophy size={16} className="text-[#d00000]" />
+                      <h4 className="text-[#1a1a2e] font-bold mb-4 flex items-center gap-2">
+                        <Trophy size={16} className="text-[#003DA5]" />
                         Driver Breakdown
                       </h4>
                       <div className={`grid grid-cols-1 ${team.drivers.length <= 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-4`}>
                         {team.drivers.map((driver) => (
-                          <div key={driver.id} className="bg-[#f5f5f5] border border-[#e0e0e0] rounded-lg p-5">
+                          <div key={driver.id} className="bg-[#ffffff] border border-[#e0e0e0] rounded-lg p-5">
                             <div className="flex items-start justify-between mb-4">
                               <div>
-                                <div className="text-[#131313] font-bold">{driver.name}</div>
-                                <div className="text-[#d00000] text-sm">"{driver.nickname}"</div>
+                                <div className="text-[#1a1a2e] font-bold">{driver.name}</div>
+                                <div className="text-[#003DA5] text-sm">"{driver.nickname}"</div>
                               </div>
-                              <div className="bg-[#d00000] text-white rounded px-3 py-1 font-black text-lg">
+                              <div className="bg-[#003DA5] text-white rounded px-3 py-1 font-black text-lg">
                                 #{driver.number}
                               </div>
                             </div>
-                            <div className="text-[#d00000] font-black text-2xl mb-3">{driver.points} pts</div>
+                            <div className="text-[#003DA5] font-black text-2xl mb-3">{driver.points} pts</div>
                             <div className="text-xs text-[#6c6d6f] mb-4">
                               {driver.posPoints}p
                               {driver.bonusPoints > 0 && (
                                 <span className="text-[#008564]"> +{driver.bonusPoints}</span>
                               )}
                               {driver.penaltyPoints < 0 && (
-                                <span className="text-[#cc0000]"> {driver.penaltyPoints}</span>
+                                <span className="text-[#c8102e]"> {driver.penaltyPoints}</span>
                               )}
                             </div>
                             <div className="grid grid-cols-2 gap-3 text-sm">
                               <div>
                                 <div className="text-[#6c6d6f] text-xs uppercase">Wins</div>
-                                <div className="text-[#131313] font-bold">{driver.wins || 0}</div>
+                                <div className="text-[#1a1a2e] font-bold">{driver.wins || 0}</div>
                               </div>
                               <div>
                                 <div className="text-[#6c6d6f] text-xs uppercase">Top 5s</div>
-                                <div className="text-[#131313] font-bold">{driver.top5 || 0}</div>
+                                <div className="text-[#1a1a2e] font-bold">{driver.top5 || 0}</div>
                               </div>
                               <div>
                                 <div className="text-[#6c6d6f] text-xs uppercase">Avg Finish</div>
@@ -380,15 +380,15 @@ export default function Teams() {
                               </div>
                               <div>
                                 <div className="text-[#6c6d6f] text-xs uppercase">Laps Led</div>
-                                <div className="text-[#131313] font-bold">{driver.lapsLed || 0}</div>
+                                <div className="text-[#1a1a2e] font-bold">{driver.lapsLed || 0}</div>
                               </div>
                               <div>
                                 <div className="text-[#6c6d6f] text-xs uppercase">Incidents</div>
-                                <div className="text-[#cc0000] font-bold">{driver.totalIncidents || 0}</div>
+                                <div className="text-[#c8102e] font-bold">{driver.totalIncidents || 0}</div>
                               </div>
                               <div>
                                 <div className="text-[#6c6d6f] text-xs uppercase">Top 10s</div>
-                                <div className="text-[#131313] font-bold">{driver.top10 || 0}</div>
+                                <div className="text-[#1a1a2e] font-bold">{driver.top10 || 0}</div>
                               </div>
                             </div>
                           </div>

@@ -283,7 +283,7 @@ export default function TrophyRoom() {
             {label}
             {count !== undefined && (
               <span className={`text-xs px-2 py-0.5 rounded-full ${
-                activeSection === key ? 'bg-[#1a1a1a]/20 text-[#1a1a1a]' : 'bg-[#f5f5f5] text-[#6c6d6f]'
+                activeSection === key ? 'bg-[#1a1a1a]/20 text-[#1a1a1a]' : 'bg-[#ffffff] text-[#6c6d6f]'
               }`}>{count}</span>
             )}
           </button>
@@ -334,7 +334,7 @@ export default function TrophyRoom() {
                   <div className="p-5">
                     {/* Track + Date */}
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-[#131313] font-black text-lg">{race.track}</h3>
+                      <h3 className="text-[#1a1a2e] font-black text-lg">{race.track}</h3>
                       <span className="text-[#6c6d6f] text-xs">{race.date}</span>
                     </div>
 
@@ -344,7 +344,7 @@ export default function TrophyRoom() {
                         #{race.winner.number}
                       </div>
                       <div>
-                        <div className="text-[#131313] font-bold">{race.winner.name}</div>
+                        <div className="text-[#1a1a2e] font-bold">{race.winner.name}</div>
                         {race.winner.nickname && (
                           <div className="text-[#6c6d6f] text-xs">"{race.winner.nickname}"</div>
                         )}
@@ -354,17 +354,17 @@ export default function TrophyRoom() {
 
                     {/* Race Stats */}
                     <div className="grid grid-cols-3 gap-2 mb-4">
-                      <div className="bg-[#f5f5f5] rounded-lg p-2 text-center">
+                      <div className="bg-[#ffffff] rounded-lg p-2 text-center">
                         <div className="text-[#6c6d6f] text-[10px] uppercase font-bold">Started</div>
-                        <div className="text-[#131313] font-black">P{race.stats.startPosition}</div>
+                        <div className="text-[#1a1a2e] font-black">P{race.stats.startPosition}</div>
                       </div>
-                      <div className="bg-[#f5f5f5] rounded-lg p-2 text-center">
+                      <div className="bg-[#ffffff] rounded-lg p-2 text-center">
                         <div className="text-[#6c6d6f] text-[10px] uppercase font-bold">Laps Led</div>
-                        <div className="text-[#131313] font-black">{race.stats.lapsLed}</div>
+                        <div className="text-[#1a1a2e] font-black">{race.stats.lapsLed}</div>
                       </div>
-                      <div className="bg-[#f5f5f5] rounded-lg p-2 text-center">
+                      <div className="bg-[#ffffff] rounded-lg p-2 text-center">
                         <div className="text-[#6c6d6f] text-[10px] uppercase font-bold">Incidents</div>
-                        <div className={`font-black ${race.stats.incidents === 0 ? 'text-[#008564]' : race.stats.incidents <= 4 ? 'text-[#131313]' : 'text-[#cc0000]'}`}>
+                        <div className={`font-black ${race.stats.incidents === 0 ? 'text-[#008564]' : race.stats.incidents <= 4 ? 'text-[#1a1a2e]' : 'text-[#c8102e]'}`}>
                           {race.stats.incidents}x
                         </div>
                       </div>
@@ -423,7 +423,7 @@ export default function TrophyRoom() {
                 .sort((a, b) => a.race_number - b.race_number)
                 .map((s) => (
                   <div key={s.id} className="bg-white/50 border-2 border-dashed border-[#e0e0e0] rounded-xl p-6 flex flex-col items-center justify-center min-h-[300px] opacity-60">
-                    <div className="w-20 h-20 rounded-xl bg-[#f5f5f5] flex items-center justify-center mb-3">
+                    <div className="w-20 h-20 rounded-xl bg-[#ffffff] flex items-center justify-center mb-3">
                       <Trophy size={32} className="text-[#e0e0e0]" />
                     </div>
                     <p className="text-[#6c6d6f] font-bold">Race {s.race_number}</p>
@@ -455,13 +455,13 @@ export default function TrophyRoom() {
               <div className="p-6">
                 {/* Individual Leader */}
                 <div className="mb-6">
-                  <h3 className="text-sm font-bold text-[#d00000] uppercase mb-3">Points Leader — Individual</h3>
+                  <h3 className="text-sm font-bold text-[#003DA5] uppercase mb-3">Points Leader — Individual</h3>
                   <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-[#fffbf0] to-white border border-[#f5a623]/20 rounded-xl">
                     <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-[#f5a623] text-[#1a1a1a] font-black text-lg">
                       #{standings[0].number || '?'}
                     </div>
                     <div className="flex-1">
-                      <div className="text-[#131313] font-black text-lg">{standings[0].name}</div>
+                      <div className="text-[#1a1a2e] font-black text-lg">{standings[0].name}</div>
                       <div className="text-[#6c6d6f] text-sm">
                         {standings[0].totalPoints || standings[0].points} raw points · {standings[0].wins || 0} wins
                       </div>
@@ -476,19 +476,19 @@ export default function TrophyRoom() {
                 {/* Team Leader */}
                 {teamStandings && teamStandings.length > 0 && (
                   <div>
-                    <h3 className="text-sm font-bold text-[#d00000] uppercase mb-3">Points Leader — Team</h3>
-                    <div className="flex items-center gap-4 p-4 bg-[#f5f5f5] border border-[#e0e0e0] rounded-xl">
-                      <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-[#131313] text-white">
+                    <h3 className="text-sm font-bold text-[#003DA5] uppercase mb-3">Points Leader — Team</h3>
+                    <div className="flex items-center gap-4 p-4 bg-[#ffffff] border border-[#e0e0e0] rounded-xl">
+                      <div className="w-14 h-14 flex items-center justify-center rounded-xl bg-[#1a1a2e] text-white">
                         <Shield size={24} />
                       </div>
                       <div className="flex-1">
-                        <div className="text-[#131313] font-black text-lg">{teamStandings[0].teamName}</div>
+                        <div className="text-[#1a1a2e] font-black text-lg">{teamStandings[0].teamName}</div>
                         <div className="text-[#6c6d6f] text-sm">
                           {teamStandings[0].driverCount} drivers
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-[#131313] text-2xl font-black">{teamStandings[0].points}</div>
+                        <div className="text-[#1a1a2e] text-2xl font-black">{teamStandings[0].points}</div>
                         <div className="text-[#6c6d6f] text-xs">POINTS</div>
                       </div>
                     </div>
@@ -500,16 +500,16 @@ export default function TrophyRoom() {
                   <h3 className="text-sm font-bold text-[#6c6d6f] uppercase mb-3">Championship Top 5</h3>
                   <div className="space-y-2">
                     {standings.slice(0, 5).map((driver, idx) => (
-                      <div key={driver.custId || idx} className="flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-[#f5f5f5] transition">
+                      <div key={driver.custId || idx} className="flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-[#ffffff] transition">
                         <span className={`w-7 h-7 flex items-center justify-center rounded-full text-xs font-black ${
                           idx === 0 ? 'bg-[#f5a623] text-[#1a1a1a]'
                           : idx === 1 ? 'bg-[#c0c0c0] text-[#1a1a1a]'
                           : idx === 2 ? 'bg-[#cd7f32] text-white'
-                          : 'bg-[#f5f5f5] text-[#6c6d6f]'
+                          : 'bg-[#ffffff] text-[#6c6d6f]'
                         }`}>
                           {idx + 1}
                         </span>
-                        <span className="text-[#131313] font-bold text-sm flex-1">{driver.name}</span>
+                        <span className="text-[#1a1a2e] font-bold text-sm flex-1">{driver.name}</span>
                         <span className="text-[#6c6d6f] text-sm font-bold">{driver.totalPoints || driver.points} pts</span>
                       </div>
                     ))}
@@ -525,7 +525,7 @@ export default function TrophyRoom() {
               <div key={trophy.id} className="bg-white border border-[#e0e0e0] rounded-xl p-6 mb-6">
                 <div className="flex items-center gap-3 mb-4">
                   <Crown size={24} className="text-[#f5a623]" />
-                  <h2 className="text-xl font-black text-[#131313]">
+                  <h2 className="text-xl font-black text-[#1a1a2e]">
                     Stage {trophy.stages?.stage_number} Champion
                   </h2>
                 </div>
@@ -538,7 +538,7 @@ export default function TrophyRoom() {
                     </div>
                   )}
                   <div>
-                    <div className="text-[#131313] font-black text-xl">
+                    <div className="text-[#1a1a2e] font-black text-xl">
                       {trophy.champion_type === 'team' ? trophy.teams?.name : trophy.drivers?.name}
                     </div>
                     <div className="text-[#6c6d6f]">{trophy.points_total} points</div>
@@ -659,7 +659,7 @@ export default function TrophyRoom() {
           {records.mostPoles && (
             <RecordCard
               icon={Zap}
-              iconColor="#d00000"
+              iconColor="#003DA5"
               title="Most Pole Positions"
               driverName={records.mostPoles.name}
               carNumber={records.mostPoles.carNumber}
@@ -699,7 +699,7 @@ export default function TrophyRoom() {
           {records.singleRaceLapsLed && (
             <RecordCard
               icon={Target}
-              iconColor="#d00000"
+              iconColor="#003DA5"
               title="Most Laps Led (Single Race)"
               driverName={records.singleRaceLapsLed.name}
               carNumber={records.singleRaceLapsLed.carNumber}
@@ -747,14 +747,14 @@ function RecordCard({ icon: Icon, iconColor, title, driverName, carNumber, value
         <div className="flex-1">
           <h3 className="text-[#6c6d6f] text-xs font-bold uppercase mb-1">{title}</h3>
           <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-3xl font-black text-[#131313]">{value}</span>
+            <span className="text-3xl font-black text-[#1a1a2e]">{value}</span>
             <span className="text-[#6c6d6f] text-sm">{unit}</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="bg-[#f5f5f5] text-[#131313] text-xs font-bold px-2 py-0.5 rounded">
+            <span className="bg-[#ffffff] text-[#1a1a2e] text-xs font-bold px-2 py-0.5 rounded">
               #{carNumber}
             </span>
-            <span className="text-[#131313] font-bold text-sm">{driverName}</span>
+            <span className="text-[#1a1a2e] font-bold text-sm">{driverName}</span>
           </div>
           {subtitle && (
             <p className="text-[#6c6d6f] text-xs mt-1">{subtitle}</p>

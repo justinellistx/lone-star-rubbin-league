@@ -521,7 +521,7 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
             className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg text-sm font-bold transition ${
               subTab === key
                 ? 'bg-[#008564] text-white'
-                : 'text-[#6c6d6f] hover:text-[#131313]'
+                : 'text-[#6c6d6f] hover:text-[#1a1a2e]'
             }`}
           >
             <Icon size={16} />
@@ -532,8 +532,8 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
 
       {error && (
         <div className="mb-6 p-4 bg-white border border-[#e63946] rounded-lg flex items-center gap-3">
-          <AlertCircle size={20} className="text-[#cc0000] flex-shrink-0" />
-          <p className="text-[#cc0000] text-sm">{error}</p>
+          <AlertCircle size={20} className="text-[#c8102e] flex-shrink-0" />
+          <p className="text-[#c8102e] text-sm">{error}</p>
         </div>
       )}
 
@@ -545,10 +545,10 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <DollarSign size={20} className="text-[#008564]" />
-                <span className="font-bold text-[#131313]">SALARY CAP</span>
+                <span className="font-bold text-[#1a1a2e]">SALARY CAP</span>
               </div>
               <div className="text-right">
-                <span className="text-2xl font-black text-[#131313]">${remainingSalary.toLocaleString()}</span>
+                <span className="text-2xl font-black text-[#1a1a2e]">${remainingSalary.toLocaleString()}</span>
                 <span className="text-[#6c6d6f] text-sm ml-1">/ ${SALARY_CAP.toLocaleString()}</span>
               </div>
             </div>
@@ -557,7 +557,7 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                 className="h-full rounded-full transition-all duration-300"
                 style={{
                   width: `${(usedSalary / SALARY_CAP) * 100}%`,
-                  backgroundColor: usedSalary > SALARY_CAP ? '#cc0000' : usedSalary > SALARY_CAP * 0.8 ? '#f5a623' : '#008564',
+                  backgroundColor: usedSalary > SALARY_CAP ? '#c8102e' : usedSalary > SALARY_CAP * 0.8 ? '#f5a623' : '#008564',
                 }}
               />
             </div>
@@ -571,7 +571,7 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
             {/* My Roster */}
             <div className="lg:col-span-1">
               <div className="bg-white border border-[#e0e0e0] rounded-lg p-5">
-                <h3 className="text-sm font-bold text-[#d00000] uppercase mb-4">
+                <h3 className="text-sm font-bold text-[#003DA5] uppercase mb-4">
                   {submitted ? 'Your Lineup' : 'Your Roster'}
                   {nextRace && <span className="text-[#6c6d6f] font-normal text-xs ml-2">— {nextRace.track_name}</span>}
                 </h3>
@@ -585,14 +585,14 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                     {selectedRoster.map((entry, idx) => (
                       <div
                         key={entry.driverId}
-                        className="flex items-center justify-between p-3 rounded-lg bg-[#f5f5f5] border border-[#e0e0e0]"
+                        className="flex items-center justify-between p-3 rounded-lg bg-[#ffffff] border border-[#e0e0e0]"
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 flex items-center justify-center rounded bg-[#008564] text-white text-xs font-bold">
                             #{getDriverNumber(entry.driverId)}
                           </div>
                           <div>
-                            <div className="text-[#131313] text-sm font-bold">{getDriverName(entry.driverId)}</div>
+                            <div className="text-[#1a1a2e] text-sm font-bold">{getDriverName(entry.driverId)}</div>
                             {getDriverNickname(entry.driverId) && (
                               <div className="text-[#6c6d6f] text-xs">"{getDriverNickname(entry.driverId)}"</div>
                             )}
@@ -603,7 +603,7 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                           {!submitted && (
                             <button
                               onClick={() => removeFromRoster(entry.driverId)}
-                              className="w-6 h-6 flex items-center justify-center rounded-full bg-[#cc0000] text-white text-xs font-bold hover:bg-[#a00000] transition"
+                              className="w-6 h-6 flex items-center justify-center rounded-full bg-[#c8102e] text-white text-xs font-bold hover:bg-[#a00000] transition"
                             >
                               ×
                             </button>
@@ -620,7 +620,7 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                     {submitted ? (
                       <button
                         onClick={handleChangeLineup}
-                        className="w-full px-4 py-3 rounded-lg font-bold bg-[#e0e0e0] text-[#131313] hover:bg-[#d0d0d0] transition flex items-center justify-center gap-2"
+                        className="w-full px-4 py-3 rounded-lg font-bold bg-[#e0e0e0] text-[#1a1a2e] hover:bg-[#d0d0d0] transition flex items-center justify-center gap-2"
                       >
                         <Lock size={16} />
                         Change Lineup
@@ -659,7 +659,7 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
 
               {/* Scoring Guide */}
               <div className="bg-white border border-[#e0e0e0] rounded-lg p-5 mt-4">
-                <h3 className="text-sm font-bold text-[#d00000] uppercase mb-3">Scoring</h3>
+                <h3 className="text-sm font-bold text-[#003DA5] uppercase mb-3">Scoring</h3>
                 <div className="space-y-1 text-xs">
                   {[
                     { label: 'Win (P1)', value: `+${SCORING.WIN_BONUS + SCORING.TOP_3} (${SCORING.WIN_BONUS}+${SCORING.TOP_3})`, color: '#008564' },
@@ -667,10 +667,10 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                     { label: 'Top 5 (P4-P5)', value: `+${SCORING.TOP_5}`, color: '#008564' },
                     { label: 'Top 8 (P6-P8)', value: `+${SCORING.TOP_8}`, color: '#008564' },
                     { label: 'Top 10 (P9-P10)', value: `+${SCORING.TOP_10}`, color: '#6c6d6f' },
-                    { label: 'Outside Top 10', value: `${SCORING.OUTSIDE_TOP_10}`, color: '#cc0000' },
+                    { label: 'Outside Top 10', value: `${SCORING.OUTSIDE_TOP_10}`, color: '#c8102e' },
                     { label: 'Fastest Lap', value: `+${SCORING.FASTEST_LAP}`, color: '#f5a623' },
                     { label: 'Per Lap Led', value: `+${SCORING.LAPS_LED_PER}`, color: '#008564' },
-                    { label: 'Per Incident', value: `${SCORING.INCIDENT_PER}`, color: '#cc0000' },
+                    { label: 'Per Incident', value: `${SCORING.INCIDENT_PER}`, color: '#c8102e' },
                   ].map((item) => (
                     <div key={item.label} className="flex justify-between py-1">
                       <span className="text-[#6c6d6f]">{item.label}</span>
@@ -686,7 +686,7 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
               <div className="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden">
                 <div className="p-4 border-b border-[#e0e0e0]">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-sm font-bold text-[#131313] uppercase">Driver Pool</h3>
+                    <h3 className="text-sm font-bold text-[#1a1a2e] uppercase">Driver Pool</h3>
                     <span className="text-xs text-[#6c6d6f]">
                       Salary Cap: ${SALARY_CAP.toLocaleString()} | Pick {ROSTER_SIZE}
                     </span>
@@ -702,8 +702,8 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                         onClick={() => setDriverSort(key)}
                         className={`px-3 py-1 rounded text-xs font-bold transition ${
                           driverSort === key
-                            ? 'bg-[#131313] text-white'
-                            : 'bg-[#f5f5f5] text-[#6c6d6f] hover:bg-[#e0e0e0]'
+                            ? 'bg-[#1a1a2e] text-white'
+                            : 'bg-[#ffffff] text-[#6c6d6f] hover:bg-[#e0e0e0]'
                         }`}
                       >
                         {label}
@@ -730,19 +730,19 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                             ? 'bg-[#e8f5e9] hover:bg-[#c8e6c9]'
                             : disabled
                               ? 'opacity-40 cursor-not-allowed bg-white'
-                              : 'bg-white hover:bg-[#f5f5f5]'
+                              : 'bg-white hover:bg-[#ffffff]'
                         }`}
                       >
                         {/* Car Number */}
                         <div className={`w-10 h-10 flex items-center justify-center rounded-lg font-bold text-sm ${
-                          inRoster ? 'bg-[#008564] text-white' : 'bg-[#f5f5f5] text-[#131313]'
+                          inRoster ? 'bg-[#008564] text-white' : 'bg-[#ffffff] text-[#1a1a2e]'
                         }`}>
                           #{driver.car_number}
                         </div>
 
                         {/* Name + Nickname */}
                         <div className="flex-1 min-w-0">
-                          <div className="text-[#131313] font-bold text-sm truncate">{driver.name}</div>
+                          <div className="text-[#1a1a2e] font-bold text-sm truncate">{driver.name}</div>
                           {driver.nickname && (
                             <div className="text-[#6c6d6f] text-xs">"{driver.nickname}"</div>
                           )}
@@ -753,27 +753,27 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                           <div className="border-r border-[#e0e0e0] pr-4">
                             <div className="text-[#6c6d6f] uppercase" style={{ fontSize: '10px' }}>FPTS/Race</div>
                             <div className={`font-black text-base ${
-                              driver.fantasyAvg >= 10 ? 'text-[#008564]' : driver.fantasyAvg >= 5 ? 'text-[#131313]' : 'text-[#cc0000]'
+                              driver.fantasyAvg >= 10 ? 'text-[#008564]' : driver.fantasyAvg >= 5 ? 'text-[#1a1a2e]' : 'text-[#c8102e]'
                             }`}>
                               {driver.fantasyAvg.toFixed(1)}
                             </div>
                           </div>
                           <div>
                             <div className="text-[#6c6d6f] uppercase" style={{ fontSize: '10px' }}>Season</div>
-                            <div className="font-bold text-[#131313]">{driver.fantasyTotal.toFixed(1)}</div>
+                            <div className="font-bold text-[#1a1a2e]">{driver.fantasyTotal.toFixed(1)}</div>
                           </div>
                           <div>
                             <div className="text-[#6c6d6f] uppercase" style={{ fontSize: '10px' }}>Races</div>
-                            <div className="font-bold text-[#131313]">{driver.fantasyRaces}</div>
+                            <div className="font-bold text-[#1a1a2e]">{driver.fantasyRaces}</div>
                           </div>
                         </div>
 
                         {/* Salary + Movement */}
-                        <div className={`text-right ${inRoster ? 'text-[#008564]' : 'text-[#131313]'}`}>
+                        <div className={`text-right ${inRoster ? 'text-[#008564]' : 'text-[#1a1a2e]'}`}>
                           <div className="text-lg font-black">${driver.salary.toLocaleString()}</div>
                           {driver.salaryDelta !== 0 && driver.prevSalary !== null ? (
                             <div className={`text-xs font-bold flex items-center justify-end gap-0.5 ${
-                              driver.salaryDelta > 0 ? 'text-[#008564]' : 'text-[#cc0000]'
+                              driver.salaryDelta > 0 ? 'text-[#008564]' : 'text-[#c8102e]'
                             }`}>
                               <span>{driver.salaryDelta > 0 ? '▲' : '▼'}</span>
                               <span>${Math.abs(driver.salaryDelta).toLocaleString()}</span>
@@ -783,7 +783,7 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                           ) : null}
                           {inRoster && <div className="text-xs text-[#008564] font-bold">IN LINEUP</div>}
                           {!inRoster && !affordable && selectedRoster.length < ROSTER_SIZE && (
-                            <div className="text-xs text-[#cc0000]">Can't afford</div>
+                            <div className="text-xs text-[#c8102e]">Can't afford</div>
                           )}
                         </div>
                       </button>
@@ -802,11 +802,11 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
           {/* Race selector */}
           <div className="bg-white border border-[#e0e0e0] rounded-lg p-4 mb-6">
             <div className="flex items-center gap-4">
-              <label className="text-sm font-bold text-[#131313]">Race:</label>
+              <label className="text-sm font-bold text-[#1a1a2e]">Race:</label>
               <select
                 value={selectedResultRace}
                 onChange={(e) => setSelectedResultRace(e.target.value)}
-                className="flex-1 px-4 py-2 rounded-lg bg-[#f5f5f5] border border-[#e0e0e0] text-[#131313] focus:outline-none focus:border-[#008564]"
+                className="flex-1 px-4 py-2 rounded-lg bg-[#ffffff] border border-[#e0e0e0] text-[#1a1a2e] focus:outline-none focus:border-[#008564]"
               >
                 <option value="latest">Latest Race</option>
                 {completedRaces.map((race) => (
@@ -827,7 +827,7 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
             <div className="space-y-6">
               {/* Race header */}
               <div className="bg-white border border-[#e0e0e0] rounded-lg p-5">
-                <h3 className="text-xl font-bold text-[#131313]">
+                <h3 className="text-xl font-bold text-[#1a1a2e]">
                   Race {selectedRaceResults.raceNumber}: {selectedRaceResults.track}
                 </h3>
                 <p className="text-[#6c6d6f] text-sm mt-1">{selectedRaceResults.date}</p>
@@ -844,12 +844,12 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                     <div key={lineup.pickerId} className="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden">
                       {/* Lineup header */}
                       <div className={`p-4 flex items-center justify-between ${
-                        idx === 0 ? 'bg-[#008564] text-white' : 'bg-[#f5f5f5]'
+                        idx === 0 ? 'bg-[#008564] text-white' : 'bg-[#ffffff]'
                       }`}>
                         <div className="flex items-center gap-3">
                           {idx === 0 && <Trophy size={18} />}
                           <div>
-                            <div className={`font-bold ${idx === 0 ? 'text-white' : 'text-[#131313]'}`}>
+                            <div className={`font-bold ${idx === 0 ? 'text-white' : 'text-[#1a1a2e]'}`}>
                               {getDriverName(lineup.pickerId)}
                             </div>
                             <div className={`text-xs ${idx === 0 ? 'text-green-100' : 'text-[#6c6d6f]'}`}>
@@ -857,7 +857,7 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                             </div>
                           </div>
                         </div>
-                        <div className={`text-2xl font-black ${idx === 0 ? 'text-white' : 'text-[#131313]'}`}>
+                        <div className={`text-2xl font-black ${idx === 0 ? 'text-white' : 'text-[#1a1a2e]'}`}>
                           {lineup.total} pts
                         </div>
                       </div>
@@ -867,18 +867,18 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                         {lineup.driverScores.map((ds) => (
                           <div key={ds.driverId} className="p-3 flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 flex items-center justify-center rounded bg-[#f5f5f5] text-xs font-bold text-[#131313]">
+                              <div className="w-8 h-8 flex items-center justify-center rounded bg-[#ffffff] text-xs font-bold text-[#1a1a2e]">
                                 #{getDriverNumber(ds.driverId)}
                               </div>
                               <div>
-                                <div className="text-sm font-bold text-[#131313]">{getDriverName(ds.driverId)}</div>
+                                <div className="text-sm font-bold text-[#1a1a2e]">{getDriverName(ds.driverId)}</div>
                                 <div className="text-xs text-[#6c6d6f]">${ds.salary.toLocaleString()}</div>
                               </div>
                             </div>
                             <div className="flex items-center gap-4 text-xs">
                               <div className="hidden sm:flex gap-3">
                                 {ds.finish !== 0 && (
-                                  <span className={ds.finish > 0 ? 'text-[#008564]' : 'text-[#cc0000]'}>
+                                  <span className={ds.finish > 0 ? 'text-[#008564]' : 'text-[#c8102e]'}>
                                     Pos: {ds.finish > 0 ? '+' : ''}{ds.finish}
                                   </span>
                                 )}
@@ -889,10 +889,10 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                                   <span className="text-[#f5a623]">FL: +{ds.fastestLap}</span>
                                 )}
                                 {ds.incidents !== 0 && (
-                                  <span className="text-[#cc0000]">Inc: {ds.incidents}</span>
+                                  <span className="text-[#c8102e]">Inc: {ds.incidents}</span>
                                 )}
                               </div>
-                              <span className={`font-bold text-sm ${ds.total >= 0 ? 'text-[#131313]' : 'text-[#cc0000]'}`}>
+                              <span className={`font-bold text-sm ${ds.total >= 0 ? 'text-[#1a1a2e]' : 'text-[#c8102e]'}`}>
                                 {ds.total > 0 ? '+' : ''}{ds.total}
                               </span>
                             </div>
@@ -911,7 +911,7 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                     <div className="flex items-center gap-2">
                       <Star size={18} className="text-[#f5a623]" />
                       <div>
-                        <div className="font-bold text-[#131313]">Optimal Lineup</div>
+                        <div className="font-bold text-[#1a1a2e]">Optimal Lineup</div>
                         <div className="text-xs text-[#6c6d6f]">
                           Best possible under ${SALARY_CAP.toLocaleString()} cap
                           — Salary: ${selectedRaceFantasyResults.optimal.totalSalary.toLocaleString()}
@@ -926,18 +926,18 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                     {selectedRaceFantasyResults.optimal.drivers.map((ds) => (
                       <div key={ds.driverId} className="p-3 flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 flex items-center justify-center rounded bg-[#fff8e1] text-xs font-bold text-[#131313]">
+                          <div className="w-8 h-8 flex items-center justify-center rounded bg-[#fff8e1] text-xs font-bold text-[#1a1a2e]">
                             #{getDriverNumber(ds.driverId)}
                           </div>
                           <div>
-                            <div className="text-sm font-bold text-[#131313]">{getDriverName(ds.driverId)}</div>
+                            <div className="text-sm font-bold text-[#1a1a2e]">{getDriverName(ds.driverId)}</div>
                             <div className="text-xs text-[#6c6d6f]">${ds.salary.toLocaleString()}</div>
                           </div>
                         </div>
                         <div className="flex items-center gap-4 text-xs">
                           <div className="hidden sm:flex gap-3">
                             {ds.finish !== 0 && (
-                              <span className={ds.finish > 0 ? 'text-[#008564]' : 'text-[#cc0000]'}>
+                              <span className={ds.finish > 0 ? 'text-[#008564]' : 'text-[#c8102e]'}>
                                 Pos: {ds.finish > 0 ? '+' : ''}{ds.finish}
                               </span>
                             )}
@@ -948,10 +948,10 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                               <span className="text-[#f5a623]">FL: +{ds.fastestLap}</span>
                             )}
                             {ds.incidents !== 0 && (
-                              <span className="text-[#cc0000]">Inc: {ds.incidents}</span>
+                              <span className="text-[#c8102e]">Inc: {ds.incidents}</span>
                             )}
                           </div>
-                          <span className={`font-bold text-sm ${ds.total >= 0 ? 'text-[#131313]' : 'text-[#cc0000]'}`}>
+                          <span className={`font-bold text-sm ${ds.total >= 0 ? 'text-[#1a1a2e]' : 'text-[#c8102e]'}`}>
                             {ds.total > 0 ? '+' : ''}{ds.total}
                           </span>
                         </div>
@@ -969,7 +969,7 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
       {subTab === 'leaderboard' && (
         <div className="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden">
           <div className="p-6 border-b border-[#e0e0e0]">
-            <h2 className="text-xl font-bold text-[#131313]">Fantasy Season Standings</h2>
+            <h2 className="text-xl font-bold text-[#1a1a2e]">Fantasy Season Standings</h2>
             <p className="text-[#6c6d6f] text-sm mt-1">
               ${SALARY_CAP.toLocaleString()} cap | {ROSTER_SIZE} drivers | Cumulative points across all races
             </p>
@@ -983,7 +983,7 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-[#f5f5f5]">
+                <thead className="bg-[#ffffff]">
                   <tr>
                     <th className="px-6 py-4 text-left text-xs font-bold text-[#6c6d6f] uppercase">Rank</th>
                     <th className="px-6 py-4 text-left text-xs font-bold text-[#6c6d6f] uppercase">Player</th>
@@ -998,7 +998,7 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                   {leaderboard.map((entry, idx) => (
                     <tr
                       key={entry.pickerId}
-                      className="border-t border-[#e0e0e0] hover:bg-[#f0f0f0] transition"
+                      className="border-t border-[#e0e0e0] hover:bg-[#f7f7f7] transition"
                     >
                       <td className="px-6 py-4">
                         <div
@@ -1006,17 +1006,17 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                             idx === 0
                               ? 'bg-[#008564] text-white'
                               : idx === 1
-                                ? 'bg-[#c0c0c0] text-[#131313]'
+                                ? 'bg-[#c0c0c0] text-[#1a1a2e]'
                                 : idx === 2
                                   ? 'bg-[#cd7f32] text-white'
-                                  : 'bg-[#f5f5f5] text-[#131313]'
+                                  : 'bg-[#ffffff] text-[#1a1a2e]'
                           }`}
                         >
                           {idx + 1}
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="font-bold text-[#131313]">{getDriverName(entry.pickerId)}</div>
+                        <div className="font-bold text-[#1a1a2e]">{getDriverName(entry.pickerId)}</div>
                         <div className="text-[#6c6d6f] text-xs">
                           #{getDriverNumber(entry.pickerId)}
                           {getDriverNickname(entry.pickerId) && ` • "${getDriverNickname(entry.pickerId)}"`}
@@ -1030,12 +1030,12 @@ export default function FantasyDraft({ pickerId, nextRace, drivers }) {
                         <span className="text-[#008564] font-bold">{entry.bestWeek}</span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className={entry.worstWeek < 0 ? 'text-[#cc0000] font-bold' : 'text-[#6c6d6f]'}>
+                        <span className={entry.worstWeek < 0 ? 'text-[#c8102e] font-bold' : 'text-[#6c6d6f]'}>
                           {entry.worstWeek}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <span className="text-2xl font-black text-[#131313]">{entry.total}</span>
+                        <span className="text-2xl font-black text-[#1a1a2e]">{entry.total}</span>
                       </td>
                     </tr>
                   ))}

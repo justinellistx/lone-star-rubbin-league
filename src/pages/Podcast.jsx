@@ -87,14 +87,14 @@ function AudioPlayer({ src, onDurationLoaded }) {
     return (
       <div
         style={{
-          backgroundColor: '#131313',
+          backgroundColor: '#1a1a2e',
           color: '#fff',
           padding: '1.25rem',
           borderRadius: '4px',
           textAlign: 'center',
         }}
       >
-        <Mic size={24} style={{ color: '#d00000', marginBottom: '0.5rem' }} />
+        <Mic size={24} style={{ color: '#003DA5', marginBottom: '0.5rem' }} />
         <p style={{ fontSize: '0.875rem', margin: '0.5rem 0 0.25rem' }}>
           Audio coming soon
         </p>
@@ -105,7 +105,7 @@ function AudioPlayer({ src, onDurationLoaded }) {
   return (
     <div
       style={{
-        backgroundColor: '#131313',
+        backgroundColor: '#1a1a2e',
         color: '#fff',
         borderRadius: '4px',
         overflow: 'hidden',
@@ -128,7 +128,7 @@ function AudioPlayer({ src, onDurationLoaded }) {
           style={{
             height: '100%',
             width: `${pct}%`,
-            backgroundColor: '#d00000',
+            backgroundColor: '#003DA5',
             transition: 'width 0.1s linear',
           }}
         />
@@ -154,7 +154,7 @@ function AudioPlayer({ src, onDurationLoaded }) {
         <button
           onClick={toggle}
           style={{
-            background: '#d00000', border: 'none', color: '#fff',
+            background: '#003DA5', border: 'none', color: '#fff',
             width: '36px', height: '36px', borderRadius: '50%',
             cursor: 'pointer', display: 'flex', alignItems: 'center',
             justifyContent: 'center', flexShrink: 0,
@@ -188,7 +188,7 @@ function AudioPlayer({ src, onDurationLoaded }) {
           type="range" min="0" max="1" step="0.05"
           value={muted ? 0 : volume}
           onChange={changeVolume}
-          style={{ width: '60px', accentColor: '#d00000' }}
+          style={{ width: '60px', accentColor: '#003DA5' }}
         />
 
         <a href={src} download style={{ color: '#fff', display: 'flex', alignItems: 'center', padding: '4px' }} title="Download episode">
@@ -253,7 +253,7 @@ export function PodcastMiniPlayer() {
           <button
             onClick={toggle}
             style={{
-              background: (!latest.audio_url || error) ? '#6c6d6f' : '#d00000',
+              background: (!latest.audio_url || error) ? '#6c6d6f' : '#003DA5',
               border: 'none', color: '#fff', width: '32px', height: '32px',
               borderRadius: '50%', cursor: (!latest.audio_url || error) ? 'default' : 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
@@ -263,11 +263,11 @@ export function PodcastMiniPlayer() {
             {playing ? <Pause size={14} /> : <Play size={14} style={{ marginLeft: '1px' }} />}
           </button>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#d00000', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#003DA5', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
               Episode {latest.episode_number}
             </div>
             <div style={{
-              fontSize: '0.8125rem', fontWeight: 700, color: '#131313', lineHeight: 1.3,
+              fontSize: '0.8125rem', fontWeight: 700, color: '#1a1a2e', lineHeight: 1.3,
               overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box',
               WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
             }}>
@@ -280,8 +280,8 @@ export function PodcastMiniPlayer() {
         to="/podcast"
         style={{
           display: 'block', textAlign: 'center', padding: '0.5rem',
-          backgroundColor: '#f5f5f5', fontSize: '0.6875rem', fontWeight: 700,
-          textTransform: 'uppercase', color: '#004b8d', textDecoration: 'none',
+          backgroundColor: '#ffffff', fontSize: '0.6875rem', fontWeight: 700,
+          textTransform: 'uppercase', color: '#003DA5', textDecoration: 'none',
           borderTop: '1px solid #e0e0e0',
         }}
       >
@@ -297,13 +297,13 @@ export default function Podcast() {
   const [activeDurations, setActiveDurations] = useState({});
 
   return (
-    <div style={{ backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}>
       <div style={{ maxWidth: '960px', margin: '0 auto', padding: '1.25rem 1rem' }}>
         {/* Page header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
-          <Mic size={28} style={{ color: '#d00000' }} />
+          <Mic size={28} style={{ color: '#003DA5' }} />
           <div>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#131313', margin: 0, textTransform: 'uppercase' }}>
+            <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1a1a2e', margin: 0, textTransform: 'uppercase' }}>
               LSR League Weekly
             </h1>
             <p style={{ fontSize: '0.875rem', color: '#6c6d6f', margin: 0 }}>
@@ -315,13 +315,13 @@ export default function Podcast() {
         {/* Episodes list */}
         {episodesLoading ? (
           <div style={{ textAlign: 'center', padding: '3rem' }}>
-            <Loader size={24} style={{ color: '#d00000', animation: 'spin 1s linear infinite' }} />
+            <Loader size={24} style={{ color: '#003DA5', animation: 'spin 1s linear infinite' }} />
             <p style={{ color: '#6c6d6f', marginTop: '0.75rem', fontSize: '0.875rem' }}>Loading episodes...</p>
           </div>
         ) : episodes.length === 0 ? (
           <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0', padding: '3rem 2rem', textAlign: 'center' }}>
             <Mic size={40} style={{ color: '#e0e0e0', marginBottom: '1rem' }} />
-            <h2 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#131313', margin: '0 0 0.5rem' }}>
+            <h2 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#1a1a2e', margin: '0 0 0.5rem' }}>
               No Episodes Yet
             </h2>
             <p style={{ fontSize: '0.875rem', color: '#6c6d6f', margin: 0 }}>
@@ -334,14 +334,14 @@ export default function Podcast() {
               <div key={ep.id} style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0', overflow: 'hidden' }}>
                 {/* Episode header */}
                 <div style={{
-                  backgroundColor: '#131313', color: '#fff', padding: '0.875rem 1.25rem',
+                  backgroundColor: '#1a1a2e', color: '#fff', padding: '0.875rem 1.25rem',
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  borderBottom: '3px solid #d00000',
+                  borderBottom: '3px solid #003DA5',
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     {ep.track && <TrackIcon track={ep.track} size={36} />}
                     <div>
-                      <div style={{ fontSize: '0.625rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#d00000' }}>
+                      <div style={{ fontSize: '0.625rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#003DA5' }}>
                         Episode {ep.episode_number}
                         {ep.race_number ? ` \u00B7 Race ${ep.race_number}` : ''}
                       </div>
@@ -353,7 +353,7 @@ export default function Podcast() {
                       {new Date(ep.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </div>
                     {activeDurations[ep.id] && (
-                      <div style={{ fontSize: '0.6875rem', color: '#d00000', fontWeight: 700 }}>
+                      <div style={{ fontSize: '0.6875rem', color: '#003DA5', fontWeight: 700 }}>
                         {formatTime(activeDurations[ep.id])}
                       </div>
                     )}
@@ -384,7 +384,7 @@ export default function Podcast() {
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem' }}>
                         {ep.highlights.map((h, i) => (
                           <span key={i} style={{
-                            fontSize: '0.75rem', backgroundColor: '#f5f5f5', color: '#333',
+                            fontSize: '0.75rem', backgroundColor: '#ffffff', color: '#333',
                             padding: '0.25rem 0.625rem', borderRadius: '2px', border: '1px solid #e0e0e0',
                           }}>
                             {h}
@@ -397,7 +397,7 @@ export default function Podcast() {
 
                 {idx === 0 && (
                   <div style={{
-                    backgroundColor: '#d00000', color: '#fff', fontSize: '0.625rem',
+                    backgroundColor: '#003DA5', color: '#fff', fontSize: '0.625rem',
                     fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em',
                     textAlign: 'center', padding: '0.375rem',
                   }}>
@@ -411,7 +411,7 @@ export default function Podcast() {
 
         {/* About section */}
         <div style={{ marginTop: '2rem', backgroundColor: '#fff', border: '1px solid #e0e0e0', padding: '1.25rem' }}>
-          <h3 style={{ fontSize: '0.875rem', fontWeight: 800, textTransform: 'uppercase', color: '#131313', margin: '0 0 0.5rem' }}>
+          <h3 style={{ fontSize: '0.875rem', fontWeight: 800, textTransform: 'uppercase', color: '#1a1a2e', margin: '0 0 0.5rem' }}>
             About LSR League Weekly
           </h3>
           <p style={{ fontSize: '0.8125rem', color: '#6c6d6f', lineHeight: 1.6, margin: 0 }}>

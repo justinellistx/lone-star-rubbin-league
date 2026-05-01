@@ -19,20 +19,20 @@ export default function Schedule() {
 
   const RaceCard = ({ race, isNext }) => (
     <div
-      className={`bg-white border-2 rounded-lg p-6 hover:bg-[#f0f0f0] transition ${
-        isNext ? 'border-[#d00000]' : 'border-[#e0e0e0]'
+      className={`bg-white border-2 rounded-lg p-6 hover:bg-[#f7f7f7] transition ${
+        isNext ? 'border-[#003DA5]' : 'border-[#e0e0e0]'
       }`}
     >
       <div className="flex items-start gap-4 mb-4">
         <TrackIcon track={race.track_name} size={56} showLabel />
         <div className="flex-1 min-w-0">
           <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-1">Race #{race.race_number}</div>
-          <h3 className="text-2xl font-bold text-[#131313] truncate">{race.track_name}</h3>
+          <h3 className="text-2xl font-bold text-[#1a1a2e] truncate">{race.track_name}</h3>
         </div>
         {race.status === 'completed' ? (
           <CheckCircle className="text-[#008564] flex-shrink-0" size={24} />
         ) : isNext ? (
-          <Flag className="text-[#d00000] flex-shrink-0" size={24} />
+          <Flag className="text-[#003DA5] flex-shrink-0" size={24} />
         ) : (
           <Clock className="text-[#6c6d6f] flex-shrink-0" size={24} />
         )}
@@ -52,15 +52,15 @@ export default function Schedule() {
       <div className="flex items-center justify-between">
         <div>
           <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-1">Series</div>
-          <div className="text-[#131313] font-bold">{race.series}</div>
+          <div className="text-[#1a1a2e] font-bold">{race.series}</div>
         </div>
         <div className="text-right">
           <div
             className={`inline-block px-3 py-1 rounded text-xs font-bold uppercase ${
               race.status === 'completed'
-                ? 'bg-[#008564] text-[#131313]'
+                ? 'bg-[#008564] text-[#1a1a2e]'
                 : isNext
-                  ? 'bg-[#d00000] text-[#131313]'
+                  ? 'bg-[#003DA5] text-[#1a1a2e]'
                   : 'bg-[#e0e0e0] text-[#6c6d6f]'
             }`}
           >
@@ -72,7 +72,7 @@ export default function Schedule() {
       {race.status === 'completed' && (
         <Link
           to="/results"
-          className="mt-4 block text-center bg-[#f5f5f5] border border-[#e0e0e0] text-[#d00000] px-4 py-2 rounded text-sm font-bold hover:border-[#d00000] transition"
+          className="mt-4 block text-center bg-[#ffffff] border border-[#e0e0e0] text-[#003DA5] px-4 py-2 rounded text-sm font-bold hover:border-[#003DA5] transition"
         >
           View Results
         </Link>
@@ -82,9 +82,9 @@ export default function Schedule() {
 
   if (loading) {
     return (
-      <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8 flex items-center justify-center">
+      <div className="bg-[#ffffff] min-h-screen py-12 px-4 md:px-8 flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#d00000] mb-4"></div>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#003DA5] mb-4"></div>
           <p className="text-[#6c6d6f] text-lg">Loading schedule...</p>
         </div>
       </div>
@@ -92,11 +92,11 @@ export default function Schedule() {
   }
 
   return (
-    <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8">
+    <div className="bg-[#ffffff] min-h-screen py-12 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Page Title */}
         <div className="mb-12">
-          <h1 className="text-5xl md:text-6xl font-black text-[#131313] mb-2">SCHEDULE</h1>
+          <h1 className="text-5xl md:text-6xl font-black text-[#1a1a2e] mb-2">SCHEDULE</h1>
           <p className="text-[#6c6d6f] text-lg">
             {schedule?.length || 0} Races
             {schedule && schedule.length > 0 && ` - ${Math.max(...schedule.map(r => r.stage_number || 0))} Stages`}
@@ -105,22 +105,22 @@ export default function Schedule() {
 
         {/* Next Race Highlight */}
         {nextRace && (
-          <div className="bg-gradient-to-r from-white to-[#f5f5f5] border-2 border-[#d00000] rounded-lg p-8 mb-12">
+          <div className="bg-gradient-to-r from-white to-[#ffffff] border-2 border-[#003DA5] rounded-lg p-8 mb-12">
             <div className="flex items-center gap-3 mb-4">
-              <Flag className="text-[#d00000]" size={32} />
-              <h2 className="text-3xl font-bold text-[#d00000]">NEXT RACE</h2>
+              <Flag className="text-[#003DA5]" size={32} />
+              <h2 className="text-3xl font-bold text-[#003DA5]">NEXT RACE</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="flex items-center gap-4">
                 <TrackIcon track={nextRace.track_name} size={72} showLabel />
                 <div>
                   <div className="text-[#6c6d6f] text-sm uppercase font-bold mb-2">Track</div>
-                  <div className="text-3xl font-bold text-[#131313]">{nextRace.track_name}</div>
+                  <div className="text-3xl font-bold text-[#1a1a2e]">{nextRace.track_name}</div>
                 </div>
               </div>
               <div>
                 <div className="text-[#6c6d6f] text-sm uppercase font-bold mb-2">Date</div>
-                <div className="text-3xl font-bold text-[#d00000]">
+                <div className="text-3xl font-bold text-[#003DA5]">
                   {new Date(nextRace.race_date).toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric',
@@ -138,7 +138,7 @@ export default function Schedule() {
         {/* Stage 1 */}
         {stage1.length > 0 && (
           <section className="mb-16">
-            <h2 className="text-3xl font-bold text-[#131313] mb-2">Stage 1</h2>
+            <h2 className="text-3xl font-bold text-[#1a1a2e] mb-2">Stage 1</h2>
             <p className="text-[#6c6d6f] mb-8">{stage1.length} races</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {stage1.map((race) => (
@@ -155,7 +155,7 @@ export default function Schedule() {
         {/* Stage 2 */}
         {stage2.length > 0 && (
           <section className="mb-16">
-            <h2 className="text-3xl font-bold text-[#131313] mb-2">Stage 2</h2>
+            <h2 className="text-3xl font-bold text-[#1a1a2e] mb-2">Stage 2</h2>
             <p className="text-[#6c6d6f] mb-8">{stage2.length} races</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {stage2.map((race) => (
@@ -172,7 +172,7 @@ export default function Schedule() {
         {/* Stage 3 */}
         {stage3.length > 0 && (
           <section className="mb-16">
-            <h2 className="text-3xl font-bold text-[#131313] mb-2">Stage 3</h2>
+            <h2 className="text-3xl font-bold text-[#1a1a2e] mb-2">Stage 3</h2>
             <p className="text-[#6c6d6f] mb-8">{stage3.length} races</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {stage3.map((race) => (
@@ -189,15 +189,15 @@ export default function Schedule() {
         {/* Schedule Stats */}
         {schedule && schedule.length > 0 && (
           <div className="bg-white border border-[#e0e0e0] rounded-lg p-8">
-            <h3 className="text-2xl font-bold text-[#131313] mb-6">Season Stats</h3>
+            <h3 className="text-2xl font-bold text-[#1a1a2e] mb-6">Season Stats</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div>
                 <div className="text-[#6c6d6f] text-sm uppercase font-bold mb-2">Total Races</div>
-                <div className="text-3xl font-bold text-[#131313]">{schedule.length}</div>
+                <div className="text-3xl font-bold text-[#1a1a2e]">{schedule.length}</div>
               </div>
               <div>
                 <div className="text-[#6c6d6f] text-sm uppercase font-bold mb-2">Stages</div>
-                <div className="text-3xl font-bold text-[#d00000]">
+                <div className="text-3xl font-bold text-[#003DA5]">
                   {Math.max(...schedule.map(r => r.stage_number || 0))}
                 </div>
               </div>
@@ -211,7 +211,7 @@ export default function Schedule() {
                 <div className="text-[#6c6d6f] text-sm uppercase font-bold mb-2">
                   Completed
                 </div>
-                <div className="text-3xl font-bold text-[#cc0000]">
+                <div className="text-3xl font-bold text-[#c8102e]">
                   {schedule.filter((r) => r.status === 'completed').length}
                 </div>
               </div>

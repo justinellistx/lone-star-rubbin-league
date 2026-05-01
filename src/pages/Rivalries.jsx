@@ -124,7 +124,7 @@ export default function Rivalries() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] to-[#14141f] p-8 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-[#131313] text-lg font-semibold">Loading rivalries...</p>
+          <p className="text-[#1a1a2e] text-lg font-semibold">Loading rivalries...</p>
         </div>
       </div>
     );
@@ -134,7 +134,7 @@ export default function Rivalries() {
     <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] to-[#14141f] p-8">
       {/* Header */}
       <div className="mb-12">
-        <h1 className="text-5xl font-black mb-2 text-[#131313]">DRIVER RIVALRIES</h1>
+        <h1 className="text-5xl font-black mb-2 text-[#1a1a2e]">DRIVER RIVALRIES</h1>
         <p className="text-[#6c6d6f] text-lg">
           {rivalries.length} active rivalries detected • Analyzed by proximity frequency
         </p>
@@ -151,7 +151,7 @@ export default function Rivalries() {
           return (
             <div
               key={idx}
-              className="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden hover:border-[#d00000] transition-all duration-300 shadow-2xl"
+              className="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden hover:border-[#003DA5] transition-all duration-300 shadow-2xl"
             >
               {/* Top accent bar */}
               <div className={`h-1 bg-gradient-to-r ${getIntensityColor(rivalry.closeFinishes)}`}></div>
@@ -163,10 +163,10 @@ export default function Rivalries() {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="w-12 h-12 bg-gradient-to-br from-[#f5a623] to-orange-600 rounded flex items-center justify-center">
-                        <span className="text-[#131313] font-black text-lg">#{driver1Info.number}</span>
+                        <span className="text-[#1a1a2e] font-black text-lg">#{driver1Info.number}</span>
                       </div>
                       <div>
-                        <p className="text-xl font-black text-[#131313]">{rivalry.driver1}</p>
+                        <p className="text-xl font-black text-[#1a1a2e]">{rivalry.driver1}</p>
                         <p className="text-sm text-[#6c6d6f] italic">"{driver1Info.nickname}"</p>
                       </div>
                     </div>
@@ -174,7 +174,7 @@ export default function Rivalries() {
 
                   {/* VS Center */}
                   <div className="flex-shrink-0 mx-8 text-center">
-                    <p className="text-4xl font-black text-[#d00000] mb-2">VS</p>
+                    <p className="text-4xl font-black text-[#003DA5] mb-2">VS</p>
                     <p className="text-xs text-[#6c6d6f] font-bold uppercase tracking-widest">
                       {getIntensityLabel(rivalry.closeFinishes)}
                     </p>
@@ -184,11 +184,11 @@ export default function Rivalries() {
                   <div className="flex-1 text-right">
                     <div className="flex items-center justify-end gap-3 mb-2">
                       <div>
-                        <p className="text-xl font-black text-[#131313]">{rivalry.driver2}</p>
+                        <p className="text-xl font-black text-[#1a1a2e]">{rivalry.driver2}</p>
                         <p className="text-sm text-[#6c6d6f] italic">"{driver2Info.nickname}"</p>
                       </div>
                       <div className="w-12 h-12 bg-gradient-to-br from-[#2ec4b6] to-teal-500 rounded flex items-center justify-center">
-                        <span className="text-[#131313] font-black text-lg">#{driver2Info.number}</span>
+                        <span className="text-[#1a1a2e] font-black text-lg">#{driver2Info.number}</span>
                       </div>
                     </div>
                   </div>
@@ -201,7 +201,7 @@ export default function Rivalries() {
                     <p className="text-[#6c6d6f] text-xs uppercase font-bold tracking-widest mb-1">
                       Close Finishes
                     </p>
-                    <p className="text-3xl font-black text-[#d00000]">{rivalry.closeFinishes}</p>
+                    <p className="text-3xl font-black text-[#003DA5]">{rivalry.closeFinishes}</p>
                   </div>
 
                   {/* Head to Head Record */}
@@ -209,7 +209,7 @@ export default function Rivalries() {
                     <p className="text-[#6c6d6f] text-xs uppercase font-bold tracking-widest mb-1">
                       H2H Record
                     </p>
-                    <p className="text-3xl font-black text-[#131313]">
+                    <p className="text-3xl font-black text-[#1a1a2e]">
                       {record}
                     </p>
                   </div>
@@ -232,9 +232,9 @@ export default function Rivalries() {
                     <p className="text-xs uppercase font-bold text-[#6c6d6f] tracking-widest">
                       Rivalry Intensity
                     </p>
-                    <p className="text-xs font-black text-[#d00000]">{Math.round(intensityPercent)}%</p>
+                    <p className="text-xs font-black text-[#003DA5]">{Math.round(intensityPercent)}%</p>
                   </div>
-                  <div className="w-full bg-[#f5f5f5] rounded-full h-3 overflow-hidden border border-[#e0e0e0]">
+                  <div className="w-full bg-[#ffffff] rounded-full h-3 overflow-hidden border border-[#e0e0e0]">
                     <div
                       className={`h-full bg-gradient-to-r ${getIntensityColor(rivalry.closeFinishes)} transition-all duration-500`}
                       style={{ width: `${intensityPercent}%` }}
@@ -252,13 +252,13 @@ export default function Rivalries() {
                       {rivalry.battleLog.slice(0, 3).map((battle, bIdx) => (
                         <div
                           key={bIdx}
-                          className="flex items-center justify-between text-sm px-3 py-2 bg-[#f5f5f5] border border-[#e0e0e0] rounded"
+                          className="flex items-center justify-between text-sm px-3 py-2 bg-[#ffffff] border border-[#e0e0e0] rounded"
                         >
                           <span className="text-[#6c6d6f]">{battle.track}</span>
                           <div className="flex items-center gap-3">
-                            <span className="font-bold text-[#131313]">#{battle.pos1}</span>
-                            <span className="text-[#d00000] font-black">-</span>
-                            <span className="font-bold text-[#131313]">#{battle.pos2}</span>
+                            <span className="font-bold text-[#1a1a2e]">#{battle.pos1}</span>
+                            <span className="text-[#003DA5] font-black">-</span>
+                            <span className="font-bold text-[#1a1a2e]">#{battle.pos2}</span>
                           </div>
                           <span className="text-xs text-[#008564] font-bold">
                             {battle.difference} positions

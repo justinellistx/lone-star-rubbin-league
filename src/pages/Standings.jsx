@@ -30,11 +30,11 @@ export default function Standings() {
       : { name: '—', lapsLed: '—' };
 
   return (
-    <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8">
+    <div className="bg-[#ffffff] min-h-screen py-12 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Page Title */}
         <div className="mb-12">
-          <h1 className="text-5xl md:text-6xl font-black text-[#131313] mb-2">STANDINGS</h1>
+          <h1 className="text-5xl md:text-6xl font-black text-[#1a1a2e] mb-2">STANDINGS</h1>
           <p className="text-[#6c6d6f] text-lg">2026 Season - All Stages</p>
         </div>
 
@@ -46,8 +46,8 @@ export default function Standings() {
               onClick={() => setSelectedStage(stage)}
               className={`px-6 py-3 rounded font-bold whitespace-nowrap transition ${
                 selectedStage === stage
-                  ? 'bg-[#d00000] text-white'
-                  : 'bg-white text-[#131313] border border-[#e0e0e0] hover:border-[#d00000]'
+                  ? 'bg-[#003DA5] text-white'
+                  : 'bg-white text-[#1a1a2e] border border-[#e0e0e0] hover:border-[#003DA5]'
               }`}
             >
               {stage === 'stage1'
@@ -65,7 +65,7 @@ export default function Standings() {
         {loading && (
           <div className="flex justify-center items-center py-12">
             <div className="flex flex-col items-center">
-              <div className="w-12 h-12 border-4 border-[#e0e0e0] border-t-[#d00000] rounded-full animate-spin mb-4"></div>
+              <div className="w-12 h-12 border-4 border-[#e0e0e0] border-t-[#003DA5] rounded-full animate-spin mb-4"></div>
               <p className="text-[#6c6d6f]">Loading standings data...</p>
             </div>
           </div>
@@ -73,8 +73,8 @@ export default function Standings() {
 
         {/* Error State */}
         {error && (
-          <div className="bg-white border border-[#cc0000] rounded-lg p-6 mb-12">
-            <p className="text-[#cc0000] font-bold">Error loading standings</p>
+          <div className="bg-white border border-[#c8102e] rounded-lg p-6 mb-12">
+            <p className="text-[#c8102e] font-bold">Error loading standings</p>
             <p className="text-[#6c6d6f] text-sm mt-2">{error}</p>
           </div>
         )}
@@ -85,26 +85,26 @@ export default function Standings() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
               <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
                 <div className="text-[#6c6d6f] text-sm uppercase font-bold mb-2">Leader</div>
-                <div className="text-[#131313] font-bold text-xl mb-2">{leader.name}</div>
-                <div className="text-[#d00000] font-bold text-2xl">{leader.points} pts</div>
+                <div className="text-[#1a1a2e] font-bold text-xl mb-2">{leader.name}</div>
+                <div className="text-[#003DA5] font-bold text-2xl">{leader.points} pts</div>
               </div>
 
               <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
                 <div className="text-[#6c6d6f] text-sm uppercase font-bold mb-2">Most Wins</div>
-                <div className="text-[#131313] font-bold text-xl mb-2">{mostWins.name}</div>
+                <div className="text-[#1a1a2e] font-bold text-xl mb-2">{mostWins.name}</div>
                 <div className="text-[#008564] font-bold text-2xl">{mostWins.wins} wins</div>
               </div>
 
               <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
                 <div className="text-[#6c6d6f] text-sm uppercase font-bold mb-2">Best Avg Finish</div>
-                <div className="text-[#131313] font-bold text-xl mb-2">{bestAvgFinish.name}</div>
-                <div className="text-[#cc0000] font-bold text-2xl">{bestAvgFinish.avgFinish}</div>
+                <div className="text-[#1a1a2e] font-bold text-xl mb-2">{bestAvgFinish.name}</div>
+                <div className="text-[#c8102e] font-bold text-2xl">{bestAvgFinish.avgFinish}</div>
               </div>
 
               <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
                 <div className="text-[#6c6d6f] text-sm uppercase font-bold mb-2">Most Laps Led</div>
-                <div className="text-[#131313] font-bold text-xl mb-2">{mostLapsLed.name}</div>
-                <div className="text-[#d00000] font-bold text-2xl">{mostLapsLed.lapsLed}</div>
+                <div className="text-[#1a1a2e] font-bold text-xl mb-2">{mostLapsLed.name}</div>
+                <div className="text-[#003DA5] font-bold text-2xl">{mostLapsLed.lapsLed}</div>
               </div>
             </div>
 
@@ -112,9 +112,9 @@ export default function Standings() {
             {stageBonusTracker && (
               <div className="bg-white border border-[#e0e0e0] rounded-lg px-6 py-4 mb-6">
                 <p className="text-[#6c6d6f] text-sm">
-                  <span className="text-[#d00000] font-bold">Drop {stageBonusTracker.dropsAllowed} worst</span> of {stageBonusTracker.totalRaces} races per stage.
+                  <span className="text-[#003DA5] font-bold">Drop {stageBonusTracker.dropsAllowed} worst</span> of {stageBonusTracker.totalRaces} races per stage.
                   {' '}DNRs count as 0-point races and are dropped first.
-                  {' '}<span className="text-[#131313]">{stageBonusTracker.racesCompleted} of {stageBonusTracker.totalRaces} races completed.</span>
+                  {' '}<span className="text-[#1a1a2e]">{stageBonusTracker.racesCompleted} of {stageBonusTracker.totalRaces} races completed.</span>
                 </p>
               </div>
             )}
@@ -124,7 +124,7 @@ export default function Standings() {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-[#e0e0e0] bg-[#f5f5f5]">
+                    <tr className="border-b border-[#e0e0e0] bg-[#ffffff]">
                       <th className="px-4 py-4 text-left text-[#6c6d6f] text-xs font-bold uppercase">
                         Pos
                       </th>
@@ -170,26 +170,26 @@ export default function Standings() {
                     {displayStandings.map((driver, idx) => (
                       <tr
                         key={driver.id}
-                        className="border-b border-[#e0e0e0] hover:bg-[#f0f0f0] transition"
+                        className="border-b border-[#e0e0e0] hover:bg-[#f7f7f7] transition"
                       >
                         <td className="px-4 py-4">
                           <div
                             className={`flex items-center justify-center w-8 h-8 rounded font-bold ${
                               idx === 0
-                                ? 'bg-[#d00000] text-white'
-                                : 'bg-[#e0e0e0] text-[#131313]'
+                                ? 'bg-[#003DA5] text-white'
+                                : 'bg-[#e0e0e0] text-[#1a1a2e]'
                             }`}
                           >
                             {idx + 1}
                           </div>
                         </td>
                         <td className="px-4 py-4">
-                          <div className="font-semibold text-[#131313]">{driver.name}</div>
+                          <div className="font-semibold text-[#1a1a2e]">{driver.name}</div>
                           <div className="text-sm text-[#6c6d6f]">#{driver.number}</div>
                         </td>
                         <td className="px-4 py-4 text-[#6c6d6f]">{driver.team}</td>
                         <td className="px-4 py-4 text-right">
-                          <div className="font-bold text-[#d00000]">{driver.points}</div>
+                          <div className="font-bold text-[#003DA5]">{driver.points}</div>
                           {driver.droppedPoints > 0 && (
                             <div className="text-xs text-[#6c6d6f]">
                               {driver.rawPoints} raw
@@ -205,14 +205,14 @@ export default function Standings() {
                         </td>
                         <td className="px-4 py-4 text-right">
                           {driver.penaltyPoints < 0 ? (
-                            <span className="text-[#cc0000] font-semibold">{driver.penaltyPoints}</span>
+                            <span className="text-[#c8102e] font-semibold">{driver.penaltyPoints}</span>
                           ) : (
                             <span className="text-[#6c6d6f]">—</span>
                           )}
                         </td>
                         <td className="px-4 py-4 text-right">
                           {driver.droppedPoints > 0 ? (
-                            <span className="text-[#cc0000] text-sm font-semibold">-{driver.droppedPoints}</span>
+                            <span className="text-[#c8102e] text-sm font-semibold">-{driver.droppedPoints}</span>
                           ) : (
                             <span className="text-[#6c6d6f]">—</span>
                           )}
@@ -223,19 +223,19 @@ export default function Standings() {
                         <td className="px-4 py-4 text-right text-[#6c6d6f] font-semibold">
                           {driver.racesEntered}
                         </td>
-                        <td className="px-4 py-4 text-right text-[#131313] font-semibold">
+                        <td className="px-4 py-4 text-right text-[#1a1a2e] font-semibold">
                           {driver.wins}
                         </td>
                         <td className="px-4 py-4 text-right text-[#008564] font-semibold">
                           {driver.top5}
                         </td>
-                        <td className="px-4 py-4 text-right text-[#131313] font-semibold">
+                        <td className="px-4 py-4 text-right text-[#1a1a2e] font-semibold">
                           {(driver.avgFinish || 0).toFixed(1)}
                         </td>
-                        <td className="px-4 py-4 text-right text-[#d00000] font-semibold">
+                        <td className="px-4 py-4 text-right text-[#003DA5] font-semibold">
                           {driver.lapsLed}
                         </td>
-                        <td className="px-4 py-4 text-right text-[#cc0000] font-semibold">
+                        <td className="px-4 py-4 text-right text-[#c8102e] font-semibold">
                           {driver.totalIncidents}
                         </td>
                       </tr>
@@ -250,7 +250,7 @@ export default function Standings() {
               <div className="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden mb-12">
                 <div className="px-6 py-6 border-b border-[#e0e0e0]">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-bold text-[#131313]">Stage Champion Bonus Tracker</h3>
+                    <h3 className="text-xl font-bold text-[#1a1a2e]">Stage Champion Bonus Tracker</h3>
                     <span className="text-[#6c6d6f] text-sm">
                       {stageBonusTracker.racesCompleted} of {stageBonusTracker.totalRaces} races completed
                     </span>
@@ -263,12 +263,12 @@ export default function Standings() {
                   {/* Most Laps Led */}
                   <div className="px-6 py-5">
                     <div className="flex items-center gap-2 mb-3">
-                      <Trophy size={16} className="text-[#d00000]" />
+                      <Trophy size={16} className="text-[#003DA5]" />
                       <span className="text-[#6c6d6f] text-xs uppercase font-bold">Most Laps Led</span>
                     </div>
                     <div>
-                      <div className="text-[#131313] font-bold text-lg">{stageBonusTracker.mostLapsLed.name}</div>
-                      <div className="text-[#d00000] text-sm font-bold mt-1">
+                      <div className="text-[#1a1a2e] font-bold text-lg">{stageBonusTracker.mostLapsLed.name}</div>
+                      <div className="text-[#003DA5] text-sm font-bold mt-1">
                         {stageBonusTracker.mostLapsLed.value} laps
                       </div>
                     </div>
@@ -282,7 +282,7 @@ export default function Standings() {
                     </div>
                     {stageBonusTracker.lowestIncidents.qualified ? (
                       <div>
-                        <div className="text-[#131313] font-bold text-lg">{stageBonusTracker.lowestIncidents.name}</div>
+                        <div className="text-[#1a1a2e] font-bold text-lg">{stageBonusTracker.lowestIncidents.name}</div>
                         <div className="text-[#008564] text-sm font-bold mt-1">
                           {stageBonusTracker.lowestIncidents.value} incidents
                         </div>
@@ -300,12 +300,12 @@ export default function Standings() {
                   {/* Most Fastest Laps */}
                   <div className="px-6 py-5">
                     <div className="flex items-center gap-2 mb-3">
-                      <Zap size={16} className="text-[#cc0000]" />
+                      <Zap size={16} className="text-[#c8102e]" />
                       <span className="text-[#6c6d6f] text-xs uppercase font-bold">Most Fastest Laps</span>
                     </div>
                     {stageBonusTracker.mostFastestLaps.isTied ? (
                       <div>
-                        <div className="text-[#131313] font-bold text-lg">
+                        <div className="text-[#1a1a2e] font-bold text-lg">
                           {stageBonusTracker.mostFastestLaps.leaders.length}-way tie
                         </div>
                         <div className="text-[#6c6d6f] text-xs mt-1">
@@ -314,10 +314,10 @@ export default function Standings() {
                       </div>
                     ) : (
                       <div>
-                        <div className="text-[#131313] font-bold text-lg">
+                        <div className="text-[#1a1a2e] font-bold text-lg">
                           {stageBonusTracker.mostFastestLaps.leaders[0]}
                         </div>
-                        <div className="text-[#cc0000] text-sm font-bold mt-1">
+                        <div className="text-[#c8102e] text-sm font-bold mt-1">
                           {stageBonusTracker.mostFastestLaps.value} awards
                         </div>
                       </div>
@@ -333,50 +333,50 @@ export default function Standings() {
         <div className="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden">
           <button
             onClick={() => setExpandedSection(!expandedSection)}
-            className="w-full px-6 py-6 flex items-center justify-between hover:bg-[#f0f0f0] transition"
+            className="w-full px-6 py-6 flex items-center justify-between hover:bg-[#f7f7f7] transition"
           >
-            <h3 className="text-xl font-bold text-[#131313]">Points Breakdown</h3>
+            <h3 className="text-xl font-bold text-[#1a1a2e]">Points Breakdown</h3>
             <ChevronDown
               size={24}
-              className={`text-[#d00000] transition ${expandedSection ? 'rotate-180' : ''}`}
+              className={`text-[#003DA5] transition ${expandedSection ? 'rotate-180' : ''}`}
             />
           </button>
 
           {expandedSection && (
-            <div className="border-t border-[#e0e0e0] px-6 py-6 bg-[#f5f5f5]">
+            <div className="border-t border-[#e0e0e0] px-6 py-6 bg-[#ffffff]">
               <div className="space-y-4">
                 <div>
-                  <h4 className="text-[#131313] font-bold mb-3">Position Points</h4>
+                  <h4 className="text-[#1a1a2e] font-bold mb-3">Position Points</h4>
                   <div className="bg-white rounded p-4 space-y-2">
                     <div className="flex justify-between">
                       <span className="text-[#6c6d6f]">1st Place</span>
-                      <span className="text-[#131313] font-bold">40 points</span>
+                      <span className="text-[#1a1a2e] font-bold">40 points</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#6c6d6f]">2nd Place</span>
-                      <span className="text-[#131313] font-bold">35 points</span>
+                      <span className="text-[#1a1a2e] font-bold">35 points</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#6c6d6f]">3rd Place</span>
-                      <span className="text-[#131313] font-bold">34 points</span>
+                      <span className="text-[#1a1a2e] font-bold">34 points</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#6c6d6f]">4th-5th Place</span>
-                      <span className="text-[#131313] font-bold">33-32 points</span>
+                      <span className="text-[#1a1a2e] font-bold">33-32 points</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#6c6d6f]">6th-10th Place</span>
-                      <span className="text-[#131313] font-bold">31-27 points</span>
+                      <span className="text-[#1a1a2e] font-bold">31-27 points</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#6c6d6f]">40th Place</span>
-                      <span className="text-[#131313] font-bold">1 point</span>
+                      <span className="text-[#1a1a2e] font-bold">1 point</span>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="text-[#131313] font-bold mb-3">Bonus Points (+2 each, among league drivers)</h4>
+                  <h4 className="text-[#1a1a2e] font-bold mb-3">Bonus Points (+2 each, among league drivers)</h4>
                   <div className="bg-white rounded p-4 space-y-2">
                     <div className="flex justify-between">
                       <span className="text-[#6c6d6f]">Pole Bonus (P1 start)</span>
@@ -398,25 +398,25 @@ export default function Standings() {
                 </div>
 
                 <div>
-                  <h4 className="text-[#131313] font-bold mb-3">Incident Penalties</h4>
+                  <h4 className="text-[#1a1a2e] font-bold mb-3">Incident Penalties</h4>
                   <div className="bg-white rounded p-4 space-y-2">
                     <div className="flex justify-between">
                       <span className="text-[#6c6d6f]">20–29 incidents</span>
-                      <span className="text-[#cc0000] font-bold">-1 point</span>
+                      <span className="text-[#c8102e] font-bold">-1 point</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#6c6d6f]">30–39 incidents</span>
-                      <span className="text-[#cc0000] font-bold">-2 points</span>
+                      <span className="text-[#c8102e] font-bold">-2 points</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#6c6d6f]">40+ incidents</span>
-                      <span className="text-[#cc0000] font-bold">-3 points</span>
+                      <span className="text-[#c8102e] font-bold">-3 points</span>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="text-[#131313] font-bold mb-3">Scoring Note</h4>
+                  <h4 className="text-[#1a1a2e] font-bold mb-3">Scoring Note</h4>
                   <div className="bg-white rounded p-4 text-[#6c6d6f]">
                     <p>
                       Points are awarded based on actual overall finishing position among all drivers
@@ -427,7 +427,7 @@ export default function Standings() {
                 </div>
 
                 <div>
-                  <h4 className="text-[#131313] font-bold mb-3">Stage Rules</h4>
+                  <h4 className="text-[#1a1a2e] font-bold mb-3">Stage Rules</h4>
                   <div className="bg-white rounded p-4 text-[#6c6d6f]">
                     <p>
                       36-race season split into 3 stages of 12 races. Drop your worst 3 races per
@@ -437,22 +437,22 @@ export default function Standings() {
                 </div>
 
                 <div>
-                  <h4 className="text-[#131313] font-bold mb-3">Stage Champion Bonuses (+3 each)</h4>
+                  <h4 className="text-[#1a1a2e] font-bold mb-3">Stage Champion Bonuses (+3 each)</h4>
                   <div className="bg-white rounded p-4 space-y-2">
                     <div className="text-[#6c6d6f] text-sm mb-3">
                       Awarded after all 12 stage races to determine the stage champion:
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#6c6d6f]">Most total laps led across the stage</span>
-                      <span className="text-[#d00000] font-bold">+3 points</span>
+                      <span className="text-[#003DA5] font-bold">+3 points</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#6c6d6f]">Lowest total incident points across the stage</span>
-                      <span className="text-[#d00000] font-bold">+3 points</span>
+                      <span className="text-[#003DA5] font-bold">+3 points</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-[#6c6d6f]">Most fastest lap awards across the stage</span>
-                      <span className="text-[#d00000] font-bold">+3 points</span>
+                      <span className="text-[#003DA5] font-bold">+3 points</span>
                     </div>
                   </div>
                 </div>

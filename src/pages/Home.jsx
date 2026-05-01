@@ -57,11 +57,11 @@ export default function Home() {
 
   const categoryColor = (cat) => {
     switch (cat) {
-      case 'recap': return '#d00000';
+      case 'recap': return '#003DA5';
       case 'highlight': return '#008564';
-      case 'announcement': return '#004b8d';
-      case 'preview': return '#d00000';
-      default: return '#d00000';
+      case 'announcement': return '#003DA5';
+      case 'preview': return '#c8102e';
+      default: return '#003DA5';
     }
   };
 
@@ -76,8 +76,8 @@ export default function Home() {
   };
 
   return (
-    <div style={{ backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
-      {/* Page Content: 2-column ESPN layout */}
+    <div style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}>
+      {/* Page Content: 2-column NASCAR layout */}
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '1.25rem 1rem', display: 'flex', gap: '1.25rem', alignItems: 'flex-start' }}>
 
         {/* ===== LEFT COLUMN: Main Content ===== */}
@@ -86,18 +86,18 @@ export default function Home() {
           {/* Next Race Banner */}
           {!scheduleLoading && nextRace && (
             <div style={{
-              backgroundColor: '#131313',
+              backgroundColor: '#1a1a2e',
               color: '#fff',
               padding: '1rem 1.25rem',
               marginBottom: '1.25rem',
               display: 'flex',
               alignItems: 'center',
               gap: '1.25rem',
-              borderLeft: '4px solid #d00000',
+              borderLeft: '4px solid #003DA5',
             }}>
-              <Flag size={20} style={{ color: '#d00000', flexShrink: 0 }} />
+              <Flag size={20} style={{ color: '#ffcf00', flexShrink: 0 }} />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#d00000', marginBottom: '0.125rem' }}>
+                <div style={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#ffcf00', marginBottom: '0.125rem' }}>
                   Up Next
                 </div>
                 <div style={{ fontSize: '1.125rem', fontWeight: 800 }}>
@@ -122,12 +122,12 @@ export default function Home() {
           <div style={{ marginBottom: '1.25rem' }}>
             <div style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              borderBottom: '3px solid #d00000', paddingBottom: '0.5rem', marginBottom: '0.875rem',
+              borderBottom: '3px solid #003DA5', paddingBottom: '0.5rem', marginBottom: '0.875rem',
             }}>
-              <h2 style={{ fontSize: '1.125rem', fontWeight: 800, textTransform: 'uppercase', color: '#131313', margin: 0 }}>
+              <h2 style={{ fontSize: '1.125rem', fontWeight: 800, textTransform: 'uppercase', color: '#1a1a2e', margin: 0 }}>
                 Top Headlines
               </h2>
-              <Link to="/news" style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#004b8d', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <Link to="/news" style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#003DA5', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                 All News <ChevronRight size={14} />
               </Link>
             </div>
@@ -147,7 +147,7 @@ export default function Home() {
                     textDecoration: 'none',
                     transition: 'background-color 0.15s',
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f7f7f7'}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.375rem' }}>
@@ -161,7 +161,7 @@ export default function Home() {
                       {new Date(displayNews[0].published_at || displayNews[0].created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                     </span>
                   </div>
-                  <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#131313', margin: 0, lineHeight: 1.25 }}>
+                  <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1a1a2e', margin: 0, lineHeight: 1.25 }}>
                     {displayNews[0].title}
                   </h3>
                   {displayNews[0].subtitle && (
@@ -186,7 +186,7 @@ export default function Home() {
                       textDecoration: 'none',
                       transition: 'background-color 0.15s',
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f7f7f7'}
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}
                   >
                     <div style={{
@@ -194,7 +194,7 @@ export default function Home() {
                       flexShrink: 0, borderRadius: '1px',
                     }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: '#131313', margin: 0, lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: '#1a1a2e', margin: 0, lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {item.title}
                       </h4>
                       <span style={{ fontSize: '0.6875rem', color: '#999' }}>
@@ -216,12 +216,12 @@ export default function Home() {
           <div style={{ marginBottom: '1.25rem' }}>
             <div style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              borderBottom: '3px solid #131313', paddingBottom: '0.5rem', marginBottom: '0.875rem',
+              borderBottom: '3px solid #1a1a2e', paddingBottom: '0.5rem', marginBottom: '0.875rem',
             }}>
-              <h2 style={{ fontSize: '1.125rem', fontWeight: 800, textTransform: 'uppercase', color: '#131313', margin: 0 }}>
+              <h2 style={{ fontSize: '1.125rem', fontWeight: 800, textTransform: 'uppercase', color: '#1a1a2e', margin: 0 }}>
                 Latest Results
               </h2>
-              <Link to="/results" style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#004b8d', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <Link to="/results" style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#003DA5', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                 Full Results <ChevronRight size={14} />
               </Link>
             </div>
@@ -234,7 +234,7 @@ export default function Home() {
               <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0' }}>
                 {/* Race header */}
                 <div style={{
-                  backgroundColor: '#131313', color: '#fff', padding: '0.75rem 1.25rem',
+                  backgroundColor: '#1a1a2e', color: '#fff', padding: '0.75rem 1.25rem',
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -246,7 +246,7 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#d00000' }}>FINAL</div>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#c8102e' }}>FINAL</div>
                 </div>
 
                 {/* Top 5 results */}
@@ -258,17 +258,17 @@ export default function Home() {
                         display: 'flex', alignItems: 'center', gap: '0.75rem',
                         padding: '0.5rem 1.25rem',
                         borderBottom: idx < 4 ? '1px solid #e0e0e0' : 'none',
-                        backgroundColor: idx === 0 ? '#fffde7' : '#fff',
+                        backgroundColor: idx === 0 ? 'rgba(0, 61, 165, 0.04)' : '#fff',
                       }}
                     >
                       <span style={{
                         fontSize: '0.875rem', fontWeight: 800,
-                        color: idx === 0 ? '#d00000' : '#131313',
+                        color: idx === 0 ? '#003DA5' : '#1a1a2e',
                         minWidth: '1.5rem', textAlign: 'center',
                       }}>
                         {idx + 1}
                       </span>
-                      <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#131313', flex: 1 }}>
+                      <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#1a1a2e', flex: 1 }}>
                         {r.name}
                       </span>
                       <span style={{ fontSize: '0.75rem', color: '#6c6d6f' }}>
@@ -286,8 +286,8 @@ export default function Home() {
                   to="/results"
                   style={{
                     display: 'block', textAlign: 'center', padding: '0.625rem',
-                    backgroundColor: '#f5f5f5', fontSize: '0.75rem', fontWeight: 700,
-                    textTransform: 'uppercase', color: '#004b8d', textDecoration: 'none',
+                    backgroundColor: '#f4f4f4', fontSize: '0.75rem', fontWeight: 700,
+                    textTransform: 'uppercase', color: '#003DA5', textDecoration: 'none',
                     borderTop: '1px solid #e0e0e0',
                   }}
                 >
@@ -306,12 +306,12 @@ export default function Home() {
             <div style={{ marginBottom: '1.25rem' }}>
               <div style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                borderBottom: '3px solid #131313', paddingBottom: '0.5rem', marginBottom: '0.875rem',
+                borderBottom: '3px solid #1a1a2e', paddingBottom: '0.5rem', marginBottom: '0.875rem',
               }}>
-                <h2 style={{ fontSize: '1.125rem', fontWeight: 800, textTransform: 'uppercase', color: '#131313', margin: 0 }}>
+                <h2 style={{ fontSize: '1.125rem', fontWeight: 800, textTransform: 'uppercase', color: '#1a1a2e', margin: 0 }}>
                   Upcoming Schedule
                 </h2>
-                <Link to="/schedule" style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#004b8d', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                <Link to="/schedule" style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#003DA5', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                   Full Schedule <ChevronRight size={14} />
                 </Link>
               </div>
@@ -327,7 +327,7 @@ export default function Home() {
                   >
                     <TrackIcon track={race.track_name} size={36} />
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#131313' }}>
+                      <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#1a1a2e' }}>
                         {race.track_name}
                       </div>
                       <div style={{ fontSize: '0.6875rem', color: '#6c6d6f' }}>
@@ -335,7 +335,7 @@ export default function Home() {
                       </div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#131313' }}>
+                      <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#1a1a2e' }}>
                         {new Date(race.race_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                       </div>
                       <div style={{ fontSize: '0.6875rem', color: '#6c6d6f' }}>
@@ -357,12 +357,12 @@ export default function Home() {
           <div style={{ marginBottom: '1.25rem' }}>
             <div style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              borderBottom: '3px solid #d00000', paddingBottom: '0.5rem', marginBottom: 0,
+              borderBottom: '3px solid #003DA5', paddingBottom: '0.5rem', marginBottom: 0,
             }}>
-              <h3 style={{ fontSize: '0.875rem', fontWeight: 800, textTransform: 'uppercase', color: '#131313', margin: 0 }}>
+              <h3 style={{ fontSize: '0.875rem', fontWeight: 800, textTransform: 'uppercase', color: '#1a1a2e', margin: 0 }}>
                 Standings
               </h3>
-              <Link to="/standings" style={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', color: '#004b8d', textDecoration: 'none' }}>
+              <Link to="/standings" style={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', color: '#003DA5', textDecoration: 'none' }}>
                 Full
               </Link>
             </div>
@@ -377,7 +377,7 @@ export default function Home() {
                   {/* Header row */}
                   <div style={{
                     display: 'flex', alignItems: 'center', padding: '0.375rem 0.75rem',
-                    backgroundColor: '#131313', color: '#fff',
+                    backgroundColor: '#1a1a2e', color: '#fff',
                     fontSize: '0.625rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em',
                   }}>
                     <span style={{ width: '1.5rem' }}>RK</span>
@@ -392,27 +392,27 @@ export default function Home() {
                         display: 'flex', alignItems: 'center', padding: '0.5rem 0.75rem',
                         borderBottom: '1px solid #e0e0e0',
                         textDecoration: 'none',
-                        backgroundColor: idx === 0 ? '#fffde7' : '#fff',
+                        backgroundColor: idx === 0 ? 'rgba(0, 61, 165, 0.04)' : '#fff',
                         transition: 'background-color 0.15s',
                       }}
-                      onMouseEnter={(e) => { if (idx !== 0) e.currentTarget.style.backgroundColor = '#f0f0f0'; }}
+                      onMouseEnter={(e) => { if (idx !== 0) e.currentTarget.style.backgroundColor = '#f7f7f7'; }}
                       onMouseLeave={(e) => { if (idx !== 0) e.currentTarget.style.backgroundColor = '#fff'; }}
                     >
                       <span style={{
                         fontSize: '0.75rem', fontWeight: 800, width: '1.5rem',
-                        color: idx === 0 ? '#d00000' : '#131313',
+                        color: idx === 0 ? '#003DA5' : '#1a1a2e',
                       }}>
                         {idx + 1}
                       </span>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#131313' }}>
+                        <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#1a1a2e' }}>
                           {driver.name}
                         </div>
                         <div style={{ fontSize: '0.625rem', color: '#999' }}>
                           #{driver.number} &middot; {driver.team}
                         </div>
                       </div>
-                      <span style={{ fontSize: '0.8125rem', fontWeight: 800, color: '#131313', width: '3rem', textAlign: 'right' }}>
+                      <span style={{ fontSize: '0.8125rem', fontWeight: 800, color: '#1a1a2e', width: '3rem', textAlign: 'right' }}>
                         {driver.points}
                       </span>
                     </Link>
@@ -430,12 +430,12 @@ export default function Home() {
           <div style={{ marginBottom: '1.25rem' }}>
             <div style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              borderBottom: '3px solid #d00000', paddingBottom: '0.5rem', marginBottom: 0,
+              borderBottom: '3px solid #003DA5', paddingBottom: '0.5rem', marginBottom: 0,
             }}>
-              <h3 style={{ fontSize: '0.875rem', fontWeight: 800, textTransform: 'uppercase', color: '#131313', margin: 0, display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-                <Mic size={14} style={{ color: '#d00000' }} /> Podcast
+              <h3 style={{ fontSize: '0.875rem', fontWeight: 800, textTransform: 'uppercase', color: '#1a1a2e', margin: 0, display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                <Mic size={14} style={{ color: '#003DA5' }} /> Podcast
               </h3>
-              <Link to="/podcast" style={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', color: '#004b8d', textDecoration: 'none' }}>
+              <Link to="/podcast" style={{ fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', color: '#003DA5', textDecoration: 'none' }}>
                 All
               </Link>
             </div>
@@ -445,9 +445,9 @@ export default function Home() {
           {/* Quick Links */}
           <div style={{ marginBottom: '1.25rem' }}>
             <div style={{
-              borderBottom: '3px solid #131313', paddingBottom: '0.5rem', marginBottom: 0,
+              borderBottom: '3px solid #1a1a2e', paddingBottom: '0.5rem', marginBottom: 0,
             }}>
-              <h3 style={{ fontSize: '0.875rem', fontWeight: 800, textTransform: 'uppercase', color: '#131313', margin: 0 }}>
+              <h3 style={{ fontSize: '0.875rem', fontWeight: 800, textTransform: 'uppercase', color: '#1a1a2e', margin: 0 }}>
                 Quick Links
               </h3>
             </div>
@@ -467,12 +467,12 @@ export default function Home() {
                     padding: '0.625rem 0.75rem',
                     borderBottom: idx < 4 ? '1px solid #e0e0e0' : 'none',
                     textDecoration: 'none', fontSize: '0.8125rem', fontWeight: 600,
-                    color: '#131313', transition: 'background-color 0.15s',
+                    color: '#1a1a2e', transition: 'background-color 0.15s',
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f7f7f7'}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fff'}
                 >
-                  <link.icon size={14} style={{ color: '#d00000' }} />
+                  <link.icon size={14} style={{ color: '#003DA5' }} />
                   <span style={{ flex: 1 }}>{link.label}</span>
                   <ChevronRight size={12} style={{ color: '#ccc' }} />
                 </Link>
@@ -483,19 +483,19 @@ export default function Home() {
           {/* Season Stats */}
           <div>
             <div style={{
-              borderBottom: '3px solid #131313', paddingBottom: '0.5rem', marginBottom: 0,
+              borderBottom: '3px solid #1a1a2e', paddingBottom: '0.5rem', marginBottom: 0,
             }}>
-              <h3 style={{ fontSize: '0.875rem', fontWeight: 800, textTransform: 'uppercase', color: '#131313', margin: 0 }}>
+              <h3 style={{ fontSize: '0.875rem', fontWeight: 800, textTransform: 'uppercase', color: '#1a1a2e', margin: 0 }}>
                 Season Stats
               </h3>
             </div>
             <div style={{ backgroundColor: '#fff', border: '1px solid #e0e0e0', borderTop: 'none', padding: '0.75rem' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                 {[
-                  { label: 'Total Races', value: '36', color: '#d00000' },
-                  { label: 'Stages', value: '3', color: '#131313' },
+                  { label: 'Total Races', value: '36', color: '#003DA5' },
+                  { label: 'Stages', value: '3', color: '#1a1a2e' },
                   { label: 'Drivers', value: '9', color: '#008564' },
-                  { label: 'Teams', value: '4', color: '#004b8d' },
+                  { label: 'Teams', value: '4', color: '#003DA5' },
                 ].map((stat) => (
                   <div key={stat.label} style={{ textAlign: 'center', padding: '0.5rem' }}>
                     <div style={{ fontSize: '1.5rem', fontWeight: 800, color: stat.color }}>

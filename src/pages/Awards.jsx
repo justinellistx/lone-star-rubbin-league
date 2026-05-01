@@ -137,10 +137,10 @@ export default function Awards() {
   // Show loading state
   if (racesLoading) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
+      <div className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
         <div className="flex items-center justify-center" style={{ height: '100vh' }}>
           <div className="flex flex-col items-center gap-4">
-            <Loader size={48} style={{ color: '#d00000' }} className="animate-spin" />
+            <Loader size={48} style={{ color: '#003DA5' }} className="animate-spin" />
             <p style={{ color: '#6c6d6f' }}>Loading awards data...</p>
           </div>
         </div>
@@ -149,10 +149,10 @@ export default function Awards() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
       {/* Season Awards Hero Section */}
       <div className="px-4 py-12 md:px-8 md:py-16">
-        <h1 className="text-4xl md:text-5xl font-bold mb-2" style={{ color: '#d00000' }}>
+        <h1 className="text-4xl md:text-5xl font-bold mb-2" style={{ color: '#003DA5' }}>
           Season Awards
         </h1>
         <p className="text-lg mb-12" style={{ color: '#6c6d6f' }}>
@@ -164,8 +164,8 @@ export default function Awards() {
           {/* Iron Man */}
           <div className="p-6 rounded-lg" style={{ backgroundColor: 'white', borderColor: '#e0e0e0', borderWidth: 1 }}>
             <div className="flex items-center gap-3 mb-4">
-              <Medal size={24} style={{ color: '#d00000' }} />
-              <h3 className="text-lg font-semibold" style={{ color: '#d00000' }}>Iron Man</h3>
+              <Medal size={24} style={{ color: '#003DA5' }} />
+              <h3 className="text-lg font-semibold" style={{ color: '#003DA5' }}>Iron Man</h3>
             </div>
             {seasonAwards.ironMan ? (
               <div>
@@ -184,8 +184,8 @@ export default function Awards() {
           {/* Consistency King */}
           <div className="p-6 rounded-lg" style={{ backgroundColor: 'white', borderColor: '#e0e0e0', borderWidth: 1 }}>
             <div className="flex items-center gap-3 mb-4">
-              <TrendingUp size={24} style={{ color: '#d00000' }} />
-              <h3 className="text-lg font-semibold" style={{ color: '#d00000' }}>Consistency King</h3>
+              <TrendingUp size={24} style={{ color: '#003DA5' }} />
+              <h3 className="text-lg font-semibold" style={{ color: '#003DA5' }}>Consistency King</h3>
             </div>
             {seasonAwards.consistencyKing ? (
               <div>
@@ -204,8 +204,8 @@ export default function Awards() {
           {/* Comeback King */}
           <div className="p-6 rounded-lg" style={{ backgroundColor: 'white', borderColor: '#e0e0e0', borderWidth: 1 }}>
             <div className="flex items-center gap-3 mb-4">
-              <Zap size={24} style={{ color: '#d00000' }} />
-              <h3 className="text-lg font-semibold" style={{ color: '#d00000' }}>Comeback King</h3>
+              <Zap size={24} style={{ color: '#003DA5' }} />
+              <h3 className="text-lg font-semibold" style={{ color: '#003DA5' }}>Comeback King</h3>
             </div>
             {seasonAwards.comebackKing ? (
               <div>
@@ -224,12 +224,12 @@ export default function Awards() {
           {/* Incident Magnet */}
           <div className="p-6 rounded-lg" style={{ backgroundColor: 'white', borderColor: '#e0e0e0', borderWidth: 1 }}>
             <div className="flex items-center gap-3 mb-4">
-              <AlertCircle size={24} style={{ color: '#d00000' }} />
-              <h3 className="text-lg font-semibold" style={{ color: '#d00000' }}>Incident Magnet</h3>
+              <AlertCircle size={24} style={{ color: '#003DA5' }} />
+              <h3 className="text-lg font-semibold" style={{ color: '#003DA5' }}>Incident Magnet</h3>
             </div>
             {seasonAwards.incidentMagnet ? (
               <div>
-                <p className="text-2xl font-bold mb-2" style={{ color: '#cc0000' }}>
+                <p className="text-2xl font-bold mb-2" style={{ color: '#c8102e' }}>
                   {seasonAwards.incidentMagnet.name}
                 </p>
                 <p className="text-sm" style={{ color: '#6c6d6f' }}>
@@ -247,7 +247,7 @@ export default function Awards() {
 
       {/* Per-Race Awards */}
       <div className="px-4 py-12 md:px-8">
-        <h2 className="text-3xl md:text-4xl font-bold mb-12" style={{ color: '#d00000' }}>
+        <h2 className="text-3xl md:text-4xl font-bold mb-12" style={{ color: '#003DA5' }}>
           Per-Race Awards
         </h2>
 
@@ -263,7 +263,7 @@ export default function Awards() {
               >
                 {/* Race Header */}
                 <div className="p-6" style={{ backgroundColor: '#e0e0e0' }}>
-                  <h3 className="text-2xl font-bold mb-1" style={{ color: '#d00000' }}>
+                  <h3 className="text-2xl font-bold mb-1" style={{ color: '#003DA5' }}>
                     Race {race.raceNumber}: {race.track}
                   </h3>
                   <p style={{ color: '#6c6d6f' }}>{race.date}</p>
@@ -293,15 +293,15 @@ export default function Awards() {
                   {/* Tough Luck */}
                   {awards.toughLuck && (
                     <div>
-                      <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#cc0000' }}>
+                      <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#c8102e' }}>
                         Tough Luck
                       </p>
                       <div
                         className="inline-flex items-center gap-2 px-3 py-2 rounded-full"
-                        style={{ backgroundColor: 'rgba(230, 57, 70, 0.1)', borderColor: '#cc0000', borderWidth: 1 }}
+                        style={{ backgroundColor: 'rgba(230, 57, 70, 0.1)', borderColor: '#c8102e', borderWidth: 1 }}
                       >
-                        <TrendingUp size={16} style={{ color: '#cc0000' }} />
-                        <span style={{ color: '#cc0000' }} className="font-semibold">
+                        <TrendingUp size={16} style={{ color: '#c8102e' }} />
+                        <span style={{ color: '#c8102e' }} className="font-semibold">
                           {awards.toughLuck.name}
                         </span>
                         <span style={{ color: '#6c6d6f' }}>-{awards.toughLuck.loss}</span>
@@ -312,15 +312,15 @@ export default function Awards() {
                   {/* Clean Machine */}
                   {awards.cleanMachine && (
                     <div>
-                      <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#d00000' }}>
+                      <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#003DA5' }}>
                         {awards.cleanMachine.isClean ? 'Perfect Race' : 'Clean Machine'}
                       </p>
                       <div
                         className="inline-flex items-center gap-2 px-3 py-2 rounded-full"
-                        style={{ backgroundColor: 'rgba(245, 166, 35, 0.1)', borderColor: '#d00000', borderWidth: 1 }}
+                        style={{ backgroundColor: 'rgba(245, 166, 35, 0.1)', borderColor: '#003DA5', borderWidth: 1 }}
                       >
-                        <Shield size={16} style={{ color: '#d00000' }} />
-                        <span style={{ color: '#d00000' }} className="font-semibold">
+                        <Shield size={16} style={{ color: '#003DA5' }} />
+                        <span style={{ color: '#003DA5' }} className="font-semibold">
                           {awards.cleanMachine.name}
                         </span>
                         <span style={{ color: '#6c6d6f' }}>{awards.cleanMachine.incidents} incidents</span>
@@ -331,15 +331,15 @@ export default function Awards() {
                   {/* Wrecking Ball */}
                   {awards.wreckingBall && (
                     <div>
-                      <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#cc0000' }}>
+                      <p className="text-xs uppercase tracking-wider mb-2" style={{ color: '#c8102e' }}>
                         Wrecking Ball
                       </p>
                       <div
                         className="inline-flex items-center gap-2 px-3 py-2 rounded-full"
-                        style={{ backgroundColor: 'rgba(230, 57, 70, 0.1)', borderColor: '#cc0000', borderWidth: 1 }}
+                        style={{ backgroundColor: 'rgba(230, 57, 70, 0.1)', borderColor: '#c8102e', borderWidth: 1 }}
                       >
-                        <Wrench size={16} style={{ color: '#cc0000' }} />
-                        <span style={{ color: '#cc0000' }} className="font-semibold">
+                        <Wrench size={16} style={{ color: '#c8102e' }} />
+                        <span style={{ color: '#c8102e' }} className="font-semibold">
                           {awards.wreckingBall.name}
                         </span>
                         <span style={{ color: '#6c6d6f' }}>{awards.wreckingBall.incidents} incidents</span>

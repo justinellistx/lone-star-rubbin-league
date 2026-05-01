@@ -85,9 +85,9 @@ export default function DriverProfile() {
 
   if (loading) {
     return (
-      <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8">
+      <div className="bg-[#ffffff] min-h-screen py-12 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
-          <Link to="/drivers" className="flex items-center gap-2 text-[#d00000] hover:text-[#131313] transition mb-8">
+          <Link to="/drivers" className="flex items-center gap-2 text-[#003DA5] hover:text-[#1a1a2e] transition mb-8">
             <ArrowLeft size={20} /> Back to Drivers
           </Link>
           <div className="bg-white border border-[#e0e0e0] rounded-lg p-12 text-center">
@@ -100,9 +100,9 @@ export default function DriverProfile() {
 
   if (!driver) {
     return (
-      <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8">
+      <div className="bg-[#ffffff] min-h-screen py-12 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
-          <Link to="/drivers" className="flex items-center gap-2 text-[#d00000] hover:text-[#131313] transition mb-8">
+          <Link to="/drivers" className="flex items-center gap-2 text-[#003DA5] hover:text-[#1a1a2e] transition mb-8">
             <ArrowLeft size={20} /> Back to Drivers
           </Link>
           <div className="bg-white border border-[#e0e0e0] rounded-lg p-12 text-center">
@@ -130,24 +130,24 @@ export default function DriverProfile() {
   const maxFinish = Math.max(...chartData.map(d => d.finish), 30);
 
   return (
-    <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8">
+    <div className="bg-[#ffffff] min-h-screen py-12 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Back Link */}
-        <Link to="/drivers" className="flex items-center gap-2 text-[#d00000] hover:text-[#131313] transition mb-8">
+        <Link to="/drivers" className="flex items-center gap-2 text-[#003DA5] hover:text-[#1a1a2e] transition mb-8">
           <ArrowLeft size={20} /> Back to Drivers
         </Link>
 
         {/* Driver Header */}
-        <div className="bg-gradient-to-r from-white to-[#f5f5f5] border border-[#e0e0e0] rounded-lg p-8 mb-12">
+        <div className="bg-gradient-to-r from-white to-[#ffffff] border border-[#e0e0e0] rounded-lg p-8 mb-12">
           <div className="flex items-start justify-between mb-6">
             <div>
-              <h1 className="text-5xl md:text-6xl font-black text-[#131313] mb-2">{driver.name}</h1>
+              <h1 className="text-5xl md:text-6xl font-black text-[#1a1a2e] mb-2">{driver.name}</h1>
               {driver.nickname && (
-                <p className="text-[#d00000] text-xl font-bold mb-1">"{driver.nickname}"</p>
+                <p className="text-[#003DA5] text-xl font-bold mb-1">"{driver.nickname}"</p>
               )}
               <p className="text-[#6c6d6f] text-lg">{driver.team}</p>
             </div>
-            <div className="bg-[#d00000] text-white rounded-lg px-6 py-4 text-center">
+            <div className="bg-[#003DA5] text-white rounded-lg px-6 py-4 text-center">
               <div className="text-4xl font-black">{driver.number}</div>
               <div className="text-xs font-bold uppercase mt-1">Car #</div>
             </div>
@@ -156,16 +156,16 @@ export default function DriverProfile() {
 
         {/* Stats Cards Row 1 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-          <div className="bg-white border border-[#e0e0e0] rounded-lg p-6 hover:border-[#d00000] transition">
+          <div className="bg-white border border-[#e0e0e0] rounded-lg p-6 hover:border-[#003DA5] transition">
             <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Points</div>
-            <div className="text-[#d00000] font-black text-3xl">{driver.points}</div>
+            <div className="text-[#003DA5] font-black text-3xl">{driver.points}</div>
             <div className="text-xs text-[#6c6d6f] mt-2">
               {driver.posPoints}p
               {driver.bonusPoints > 0 && <span className="text-[#008564]"> +{driver.bonusPoints}</span>}
-              {driver.penaltyPoints < 0 && <span className="text-[#cc0000]"> {driver.penaltyPoints}</span>}
+              {driver.penaltyPoints < 0 && <span className="text-[#c8102e]"> {driver.penaltyPoints}</span>}
             </div>
             {driver.droppedPoints > 0 && (
-              <div className="text-xs text-[#cc0000] mt-1">-{driver.droppedPoints} dropped</div>
+              <div className="text-xs text-[#c8102e] mt-1">-{driver.droppedPoints} dropped</div>
             )}
           </div>
 
@@ -176,12 +176,12 @@ export default function DriverProfile() {
 
           <div className="bg-white border border-[#e0e0e0] rounded-lg p-6 hover:border-[#e63946] transition">
             <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Top 5s</div>
-            <div className="text-[#cc0000] font-black text-3xl">{driver.top5}</div>
+            <div className="text-[#c8102e] font-black text-3xl">{driver.top5}</div>
           </div>
 
           <div className="bg-white border border-[#e0e0e0] rounded-lg p-6 hover:border-white transition">
             <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Top 10s</div>
-            <div className="text-[#131313] font-black text-3xl">{driver.top10}</div>
+            <div className="text-[#1a1a2e] font-black text-3xl">{driver.top10}</div>
           </div>
         </div>
 
@@ -189,27 +189,27 @@ export default function DriverProfile() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
           <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
             <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Avg Finish</div>
-            <div className="text-[#131313] font-bold text-2xl">{driver.avgFinish.toFixed(1)}</div>
+            <div className="text-[#1a1a2e] font-bold text-2xl">{driver.avgFinish.toFixed(1)}</div>
           </div>
 
           <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
             <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Avg Start</div>
-            <div className="text-[#131313] font-bold text-2xl">{avgStart.toFixed(1)}</div>
+            <div className="text-[#1a1a2e] font-bold text-2xl">{avgStart.toFixed(1)}</div>
           </div>
 
           <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
             <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Laps Led</div>
-            <div className="text-[#131313] font-bold text-2xl">{driver.lapsLed}</div>
+            <div className="text-[#1a1a2e] font-bold text-2xl">{driver.lapsLed}</div>
           </div>
 
           <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
             <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Incidents</div>
-            <div className="text-[#cc0000] font-bold text-2xl">{driver.totalIncidents}</div>
+            <div className="text-[#c8102e] font-bold text-2xl">{driver.totalIncidents}</div>
           </div>
 
           <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
             <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Races</div>
-            <div className="text-[#131313] font-bold text-2xl">
+            <div className="text-[#1a1a2e] font-bold text-2xl">
               {driver.racesEntered}
               {driver.dnrCount > 0 && (
                 <span className="text-[#6c6d6f] text-sm font-normal ml-1">({driver.dnrCount} DNR)</span>
@@ -221,7 +221,7 @@ export default function DriverProfile() {
         {/* Performance Chart */}
         {chartData.length > 0 && (
           <div className="bg-white border border-[#e0e0e0] rounded-lg p-8 mb-12">
-            <h2 className="text-2xl font-bold text-[#131313] mb-6">Finish Position Trend</h2>
+            <h2 className="text-2xl font-bold text-[#1a1a2e] mb-6">Finish Position Trend</h2>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#2a2a3e" />
@@ -270,7 +270,7 @@ export default function DriverProfile() {
         {/* Race Results Table */}
         <div className="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden">
           <div className="px-6 py-4 border-b border-[#e0e0e0]">
-            <h2 className="text-2xl font-bold text-[#131313]">Season Results</h2>
+            <h2 className="text-2xl font-bold text-[#1a1a2e]">Season Results</h2>
             <p className="text-[#6c6d6f] text-sm mt-1">
               Worst 3 races dropped per stage. Stats from kept races only.
             </p>
@@ -279,7 +279,7 @@ export default function DriverProfile() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#e0e0e0] bg-[#f5f5f5]">
+                <tr className="border-b border-[#e0e0e0] bg-[#ffffff]">
                   <th className="px-4 py-4 text-left text-[#6c6d6f] text-xs font-bold uppercase">Race</th>
                   <th className="px-4 py-4 text-left text-[#6c6d6f] text-xs font-bold uppercase">Track</th>
                   <th className="px-4 py-4 text-right text-[#6c6d6f] text-xs font-bold uppercase">Start</th>
@@ -298,31 +298,31 @@ export default function DriverProfile() {
                       key={result.id}
                       className={`border-b border-[#e0e0e0] transition ${
                         result.isDropped
-                          ? 'opacity-40 bg-[#f5f5f5]'
-                          : 'hover:bg-[#f0f0f0]'
+                          ? 'opacity-40 bg-[#ffffff]'
+                          : 'hover:bg-[#f7f7f7]'
                       }`}
                     >
-                      <td className="px-4 py-4 text-[#131313] font-semibold">R{result.raceNumber}</td>
+                      <td className="px-4 py-4 text-[#1a1a2e] font-semibold">R{result.raceNumber}</td>
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-2">
                           <TrackIcon track={result.track} size={28} />
-                          <span className="text-[#131313]">{result.track}</span>
+                          <span className="text-[#1a1a2e]">{result.track}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-4 text-right text-[#131313]">{result.startPosition}</td>
+                      <td className="px-4 py-4 text-right text-[#1a1a2e]">{result.startPosition}</td>
                       <td className="px-4 py-4 text-right">
-                        <span className={`font-bold ${result.finishPosition <= 5 ? 'text-[#d00000]' : 'text-[#131313]'}`}>
+                        <span className={`font-bold ${result.finishPosition <= 5 ? 'text-[#003DA5]' : 'text-[#1a1a2e]'}`}>
                           P{result.finishPosition}
                         </span>
                       </td>
                       <td className="px-4 py-4 text-right text-[#008564]">{result.lapsLed}</td>
-                      <td className="px-4 py-4 text-right text-[#cc0000]">{result.incidents}</td>
+                      <td className="px-4 py-4 text-right text-[#c8102e]">{result.incidents}</td>
                       <td className="px-4 py-4 text-right">
-                        <div className="text-[#d00000] font-bold">{result.totalPoints}</div>
+                        <div className="text-[#003DA5] font-bold">{result.totalPoints}</div>
                         <div className="text-xs text-[#6c6d6f]">
                           {result.posPoints}p
                           {bonusTotal > 0 && <span className="text-[#008564]"> +{bonusTotal}</span>}
-                          {result.penaltyPoints < 0 && <span className="text-[#cc0000]"> {result.penaltyPoints}</span>}
+                          {result.penaltyPoints < 0 && <span className="text-[#c8102e]"> {result.penaltyPoints}</span>}
                         </div>
                         {result.bonuses.length > 0 && (
                           <div className="text-xs mt-1">
@@ -335,7 +335,7 @@ export default function DriverProfile() {
                         )}
                         {result.penaltyPoints < 0 && (
                           <div className="text-xs mt-1">
-                            <span className="inline-block bg-[#cc0000]/20 text-[#cc0000] rounded px-1">
+                            <span className="inline-block bg-[#c8102e]/20 text-[#c8102e] rounded px-1">
                               {result.incidents >= 40 ? '40+ inc' : result.incidents >= 30 ? '30+ inc' : '20+ inc'}
                             </span>
                           </div>
@@ -343,7 +343,7 @@ export default function DriverProfile() {
                       </td>
                       <td className="px-4 py-4 text-center">
                         {result.isDropped ? (
-                          <span className="inline-block bg-[#cc0000]/20 text-[#cc0000] text-xs font-bold rounded px-2 py-1">
+                          <span className="inline-block bg-[#c8102e]/20 text-[#c8102e] text-xs font-bold rounded px-2 py-1">
                             DROPPED
                           </span>
                         ) : (

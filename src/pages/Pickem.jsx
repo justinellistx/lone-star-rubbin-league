@@ -200,7 +200,7 @@ export default function Pickem() {
   const isLoading = driversLoading || racesLoading || scheduleLoading || allRacesLoading;
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f5f5f5]">
+      <div className="min-h-screen flex items-center justify-center bg-[#ffffff]">
         <p className="text-[#6c6d6f]">Loading Pick'em...</p>
       </div>
     );
@@ -212,12 +212,12 @@ export default function Pickem() {
     : null;
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] py-12 px-4 md:px-8">
+    <div className="min-h-screen bg-[#ffffff] py-12 px-4 md:px-8">
       <div className="max-w-5xl mx-auto">
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-5xl md:text-6xl font-black text-[#131313] mb-2">PICK'EM & FANTASY</h1>
+          <h1 className="text-5xl md:text-6xl font-black text-[#1a1a2e] mb-2">PICK'EM & FANTASY</h1>
           <p className="text-[#6c6d6f] text-lg">
             {nextRace ? `Predict the top 5 and build your fantasy lineup for ${nextTrackName}` : 'No upcoming race scheduled'}
           </p>
@@ -225,13 +225,13 @@ export default function Pickem() {
 
         {/* Picker Identity */}
         <div className="mb-6 bg-white border border-[#e0e0e0] rounded-lg p-5">
-          <label className="block text-sm font-bold text-[#d00000] uppercase mb-2">
+          <label className="block text-sm font-bold text-[#003DA5] uppercase mb-2">
             Who are you?
           </label>
           <select
             value={pickerId}
             onChange={(e) => setPickerId(e.target.value)}
-            className="w-full md:w-80 px-4 py-3 rounded-lg bg-[#f5f5f5] border border-[#e0e0e0] text-[#131313] focus:outline-none focus:border-[#d00000] transition"
+            className="w-full md:w-80 px-4 py-3 rounded-lg bg-[#ffffff] border border-[#e0e0e0] text-[#1a1a2e] focus:outline-none focus:border-[#003DA5] transition"
           >
             <option value="">Select your name...</option>
             {drivers?.map((d) => (
@@ -255,8 +255,8 @@ export default function Pickem() {
               onClick={() => setActiveTab(key)}
               className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg text-sm font-bold transition ${
                 activeTab === key
-                  ? 'bg-[#d00000] text-[#0a0a0f]'
-                  : 'text-[#6c6d6f] hover:text-[#131313]'
+                  ? 'bg-[#003DA5] text-[#0a0a0f]'
+                  : 'text-[#6c6d6f] hover:text-[#1a1a2e]'
               }`}
             >
               <Icon size={16} />
@@ -267,8 +267,8 @@ export default function Pickem() {
 
         {error && (
           <div className="mb-6 p-4 bg-white border border-[#e63946] rounded-lg flex items-center gap-3">
-            <AlertCircle size={20} className="text-[#cc0000] flex-shrink-0" />
-            <p className="text-[#cc0000] text-sm">{error}</p>
+            <AlertCircle size={20} className="text-[#c8102e] flex-shrink-0" />
+            <p className="text-[#c8102e] text-sm">{error}</p>
           </div>
         )}
 
@@ -277,7 +277,7 @@ export default function Pickem() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
               <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
-                <h2 className="text-xl font-bold text-[#d00000] mb-6">
+                <h2 className="text-xl font-bold text-[#003DA5] mb-6">
                   {submitted ? 'Your Picks' : 'Make Your Picks'}
                   {nextRace && <span className="text-[#6c6d6f] font-normal text-base ml-2">— {nextTrackName}</span>}
                 </h2>
@@ -295,7 +295,7 @@ export default function Pickem() {
                             {pos.emoji} {pos.label}
                           </label>
                           {submitted ? (
-                            <div className="px-4 py-3 rounded-lg bg-[#f5f5f5] border border-[#e0e0e0] text-[#131313] font-medium flex items-center gap-2">
+                            <div className="px-4 py-3 rounded-lg bg-[#ffffff] border border-[#e0e0e0] text-[#1a1a2e] font-medium flex items-center gap-2">
                               <Lock size={14} className="text-[#6c6d6f]" />
                               #{getDriverNumber(picks[pos.key])} {getDriverName(picks[pos.key])}
                             </div>
@@ -303,7 +303,7 @@ export default function Pickem() {
                             <select
                               value={picks[pos.key]}
                               onChange={(e) => handlePickChange(pos.key, e.target.value)}
-                              className="w-full px-4 py-3 rounded-lg bg-[#f5f5f5] border transition focus:outline-none focus:border-[#d00000]"
+                              className="w-full px-4 py-3 rounded-lg bg-[#ffffff] border transition focus:outline-none focus:border-[#003DA5]"
                               style={{
                                 borderColor: picks[pos.key] ? '#2ec4b6' : '#2a2a3e',
                                 color: picks[pos.key] ? '#ffffff' : '#8a8a9a',
@@ -334,7 +334,7 @@ export default function Pickem() {
                       {submitted ? (
                         <button
                           onClick={handleChangePicks}
-                          className="flex-1 px-6 py-3 rounded-lg font-bold bg-[#2a2a3e] text-[#131313] hover:bg-[#3a3a4e] transition"
+                          className="flex-1 px-6 py-3 rounded-lg font-bold bg-[#2a2a3e] text-[#1a1a2e] hover:bg-[#3a3a4e] transition"
                         >
                           Change Picks
                         </button>
@@ -342,7 +342,7 @@ export default function Pickem() {
                         <button
                           onClick={handleSubmit}
                           disabled={submitting}
-                          className="flex-1 px-6 py-3 rounded-lg font-bold text-[#0a0a0f] bg-[#d00000] hover:bg-[#e59b1a] disabled:opacity-50 transition flex items-center justify-center gap-2"
+                          className="flex-1 px-6 py-3 rounded-lg font-bold text-[#0a0a0f] bg-[#003DA5] hover:bg-[#e59b1a] disabled:opacity-50 transition flex items-center justify-center gap-2"
                         >
                           {submitting ? 'Submitting...' : (
                             <>
@@ -362,20 +362,20 @@ export default function Pickem() {
             <div>
               {lastRace && lastRace.results && (
                 <div className="bg-white border border-[#e0e0e0] rounded-lg p-5">
-                  <h3 className="text-sm font-bold text-[#d00000] uppercase mb-4">
+                  <h3 className="text-sm font-bold text-[#003DA5] uppercase mb-4">
                     Last Race: {lastRace.track}
                   </h3>
                   <div className="space-y-2">
                     {lastRace.results.slice(0, 5).map((result, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center gap-3 p-2 rounded bg-[#f5f5f5]"
+                        className="flex items-center gap-3 p-2 rounded bg-[#ffffff]"
                       >
-                        <div className="w-7 h-7 flex items-center justify-center rounded bg-[#d00000] text-[#0a0a0f] text-xs font-bold">
+                        <div className="w-7 h-7 flex items-center justify-center rounded bg-[#003DA5] text-[#0a0a0f] text-xs font-bold">
                           {result.position}
                         </div>
                         <div>
-                          <div className="text-[#131313] text-sm font-medium">{result.name}</div>
+                          <div className="text-[#1a1a2e] text-sm font-medium">{result.name}</div>
                           <div className="text-[#6c6d6f] text-xs">#{result.car_number}</div>
                         </div>
                       </div>
@@ -391,7 +391,7 @@ export default function Pickem() {
         {activeTab === 'percentages' && (
           <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-[#d00000]">
+              <h2 className="text-xl font-bold text-[#003DA5]">
                 Who's Picking Who — {nextTrackName}
               </h2>
               <div className="flex items-center gap-2 text-[#6c6d6f] text-sm">
@@ -419,10 +419,10 @@ export default function Pickem() {
                         <div className="space-y-2">
                           {posData.map((entry) => (
                             <div key={entry.driverId} className="flex items-center gap-3">
-                              <div className="w-32 md:w-48 text-[#131313] text-sm font-medium truncate">
+                              <div className="w-32 md:w-48 text-[#1a1a2e] text-sm font-medium truncate">
                                 #{getDriverNumber(entry.driverId)} {getDriverName(entry.driverId)}
                               </div>
-                              <div className="flex-1 bg-[#f5f5f5] rounded-full h-6 overflow-hidden">
+                              <div className="flex-1 bg-[#ffffff] rounded-full h-6 overflow-hidden">
                                 <div
                                   className="h-full rounded-full flex items-center px-2 transition-all duration-500"
                                   style={{
@@ -430,7 +430,7 @@ export default function Pickem() {
                                     backgroundColor: entry.pct >= 50 ? '#f5a623' : entry.pct >= 25 ? '#2ec4b6' : '#2a2a3e',
                                   }}
                                 >
-                                  <span className="text-xs font-bold text-[#131313] whitespace-nowrap">
+                                  <span className="text-xs font-bold text-[#1a1a2e] whitespace-nowrap">
                                     {entry.pct}%
                                   </span>
                                 </div>
@@ -454,7 +454,7 @@ export default function Pickem() {
         {activeTab === 'leaderboard' && (
           <div className="bg-white border border-[#e0e0e0] rounded-lg overflow-hidden">
             <div className="p-6 border-b border-[#e0e0e0]">
-              <h2 className="text-xl font-bold text-[#d00000]">Season Leaderboard</h2>
+              <h2 className="text-xl font-bold text-[#003DA5]">Season Leaderboard</h2>
               <p className="text-[#6c6d6f] text-sm mt-1">
                 Exact position = 3 pts | Within 1 spot = 1 pt
               </p>
@@ -470,7 +470,7 @@ export default function Pickem() {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-[#f5f5f5]">
+                  <thead className="bg-[#ffffff]">
                     <tr>
                       <th className="px-6 py-4 text-left text-xs font-bold text-[#6c6d6f] uppercase">Rank</th>
                       <th className="px-6 py-4 text-left text-xs font-bold text-[#6c6d6f] uppercase">Picker</th>
@@ -484,25 +484,25 @@ export default function Pickem() {
                     {leaderboard.map((entry, idx) => (
                       <tr
                         key={entry.driverId}
-                        className="border-t border-[#e0e0e0] hover:bg-[#f0f0f0] transition"
+                        className="border-t border-[#e0e0e0] hover:bg-[#f7f7f7] transition"
                       >
                         <td className="px-6 py-4">
                           <div
                             className={`w-8 h-8 flex items-center justify-center rounded font-bold text-sm ${
                               idx === 0
-                                ? 'bg-[#d00000] text-[#0a0a0f]'
+                                ? 'bg-[#003DA5] text-[#0a0a0f]'
                                 : idx === 1
                                 ? 'bg-[#c0c0c0] text-[#0a0a0f]'
                                 : idx === 2
                                 ? 'bg-[#cd7f32] text-[#0a0a0f]'
-                                : 'bg-[#2a2a3e] text-[#131313]'
+                                : 'bg-[#2a2a3e] text-[#1a1a2e]'
                             }`}
                           >
                             {idx + 1}
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="font-bold text-[#131313]">{getDriverName(entry.driverId)}</div>
+                          <div className="font-bold text-[#1a1a2e]">{getDriverName(entry.driverId)}</div>
                           <div className="text-[#6c6d6f] text-xs">
                             #{getDriverNumber(entry.driverId)}
                             {getDriverNickname(entry.driverId) && ` \u2022 "${getDriverNickname(entry.driverId)}"`}
@@ -512,11 +512,11 @@ export default function Pickem() {
                           <span className="text-[#008564] font-bold">{entry.exact}</span>
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <span className="text-[#d00000] font-bold">{entry.close}</span>
+                          <span className="text-[#003DA5] font-bold">{entry.close}</span>
                         </td>
                         <td className="px-6 py-4 text-center text-[#6c6d6f]">{entry.racesPlayed}</td>
                         <td className="px-6 py-4 text-right">
-                          <span className="text-2xl font-black text-[#131313]">{entry.total}</span>
+                          <span className="text-2xl font-black text-[#1a1a2e]">{entry.total}</span>
                         </td>
                       </tr>
                     ))}

@@ -18,7 +18,7 @@ import {
 
 const TYPE_LABELS = { pre_race: 'Pre-Race', post_race: 'Post-Race' };
 const TYPE_COLORS = {
-  pre_race: { bg: 'bg-[#d00000]', border: 'border-[#d00000]', glow: 'shadow-[#f5a623]/10' },
+  pre_race: { bg: 'bg-[#003DA5]', border: 'border-[#003DA5]', glow: 'shadow-[#f5a623]/10' },
   post_race: { bg: 'bg-[#2ec4b6]', border: 'border-[#2ec4b6]', glow: 'shadow-[#2ec4b6]/10' },
 };
 
@@ -95,9 +95,9 @@ export default function InterviewRoom() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f5f5f5]">
+      <div className="min-h-screen flex items-center justify-center bg-[#ffffff]">
         <div className="text-center">
-          <Mic className="w-8 h-8 text-[#d00000] animate-pulse mx-auto mb-4" />
+          <Mic className="w-8 h-8 text-[#003DA5] animate-pulse mx-auto mb-4" />
           <p className="text-[#6c6d6f]">Entering media room...</p>
         </div>
       </div>
@@ -106,10 +106,10 @@ export default function InterviewRoom() {
 
   if (!driver) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f5f5f5]">
+      <div className="min-h-screen flex items-center justify-center bg-[#ffffff]">
         <div className="text-center">
-          <p className="text-[#cc0000] text-lg mb-4">Driver not found</p>
-          <Link to="/interviews" className="text-[#d00000] hover:underline">
+          <p className="text-[#c8102e] text-lg mb-4">Driver not found</p>
+          <Link to="/interviews" className="text-[#003DA5] hover:underline">
             Back to Interviews
           </Link>
         </div>
@@ -118,12 +118,12 @@ export default function InterviewRoom() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] py-8 px-4">
+    <div className="min-h-screen bg-[#ffffff] py-8 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Back link */}
         <Link
           to="/interviews"
-          className="inline-flex items-center gap-2 text-[#6c6d6f] hover:text-[#d00000] transition-colors mb-6 text-sm"
+          className="inline-flex items-center gap-2 text-[#6c6d6f] hover:text-[#003DA5] transition-colors mb-6 text-sm"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Interviews
@@ -132,13 +132,13 @@ export default function InterviewRoom() {
         {/* Driver Header */}
         <div className="bg-white border border-[#e0e0e0] rounded-xl p-6 mb-8">
           <div className="flex items-center gap-5">
-            <div className="w-20 h-20 rounded-full bg-[#f0f0f0] border-2 border-[#d00000] flex items-center justify-center flex-shrink-0">
-              <span className="text-[#131313] font-bold text-2xl">#{driver.car_number}</span>
+            <div className="w-20 h-20 rounded-full bg-[#f7f7f7] border-2 border-[#003DA5] flex items-center justify-center flex-shrink-0">
+              <span className="text-[#1a1a2e] font-bold text-2xl">#{driver.car_number}</span>
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-[#131313]">{driver.name}</h1>
+              <h1 className="text-3xl font-bold text-[#1a1a2e]">{driver.name}</h1>
               {driver.nickname && (
-                <p className="text-[#d00000] text-lg">"{driver.nickname}"</p>
+                <p className="text-[#003DA5] text-lg">"{driver.nickname}"</p>
               )}
               <p className="text-[#6c6d6f] text-sm mt-1 flex items-center gap-2">
                 <Mic className="w-4 h-4" />
@@ -149,17 +149,17 @@ export default function InterviewRoom() {
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-[#f0f0f0] border border-[#e63946] rounded-lg flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-[#cc0000] flex-shrink-0 mt-0.5" />
-            <p className="text-[#cc0000]">{error}</p>
+          <div className="mb-6 p-4 bg-[#f7f7f7] border border-[#e63946] rounded-lg flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-[#c8102e] flex-shrink-0 mt-0.5" />
+            <p className="text-[#c8102e]">{error}</p>
           </div>
         )}
 
         {/* ═══════════ PENDING QUESTIONS ═══════════ */}
         {pending.length > 0 ? (
           <div className="mb-10">
-            <h2 className="text-lg font-bold text-[#131313] mb-1 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-[#d00000]" />
+            <h2 className="text-lg font-bold text-[#1a1a2e] mb-1 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-[#003DA5]" />
               Your Questions ({pending.length})
             </h2>
             <p className="text-[#6c6d6f] text-sm mb-5">
@@ -184,7 +184,7 @@ export default function InterviewRoom() {
                   >
                     {/* Badge row */}
                     <div className="flex items-center gap-3 mb-4">
-                      <span className={`${colors.bg} text-[#131313] text-xs font-bold px-2.5 py-1 rounded`}>
+                      <span className={`${colors.bg} text-[#1a1a2e] text-xs font-bold px-2.5 py-1 rounded`}>
                         {TYPE_LABELS[q.question_type]}
                       </span>
                       <span className="text-[#6c6d6f] text-sm">
@@ -193,7 +193,7 @@ export default function InterviewRoom() {
                     </div>
 
                     {/* The question */}
-                    <p className="text-[#131313] text-xl font-medium leading-relaxed mb-5">
+                    <p className="text-[#1a1a2e] text-xl font-medium leading-relaxed mb-5">
                       "{q.question_text}"
                     </p>
 
@@ -212,12 +212,12 @@ export default function InterviewRoom() {
                           }}
                           placeholder="Speak your mind... talk trash, hype it up, keep it real."
                           rows="4"
-                          className="w-full px-4 py-3 bg-[#f5f5f5] border border-[#e0e0e0] text-[#131313] placeholder-[#8a8a9a] rounded-lg focus:outline-none focus:border-[#d00000] transition-colors resize-none text-base mb-4"
+                          className="w-full px-4 py-3 bg-[#ffffff] border border-[#e0e0e0] text-[#1a1a2e] placeholder-[#8a8a9a] rounded-lg focus:outline-none focus:border-[#003DA5] transition-colors resize-none text-base mb-4"
                         />
                         <button
                           onClick={() => handleSubmit(q.id)}
                           disabled={isSubmitting || !answers[q.id]?.trim()}
-                          className="flex items-center gap-2 px-8 py-3 bg-[#d00000] text-[#0a0a0f] font-bold rounded-lg hover:bg-[#e59b1a] transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-base"
+                          className="flex items-center gap-2 px-8 py-3 bg-[#003DA5] text-[#0a0a0f] font-bold rounded-lg hover:bg-[#e59b1a] transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-base"
                         >
                           <Send className="w-4 h-4" />
                           {isSubmitting ? 'Submitting...' : 'Submit Answer'}
@@ -232,7 +232,7 @@ export default function InterviewRoom() {
         ) : (
           <div className="bg-white border border-[#e0e0e0] rounded-xl p-8 text-center mb-10">
             <CheckCircle className="w-10 h-10 text-[#008564] mx-auto mb-3" />
-            <p className="text-[#131313] text-lg font-medium">You're all caught up!</p>
+            <p className="text-[#1a1a2e] text-lg font-medium">You're all caught up!</p>
             <p className="text-[#6c6d6f] text-sm mt-1">
               No pending questions. Check back before the next race.
             </p>
@@ -243,7 +243,7 @@ export default function InterviewRoom() {
         {answered.length > 0 && (
           <div className="bg-white border border-[#e0e0e0] rounded-xl p-6 text-center">
             <MessageSquare className="w-8 h-8 text-[#008564] mx-auto mb-2" />
-            <p className="text-[#131313] font-medium">
+            <p className="text-[#1a1a2e] font-medium">
               You've submitted {answered.length} interview{answered.length !== 1 ? 's' : ''} this season.
             </p>
             <p className="text-[#6c6d6f] text-sm mt-1">

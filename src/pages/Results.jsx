@@ -66,18 +66,18 @@ export default function Results() {
   }, [races, expandedRaceId]);
 
   return (
-    <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8">
+    <div className="bg-[#ffffff] min-h-screen py-12 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Page Title */}
         <div className="mb-12">
-          <h1 className="text-5xl md:text-6xl font-black text-[#131313] mb-2">RACE RESULTS</h1>
+          <h1 className="text-5xl md:text-6xl font-black text-[#1a1a2e] mb-2">RACE RESULTS</h1>
           <p className="text-[#6c6d6f] text-lg">2026 Season Results</p>
         </div>
 
         {/* Stage Selector */}
         <div className="flex gap-3 mb-12 overflow-x-auto pb-2">
           <button
-            className="px-6 py-3 rounded font-bold whitespace-nowrap transition bg-[#d00000] text-[#131313]"
+            className="px-6 py-3 rounded font-bold whitespace-nowrap transition bg-[#003DA5] text-[#1a1a2e]"
           >
             All Stages
           </button>
@@ -92,8 +92,8 @@ export default function Results() {
 
         {/* Error State */}
         {error && (
-          <div className="bg-white border border-[#cc0000] rounded-lg p-8 text-center">
-            <p className="text-[#cc0000] font-semibold">Error loading race results</p>
+          <div className="bg-white border border-[#c8102e] rounded-lg p-8 text-center">
+            <p className="text-[#c8102e] font-semibold">Error loading race results</p>
             <p className="text-[#6c6d6f] text-sm mt-2">{error}</p>
           </div>
         )}
@@ -110,14 +110,14 @@ export default function Results() {
                   {/* Race Header */}
                   <button
                     onClick={() => toggleExpanded(race.id)}
-                    className="w-full px-6 py-6 flex items-center justify-between hover:bg-[#f0f0f0] transition"
+                    className="w-full px-6 py-6 flex items-center justify-between hover:bg-[#f7f7f7] transition"
                   >
                     <div className="flex items-center gap-4 flex-1 text-left">
                       <TrackIcon track={race.track} size={48} />
                       <div>
                         <div className="flex items-center gap-4 mb-2">
-                          <span className="text-[#d00000] font-bold text-sm">Race #{race.raceNumber}</span>
-                          <h3 className="text-2xl font-bold text-[#131313]">{race.track}</h3>
+                          <span className="text-[#003DA5] font-bold text-sm">Race #{race.raceNumber}</span>
+                          <h3 className="text-2xl font-bold text-[#1a1a2e]">{race.track}</h3>
                         </div>
                       <div className="text-[#6c6d6f]">
                         {new Date(race.date).toLocaleDateString('en-US', {
@@ -131,28 +131,28 @@ export default function Results() {
                     </div>
                     <ChevronDown
                       size={24}
-                      className={`text-[#d00000] transition ${expandedRaceId === race.id ? 'rotate-180' : ''}`}
+                      className={`text-[#003DA5] transition ${expandedRaceId === race.id ? 'rotate-180' : ''}`}
                     />
                   </button>
 
                   {/* Race Details - Expanded */}
                   {expandedRaceId === race.id && (
-                    <div className="border-t border-[#e0e0e0] bg-[#f5f5f5]">
+                    <div className="border-t border-[#e0e0e0] bg-[#ffffff]">
                       {/* Race Stats */}
                       <div className="px-6 py-6 border-b border-[#e0e0e0]">
-                        <h4 className="text-[#131313] font-bold mb-4">Race Stats</h4>
+                        <h4 className="text-[#1a1a2e] font-bold mb-4">Race Stats</h4>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                           <div>
                             <div className="text-[#6c6d6f] text-sm uppercase mb-2">Total Laps</div>
-                            <div className="text-2xl font-bold text-[#131313]">{race.totalLaps}</div>
+                            <div className="text-2xl font-bold text-[#1a1a2e]">{race.totalLaps}</div>
                           </div>
                           <div>
                             <div className="text-[#6c6d6f] text-sm uppercase mb-2">Total Drivers</div>
-                            <div className="text-2xl font-bold text-[#131313]">{race.results?.length || '—'}</div>
+                            <div className="text-2xl font-bold text-[#1a1a2e]">{race.results?.length || '—'}</div>
                           </div>
                           <div>
                             <div className="text-[#6c6d6f] text-sm uppercase mb-2">Series</div>
-                            <div className="text-2xl font-bold text-[#d00000]">{race.series}</div>
+                            <div className="text-2xl font-bold text-[#003DA5]">{race.series}</div>
                           </div>
                           {race.fastestLap && (
                             <div>
@@ -166,7 +166,7 @@ export default function Results() {
 
                       {/* Race Results Table */}
                       <div className="px-6 py-6">
-                        <h4 className="text-[#131313] font-bold mb-4">Final Results</h4>
+                        <h4 className="text-[#1a1a2e] font-bold mb-4">Final Results</h4>
                         <div className="overflow-x-auto">
                           <table className="w-full">
                             <thead>
@@ -201,49 +201,49 @@ export default function Results() {
                                 return (
                                 <tr
                                   key={result.id}
-                                  className="border-b border-[#e0e0e0] hover:bg-[#f0f0f0] transition"
+                                  className="border-b border-[#e0e0e0] hover:bg-[#f7f7f7] transition"
                                 >
                                   <td className="px-4 py-3">
                                     <div
                                       className={`flex items-center justify-center w-8 h-8 rounded font-bold ${
                                         result.finishPosition === 1
-                                          ? 'bg-[#d00000] text-[#131313]'
-                                          : 'bg-[#e0e0e0] text-[#131313]'
+                                          ? 'bg-[#003DA5] text-[#1a1a2e]'
+                                          : 'bg-[#e0e0e0] text-[#1a1a2e]'
                                       }`}
                                     >
                                       {result.finishPosition}
                                     </div>
                                   </td>
-                                  <td className="px-4 py-3 text-[#131313] font-semibold">
+                                  <td className="px-4 py-3 text-[#1a1a2e] font-semibold">
                                     {result.startPosition}
                                   </td>
                                   <td className="px-4 py-3">
-                                    <div className="font-semibold text-[#131313]">{result.name}</div>
+                                    <div className="font-semibold text-[#1a1a2e]">{result.name}</div>
                                     <div className="text-sm text-[#6c6d6f]">#{result.number}</div>
                                   </td>
                                   <td className="px-4 py-3 text-right text-[#008564] font-semibold">
                                     {result.lapsLed}
                                   </td>
-                                  <td className="px-4 py-3 text-right text-[#cc0000] font-semibold">
+                                  <td className="px-4 py-3 text-right text-[#c8102e] font-semibold">
                                     {result.incidents}
                                   </td>
                                   <td className="px-4 py-3 text-right font-semibold">
                                     {result.bestLap ? (
-                                      <span className={result.bestLap === race.fastestLap?.time ? 'text-[#008564]' : 'text-[#131313]'}>
+                                      <span className={result.bestLap === race.fastestLap?.time ? 'text-[#008564]' : 'text-[#1a1a2e]'}>
                                         {result.bestLap}s
                                         {result.bestLap === race.fastestLap?.time && ' ⚡'}
                                       </span>
                                     ) : '—'}
                                   </td>
                                   <td className="px-4 py-3 text-right">
-                                    <div className="text-[#d00000] font-bold">{totalPts}</div>
+                                    <div className="text-[#003DA5] font-bold">{totalPts}</div>
                                     <div className="text-xs text-[#6c6d6f]">
                                       {result.posPoints}p
                                       {result.bonusPoints > 0 && (
                                         <span className="text-[#008564]"> +{result.bonusPoints}</span>
                                       )}
                                       {result.penalty < 0 && (
-                                        <span className="text-[#cc0000]"> {result.penalty}</span>
+                                        <span className="text-[#c8102e]"> {result.penalty}</span>
                                       )}
                                     </div>
                                     {bonuses.length > 0 && (
@@ -257,7 +257,7 @@ export default function Results() {
                                     )}
                                     {result.penalty < 0 && (
                                       <div className="text-xs mt-1">
-                                        <span className="inline-block bg-[#cc0000]/10 text-[#cc0000] rounded px-1">
+                                        <span className="inline-block bg-[#c8102e]/10 text-[#c8102e] rounded px-1">
                                           {result.incidents >= 40 ? '40+ inc' : result.incidents >= 30 ? '30+ inc' : '20+ inc'}
                                         </span>
                                       </div>

@@ -31,12 +31,12 @@
 .race-results-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: var(--bg-secondary);
+  background-color: var(--surface-card);
 }
 
 .race-results-table thead {
-  background-color: var(--bg-tertiary);
-  border-bottom: 2px solid var(--border-color);
+  background-color: var(--nascar-black);
+  border-bottom: 3px solid var(--nascar-blue);
 }
 
 .race-results-table th {
@@ -46,8 +46,8 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--accent-yellow);
-  border-right: 1px solid var(--border-color);
+  color: var(--text-inverse);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
   white-space: nowrap;
 }
 
@@ -103,33 +103,33 @@
   border-radius: 50%;
   font-weight: 700;
   font-size: 1rem;
-  background-color: var(--bg-tertiary);
+  background-color: var(--bg-secondary);
   border: 2px solid var(--border-color);
   transition: all 0.3s ease;
 }
 
 .finish-badge.winner {
-  background: linear-gradient(135deg, #f5a623, rgba(245, 166, 35, 0.2));
-  border-color: #f5a623;
-  color: #f5a623;
-  box-shadow: 0 0 12px rgba(245, 166, 35, 0.3);
+  background: linear-gradient(135deg, #ffcf00, rgba(255, 207, 0, 0.2));
+  border-color: #ffcf00;
+  color: #8a6d00;
+  box-shadow: 0 0 12px rgba(255, 207, 0, 0.3);
   font-size: 1.125rem;
 }
 
 /* Winner Row */
 .race-results-table tbody tr.winner-row {
-  background-color: rgba(245, 166, 35, 0.08);
-  border-left: 4px solid var(--accent-yellow);
+  background-color: rgba(255, 207, 0, 0.06);
+  border-left: 4px solid var(--nascar-yellow);
 }
 
 .race-results-table tbody tr.winner-row:hover {
-  background-color: rgba(245, 166, 35, 0.15);
+  background-color: rgba(255, 207, 0, 0.12);
 }
 
 /* DNF/Retired Row */
 .race-results-table tbody tr.dnf-row {
   opacity: 0.6;
-  background-color: rgba(230, 57, 70, 0.05);
+  background-color: rgba(200, 16, 46, 0.04);
 }
 
 .race-results-table tbody tr.dnf-row td {
@@ -138,7 +138,7 @@
 
 .race-results-table tbody tr.dnf-row:hover {
   opacity: 0.8;
-  background-color: rgba(230, 57, 70, 0.1);
+  background-color: rgba(200, 16, 46, 0.08);
 }
 
 /* Row hover */
@@ -147,7 +147,7 @@
 }
 
 .race-results-table tbody tr:not(.dnf-row):hover {
-  background-color: var(--bg-tertiary);
+  background-color: var(--surface-hover);
 }
 
 .race-results-table tbody tr:last-child td {
@@ -164,16 +164,16 @@
 .value-bold {
   font-size: 1.125rem;
   font-weight: 700;
-  color: var(--accent-yellow);
+  color: var(--nascar-blue);
 }
 
 .fastest-lap {
-  color: var(--accent-yellow);
+  color: var(--nascar-blue);
   font-weight: 700;
   padding: 0.25rem 0.5rem;
-  background-color: rgba(245, 166, 35, 0.1);
+  background-color: rgba(0, 61, 165, 0.08);
   border-radius: 0.25rem;
-  border: 1px solid rgba(245, 166, 35, 0.3);
+  border: 1px solid rgba(0, 61, 165, 0.2);
 }
 
 /* Incidents */
@@ -187,8 +187,8 @@
 
 .incidents.has-incidents {
   color: var(--accent-red);
-  background-color: rgba(230, 57, 70, 0.1);
-  border: 1px solid rgba(230, 57, 70, 0.3);
+  background-color: rgba(200, 16, 46, 0.08);
+  border: 1px solid rgba(200, 16, 46, 0.25);
 }
 
 /* Status Badge */
@@ -206,26 +206,26 @@
 
 .status-finished {
   color: var(--accent-green);
-  background-color: rgba(46, 196, 182, 0.1);
+  background-color: rgba(0, 133, 100, 0.08);
   border-color: var(--accent-green);
 }
 
 .status-running {
-  color: var(--accent-yellow);
-  background-color: rgba(245, 166, 35, 0.1);
-  border-color: var(--accent-yellow);
+  color: #8a6d00;
+  background-color: rgba(255, 207, 0, 0.12);
+  border-color: var(--nascar-yellow);
 }
 
 .status-retired {
   color: var(--accent-red);
-  background-color: rgba(230, 57, 70, 0.1);
+  background-color: rgba(200, 16, 46, 0.08);
   border-color: var(--accent-red);
 }
 
 .status-disqualified {
-  color: #e63946;
-  background-color: rgba(230, 57, 70, 0.2);
-  border-color: #c92a36;
+  color: #c8102e;
+  background-color: rgba(200, 16, 46, 0.15);
+  border-color: #c8102e;
   font-weight: 800;
 }
 

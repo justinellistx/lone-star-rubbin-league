@@ -41,9 +41,9 @@ export default function Interviews() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f5f5f5]">
+      <div className="min-h-screen flex items-center justify-center bg-[#ffffff]">
         <div className="text-center">
-          <Mic className="w-8 h-8 text-[#d00000] animate-pulse mx-auto mb-4" />
+          <Mic className="w-8 h-8 text-[#003DA5] animate-pulse mx-auto mb-4" />
           <p className="text-[#6c6d6f]">Loading interviews...</p>
         </div>
       </div>
@@ -51,13 +51,13 @@ export default function Interviews() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] py-8 px-4">
+    <div className="min-h-screen bg-[#ffffff] py-8 px-4">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <Mic className="w-8 h-8 text-[#d00000]" />
-            <h1 className="text-4xl font-bold text-[#131313]">Driver Interviews</h1>
+            <Mic className="w-8 h-8 text-[#003DA5]" />
+            <h1 className="text-4xl font-bold text-[#1a1a2e]">Driver Interviews</h1>
           </div>
           <p className="text-[#6c6d6f] text-lg">
             Pre-race predictions, post-race reactions, and everything in between.
@@ -66,7 +66,7 @@ export default function Interviews() {
 
         {/* ═══════════ DRIVER CARDS — MEDIA ROOM ENTRY ═══════════ */}
         <div className="mb-12">
-          <h2 className="text-xl font-bold text-[#131313] mb-1">Media Room</h2>
+          <h2 className="text-xl font-bold text-[#1a1a2e] mb-1">Media Room</h2>
           <p className="text-[#6c6d6f] text-sm mb-5">
             Drivers — enter your media room to answer interview questions.
           </p>
@@ -81,16 +81,16 @@ export default function Interviews() {
                   <Link
                     key={d.id}
                     to={`/interviews/${d.id}`}
-                    className="group bg-white border border-[#e0e0e0] rounded-lg p-5 hover:border-[#d00000] transition-all hover:shadow-lg hover:shadow-[#f5a623]/5"
+                    className="group bg-white border border-[#e0e0e0] rounded-lg p-5 hover:border-[#003DA5] transition-all hover:shadow-lg hover:shadow-[#f5a623]/5"
                   >
                     <div className="flex items-center gap-4">
                       {/* Driver number badge */}
-                      <div className="w-14 h-14 rounded-full bg-[#f0f0f0] border-2 border-[#e0e0e0] group-hover:border-[#d00000] transition-colors flex items-center justify-center flex-shrink-0">
-                        <span className="text-[#131313] font-bold text-lg">#{d.car_number}</span>
+                      <div className="w-14 h-14 rounded-full bg-[#f7f7f7] border-2 border-[#e0e0e0] group-hover:border-[#003DA5] transition-colors flex items-center justify-center flex-shrink-0">
+                        <span className="text-[#1a1a2e] font-bold text-lg">#{d.car_number}</span>
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <p className="text-[#131313] font-bold text-lg truncate">{d.name}</p>
+                        <p className="text-[#1a1a2e] font-bold text-lg truncate">{d.name}</p>
                         {d.nickname && (
                           <p className="text-[#6c6d6f] text-sm">"{d.nickname}"</p>
                         )}
@@ -98,7 +98,7 @@ export default function Interviews() {
                         {/* Status line */}
                         <div className="flex items-center gap-3 mt-1.5">
                           {stats.pending > 0 ? (
-                            <span className="flex items-center gap-1 text-[#d00000] text-xs font-medium">
+                            <span className="flex items-center gap-1 text-[#003DA5] text-xs font-medium">
                               <Clock className="w-3 h-3" />
                               {stats.pending} pending
                             </span>
@@ -119,7 +119,7 @@ export default function Interviews() {
                       </div>
 
                       {/* Enter arrow */}
-                      <DoorOpen className="w-5 h-5 text-[#6c6d6f] group-hover:text-[#d00000] transition-colors flex-shrink-0" />
+                      <DoorOpen className="w-5 h-5 text-[#6c6d6f] group-hover:text-[#003DA5] transition-colors flex-shrink-0" />
                     </div>
                   </Link>
                 );
@@ -129,11 +129,11 @@ export default function Interviews() {
 
         {/* Info callout — answers feed into News */}
         <div className="bg-white border border-[#e0e0e0] rounded-lg p-6 text-center">
-          <Mic className="w-8 h-8 text-[#d00000] mx-auto mb-2" />
-          <p className="text-[#131313] font-medium">Driver answers fuel the storylines.</p>
+          <Mic className="w-8 h-8 text-[#003DA5] mx-auto mb-2" />
+          <p className="text-[#1a1a2e] font-medium">Driver answers fuel the storylines.</p>
           <p className="text-[#6c6d6f] text-sm mt-1">
             Interview responses are woven into race previews and recaps on the{' '}
-            <Link to="/news" className="text-[#d00000] hover:underline">News page</Link>.
+            <Link to="/news" className="text-[#003DA5] hover:underline">News page</Link>.
           </p>
         </div>
       </div>

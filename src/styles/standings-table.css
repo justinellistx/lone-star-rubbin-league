@@ -20,12 +20,12 @@
 .standings-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: var(--bg-secondary);
+  background-color: var(--surface-card);
 }
 
 .standings-table thead {
-  background-color: var(--bg-tertiary);
-  border-bottom: 2px solid var(--border-color);
+  background-color: var(--nascar-black);
+  border-bottom: 3px solid var(--nascar-blue);
 }
 
 .standings-table th {
@@ -35,8 +35,8 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--accent-yellow);
-  border-right: 1px solid var(--border-color);
+  color: var(--text-inverse);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
   white-space: nowrap;
 }
 
@@ -92,39 +92,39 @@
   border-radius: 50%;
   font-weight: 700;
   font-size: 1rem;
-  background-color: var(--bg-tertiary);
+  background-color: var(--bg-secondary);
   border: 2px solid var(--border-color);
   transition: all 0.3s ease;
 }
 
 .position-badge.medal-gold {
-  background: linear-gradient(135deg, #f5a623, rgba(245, 166, 35, 0.2));
-  border-color: #f5a623;
-  color: #f5a623;
-  box-shadow: 0 0 12px rgba(245, 166, 35, 0.3);
+  background: linear-gradient(135deg, #ffcf00, rgba(255, 207, 0, 0.2));
+  border-color: #ffcf00;
+  color: #8a6d00;
+  box-shadow: 0 0 12px rgba(255, 207, 0, 0.3);
 }
 
 .position-badge.medal-silver {
   background: linear-gradient(135deg, #c0c0c0, rgba(192, 192, 192, 0.1));
   border-color: #a9a9a9;
-  color: #c0c0c0;
+  color: #666;
   box-shadow: 0 0 12px rgba(192, 192, 192, 0.2);
 }
 
 .position-badge.medal-bronze {
   background: linear-gradient(135deg, #cd7f32, rgba(205, 127, 50, 0.2));
   border-color: #cd7f32;
-  color: #cd7f32;
+  color: #8b5a2b;
   box-shadow: 0 0 12px rgba(205, 127, 50, 0.2);
 }
 
 /* Medal row backgrounds */
 .standings-table tbody tr.medal-gold {
-  background-color: rgba(245, 166, 35, 0.05);
+  background-color: rgba(255, 207, 0, 0.04);
 }
 
 .standings-table tbody tr.medal-gold:hover {
-  background-color: rgba(245, 166, 35, 0.1);
+  background-color: rgba(255, 207, 0, 0.08);
 }
 
 .standings-table tbody tr.medal-silver {
@@ -149,7 +149,7 @@
 }
 
 .standings-table tbody tr:hover {
-  background-color: var(--bg-tertiary);
+  background-color: var(--surface-hover);
 }
 
 .standings-table tbody tr:last-child td {
@@ -187,7 +187,7 @@
 .value-bold {
   font-size: 1.125rem;
   font-weight: 700;
-  color: var(--accent-yellow);
+  color: var(--nascar-blue);
 }
 
 .driver-name {
@@ -215,8 +215,8 @@
 
 .incidents.has-incidents {
   color: var(--accent-red);
-  background-color: rgba(230, 57, 70, 0.1);
-  border: 1px solid rgba(230, 57, 70, 0.3);
+  background-color: rgba(200, 16, 46, 0.08);
+  border: 1px solid rgba(200, 16, 46, 0.25);
 }
 
 /* No data message */

@@ -29,11 +29,11 @@ export default function Drivers() {
   }, [displayDrivers, searchQuery, sortBy]);
 
   return (
-    <div className="bg-[#f5f5f5] min-h-screen py-12 px-4 md:px-8">
+    <div className="bg-[#ffffff] min-h-screen py-12 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Page Title */}
         <div className="mb-12">
-          <h1 className="text-5xl md:text-6xl font-black text-[#131313] mb-2">DRIVERS</h1>
+          <h1 className="text-5xl md:text-6xl font-black text-[#1a1a2e] mb-2">DRIVERS</h1>
           <p className="text-[#6c6d6f] text-lg">2026 Season Roster</p>
         </div>
 
@@ -57,7 +57,7 @@ export default function Drivers() {
               placeholder="Search drivers..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white border border-[#e0e0e0] text-[#131313] placeholder-[#8a8a9a] rounded-lg pl-12 pr-4 py-3 focus:outline-none focus:border-[#d00000] transition"
+              className="w-full bg-white border border-[#e0e0e0] text-[#1a1a2e] placeholder-[#8a8a9a] rounded-lg pl-12 pr-4 py-3 focus:outline-none focus:border-[#003DA5] transition"
             />
           </div>
 
@@ -66,7 +66,7 @@ export default function Drivers() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-white border border-[#e0e0e0] text-[#131313] rounded-lg px-4 py-3 focus:outline-none focus:border-[#d00000] transition appearance-none cursor-pointer pr-10"
+              className="bg-white border border-[#e0e0e0] text-[#1a1a2e] rounded-lg px-4 py-3 focus:outline-none focus:border-[#003DA5] transition appearance-none cursor-pointer pr-10"
             >
               <option value="points">Sort by Points</option>
               <option value="wins">Sort by Wins</option>
@@ -86,14 +86,14 @@ export default function Drivers() {
               <Link
                 key={driver.id}
                 to={`/drivers/${driver.id}`}
-                className="group bg-white border border-[#e0e0e0] rounded-lg overflow-hidden hover:border-[#d00000] hover:bg-[#f0f0f0] transition"
+                className="group bg-white border border-[#e0e0e0] rounded-lg overflow-hidden hover:border-[#003DA5] hover:bg-[#f7f7f7] transition"
               >
                 {/* Card Header with Number */}
                 <div className="bg-gradient-to-r from-[#1a1a2e] to-[#14141f] px-6 py-8 text-center border-b border-[#e0e0e0]">
-                  <div className="text-[#d00000] text-sm font-bold uppercase mb-2">
+                  <div className="text-[#003DA5] text-sm font-bold uppercase mb-2">
                     #{driver.number}
                   </div>
-                  <h3 className="text-xl font-bold text-[#131313] group-hover:text-[#d00000] transition">
+                  <h3 className="text-xl font-bold text-[#1a1a2e] group-hover:text-[#003DA5] transition">
                     {driver.name}
                   </h3>
                   <p className="text-[#6c6d6f] text-sm mt-2">{driver.team}</p>
@@ -104,14 +104,14 @@ export default function Drivers() {
                   {/* Points */}
                   <div className="mb-4 pb-4 border-b border-[#e0e0e0]">
                     <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-2">Points</div>
-                    <div className="text-[#d00000] font-bold text-2xl">{driver.points}</div>
+                    <div className="text-[#003DA5] font-bold text-2xl">{driver.points}</div>
                   </div>
 
                   {/* Stats Grid */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-1">Wins</div>
-                      <div className="text-[#131313] font-bold text-lg">{driver.wins}</div>
+                      <div className="text-[#1a1a2e] font-bold text-lg">{driver.wins}</div>
                     </div>
                     <div>
                       <div className="text-[#6c6d6f] text-xs uppercase font-bold mb-1">
@@ -125,8 +125,8 @@ export default function Drivers() {
                 </div>
 
                 {/* View Profile Link */}
-                <div className="px-6 py-4 bg-[#f5f5f5] border-t border-[#e0e0e0]">
-                  <div className="text-center text-[#d00000] font-bold text-sm group-hover:text-[#131313] transition">
+                <div className="px-6 py-4 bg-[#ffffff] border-t border-[#e0e0e0]">
+                  <div className="text-center text-[#003DA5] font-bold text-sm group-hover:text-[#1a1a2e] transition">
                     View Profile →
                   </div>
                 </div>
@@ -143,12 +143,12 @@ export default function Drivers() {
             <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
                 <div className="text-[#6c6d6f] text-sm uppercase font-bold mb-2">Total Drivers</div>
-                <div className="text-3xl font-bold text-[#131313]">{filteredDrivers.length}</div>
+                <div className="text-3xl font-bold text-[#1a1a2e]">{filteredDrivers.length}</div>
               </div>
 
               <div className="bg-white border border-[#e0e0e0] rounded-lg p-6">
                 <div className="text-[#6c6d6f] text-sm uppercase font-bold mb-2">Total Wins</div>
-                <div className="text-3xl font-bold text-[#d00000]">
+                <div className="text-3xl font-bold text-[#003DA5]">
                   {filteredDrivers.reduce((sum, d) => sum + d.wins, 0)}
                 </div>
               </div>

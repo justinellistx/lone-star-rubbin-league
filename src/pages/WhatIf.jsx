@@ -92,9 +92,9 @@ export default function WhatIf() {
 
   if (standingsLoading || racesLoading) {
     return (
-      <div className="min-h-screen p-6 flex items-center justify-center" style={{ backgroundColor: '#f5f5f5' }}>
+      <div className="min-h-screen p-6 flex items-center justify-center" style={{ backgroundColor: '#ffffff' }}>
         <div className="text-center">
-          <p style={{ color: '#d00000' }} className="text-lg font-semibold">
+          <p style={{ color: '#003DA5' }} className="text-lg font-semibold">
             Loading standings...
           </p>
         </div>
@@ -104,7 +104,7 @@ export default function WhatIf() {
 
   if (!standings || standings.length === 0 || raceList.length === 0) {
     return (
-      <div className="min-h-screen p-6 flex items-center justify-center" style={{ backgroundColor: '#f5f5f5' }}>
+      <div className="min-h-screen p-6 flex items-center justify-center" style={{ backgroundColor: '#ffffff' }}>
         <div className="text-center">
           <p style={{ color: '#6c6d6f' }}>No standings data available</p>
         </div>
@@ -113,9 +113,9 @@ export default function WhatIf() {
   }
 
   return (
-    <div className="min-h-screen p-6" style={{ backgroundColor: '#f5f5f5' }}>
+    <div className="min-h-screen p-6" style={{ backgroundColor: '#ffffff' }}>
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold mb-2" style={{ color: '#d00000' }}>
+        <h1 className="text-4xl font-bold mb-2" style={{ color: '#003DA5' }}>
           What-If Standings
         </h1>
         <p className="mb-8" style={{ color: '#6c6d6f' }}>
@@ -130,12 +130,12 @@ export default function WhatIf() {
                 onClick={() => toggleRace(race.id)}
                 className={`px-4 py-2 rounded-lg font-semibold transition-all ${
                   activeRaces.has(race.id)
-                    ? 'text-[#131313]'
+                    ? 'text-[#1a1a2e]'
                     : 'text-gray-400 opacity-50'
                 }`}
                 style={{
-                  backgroundColor: activeRaces.has(race.id) ? '#d00000' : 'transparent',
-                  border: `2px solid ${activeRaces.has(race.id) ? '#d00000' : '#e0e0e0'}`,
+                  backgroundColor: activeRaces.has(race.id) ? '#003DA5' : 'transparent',
+                  border: `2px solid ${activeRaces.has(race.id) ? '#003DA5' : '#e0e0e0'}`,
                 }}
               >
                 {race.label}
@@ -147,7 +147,7 @@ export default function WhatIf() {
             disabled={isAllActive}
             className="px-6 py-2 rounded-lg font-semibold transition-all disabled:opacity-50"
             style={{
-              backgroundColor: '#cc0000',
+              backgroundColor: '#c8102e',
               color: 'white',
             }}
           >
@@ -163,7 +163,7 @@ export default function WhatIf() {
               borderColor: '#e0e0e0',
             }}
           >
-            <h2 className="text-lg font-bold mb-3" style={{ color: '#d00000' }}>
+            <h2 className="text-lg font-bold mb-3" style={{ color: '#003DA5' }}>
               Biggest Movers
             </h2>
             <div className="space-y-2">
@@ -172,15 +172,15 @@ export default function WhatIf() {
                   {mover.change > 0 ? (
                     <TrendingUp size={20} style={{ color: '#008564' }} />
                   ) : (
-                    <TrendingDown size={20} style={{ color: '#cc0000' }} />
+                    <TrendingDown size={20} style={{ color: '#c8102e' }} />
                   )}
                   <span style={{ color: '#6c6d6f' }}>
-                    <span className="font-semibold text-[#131313]">#{mover.number}</span> {mover.name}
+                    <span className="font-semibold text-[#1a1a2e]">#{mover.number}</span> {mover.name}
                   </span>
                   <span
                     className="ml-auto font-bold"
                     style={{
-                      color: mover.change > 0 ? '#008564' : '#cc0000',
+                      color: mover.change > 0 ? '#008564' : '#c8102e',
                     }}
                   >
                     {mover.change > 0 ? '+' : ''}
@@ -196,19 +196,19 @@ export default function WhatIf() {
           <table className="w-full">
             <thead>
               <tr style={{ borderBottom: '2px solid #2a2a3e' }}>
-                <th className="text-left px-4 py-3" style={{ color: '#d00000' }}>
+                <th className="text-left px-4 py-3" style={{ color: '#003DA5' }}>
                   Position
                 </th>
-                <th className="text-left px-4 py-3" style={{ color: '#d00000' }}>
+                <th className="text-left px-4 py-3" style={{ color: '#003DA5' }}>
                   Driver
                 </th>
-                <th className="text-left px-4 py-3" style={{ color: '#d00000' }}>
+                <th className="text-left px-4 py-3" style={{ color: '#003DA5' }}>
                   Number
                 </th>
-                <th className="text-right px-4 py-3" style={{ color: '#d00000' }}>
+                <th className="text-right px-4 py-3" style={{ color: '#003DA5' }}>
                   Points
                 </th>
-                <th className="text-center px-4 py-3" style={{ color: '#d00000' }}>
+                <th className="text-center px-4 py-3" style={{ color: '#003DA5' }}>
                   Change
                 </th>
               </tr>
@@ -229,7 +229,7 @@ export default function WhatIf() {
                   >
                     <td
                       className="px-4 py-4 font-bold text-lg"
-                      style={{ color: '#d00000' }}
+                      style={{ color: '#003DA5' }}
                     >
                       {currentPos}
                     </td>
@@ -265,11 +265,11 @@ export default function WhatIf() {
                             <>
                               <TrendingDown
                                 size={18}
-                                style={{ color: '#cc0000' }}
+                                style={{ color: '#c8102e' }}
                               />
                               <span
                                 className="text-sm font-semibold"
-                                style={{ color: '#cc0000' }}
+                                style={{ color: '#c8102e' }}
                               >
                                 {change}
                               </span>
