@@ -21,6 +21,7 @@ import InterviewRoom from './pages/InterviewRoom';
 import Game from './pages/Game';
 import Podcast from './pages/Podcast';
 import TrophyRoom from './pages/TrophyRoom';
+import Payouts from './pages/Payouts';
 import NotFound from './pages/NotFound';
 
 // Admin pages
@@ -62,6 +63,7 @@ function App() {
         <Route path="/game" element={<Game />} />
         <Route path="/podcast" element={<Podcast />} />
         <Route path="/trophy-room" element={<TrophyRoom />} />
+        <Route path="/payouts" element={<Payouts />} />
         <Route path="*" element={<NotFound />} />
       </Route>
 

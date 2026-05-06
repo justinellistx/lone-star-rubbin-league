@@ -41,6 +41,7 @@ export default function Layout() {
     { label: 'News', path: '/news' },
     { label: 'Podcast', path: '/podcast' },
     { label: 'Interviews', path: '/interviews' },
+    { label: 'Payouts', path: '/payouts' },
   ];
 
   const moreLinks = [
