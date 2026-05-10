@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Mic, Download, ChevronRight, Loader } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Mic, Download, ChevronRight, Loader, Youtube } from 'lucide-react';
 import TrackIcon from '../components/TrackIcon';
-import { usePodcasts } from '../hooks/useSupabase';
+import { usePodcasts, useSchedule } from '../hooks/useSupabase';
 
 /* ─── Helpers ─── */
 function formatTime(seconds) {
@@ -294,7 +294,18 @@ export function PodcastMiniPlayer() {
 /* ─── Main Podcast Page ─── */
 export default function Podcast() {
   const { data: episodes, loading: episodesLoading } = usePodcasts();
+  const { data: schedule } = useSchedule();
   const [activeDurations, setActiveDurations] = useState({});
+
+  // Build race_number → youtube_url map from schedule
+  const youtubeByRace = React.useMemo(() => {
+    if (!schedule) return {};
+    const map = {};
+    schedule.forEach(s => {
+      if (s.race_number && s.youtube_url) map[s.race_number] = s.youtube_url;
+    });
+    return map;
+  }, [schedule]);
 
   return (
     <div style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}>
@@ -392,6 +403,22 @@ export default function Podcast() {
                         ))}
                       </div>
                     </div>
+                  )}
+
+                  {/* YouTube Highlights link */}
+                  {ep.race_number && youtubeByRace[ep.race_number] && (
+                    <a
+                      href={youtubeByRace[ep.race_number]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '0.375rem',
+                        fontSize: '0.75rem', fontWeight: 700, color: '#ff0000',
+                        textDecoration: 'none', marginTop: '0.25rem',
+                      }}
+                    >
+                      <Youtube size={14} /> Watch Race Highlights
+                    </a>
                   )}
                 </div>
 

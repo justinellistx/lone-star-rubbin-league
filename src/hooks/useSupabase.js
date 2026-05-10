@@ -595,9 +595,20 @@ export function useComputedStandings() {
 export function useRaceResultsByRace() {
   const { data: allResults, loading: rLoading, error: rError } = useAllRaceResults();
   const { data: races, loading: racesLoading } = useRaces();
+  const { data: schedule, loading: schedLoading } = useSchedule();
 
   const raceResults = useMemo(() => {
     if (!allResults || !races) return null;
+
+    // Build a map from race_id → youtube_url from schedule
+    const youtubeMap = {};
+    if (schedule) {
+      schedule.forEach(s => {
+        if (s.race_id && s.youtube_url) {
+          youtubeMap[s.race_id] = s.youtube_url;
+        }
+      });
+    }
 
     return races
       .filter(race => race.status === 'completed')
@@ -621,6 +632,7 @@ export function useRaceResultsByRace() {
           totalLaps: race.total_laps,
           stageId: race.stage_id,
           stageName: race.stages?.name || '',
+          youtubeUrl: youtubeMap[race.id] || null,
           fastestLap: fastestResult ? {
             driver: fastestResult.drivers?.name,
             time: fastestResult.fastest_lap_time,
@@ -642,9 +654,9 @@ export function useRaceResultsByRace() {
         };
       })
       .sort((a, b) => a.raceNumber - b.raceNumber);
-  }, [allResults, races]);
+  }, [allResults, races, schedule]);
 
-  return { data: raceResults, loading: rLoading || racesLoading, error: rError };
+  return { data: raceResults, loading: rLoading || racesLoading || schedLoading, error: rError };
 }
 
 // Legacy aliases

@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Youtube } from 'lucide-react';
 import { useRaceResultsByRace } from '../hooks/useSupabase';
 import TrackIcon from '../components/TrackIcon';
+
+function extractVideoId(url) {
+  if (!url) return null;
+  const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+  return match ? match[1] : null;
+}
 
 /**
  * Derive bonus labels from race data.
@@ -119,13 +125,20 @@ export default function Results() {
                           <span className="text-[#003DA5] font-bold text-sm">Race #{race.raceNumber}</span>
                           <h3 className="text-2xl font-bold text-[#1a1a2e]">{race.track}</h3>
                         </div>
-                      <div className="text-[#6c6d6f]">
+                      <div className="flex items-center gap-2 text-[#6c6d6f]">
+                        <span>
                         {new Date(race.date).toLocaleDateString('en-US', {
                           month: 'short',
                           day: 'numeric',
                           year: 'numeric',
                         })}{' '}
                         • {race.series}
+                        </span>
+                        {race.youtubeUrl && (
+                          <span className="inline-flex items-center gap-1 text-xs font-bold text-[#ff0000] bg-[#fff0f0] px-2 py-0.5 rounded">
+                            <Youtube size={12} /> HIGHLIGHTS
+                          </span>
+                        )}
                       </div>
                       </div>
                     </div>
@@ -138,6 +151,26 @@ export default function Results() {
                   {/* Race Details - Expanded */}
                   {expandedRaceId === race.id && (
                     <div className="border-t border-[#e0e0e0] bg-[#ffffff]">
+                      {/* YouTube Highlights Embed */}
+                      {race.youtubeUrl && extractVideoId(race.youtubeUrl) && (
+                        <div className="px-6 py-6 border-b border-[#e0e0e0] bg-[#f7f7f7]">
+                          <h4 className="text-[#1a1a2e] font-bold mb-3 flex items-center gap-2">
+                            <Youtube size={18} className="text-[#ff0000]" />
+                            Race Highlights
+                          </h4>
+                          <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                            <iframe
+                              src={`https://www.youtube.com/embed/${extractVideoId(race.youtubeUrl)}`}
+                              title={`${race.track} Race ${race.raceNumber} Highlights`}
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                              className="absolute inset-0 w-full h-full rounded-lg"
+                              style={{ border: 'none' }}
+                            />
+                          </div>
+                        </div>
+                      )}
+
                       {/* Race Stats */}
                       <div className="px-6 py-6 border-b border-[#e0e0e0]">
                         <h4 className="text-[#1a1a2e] font-bold mb-4">Race Stats</h4>

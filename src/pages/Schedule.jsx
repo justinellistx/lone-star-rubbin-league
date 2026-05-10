@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Flag, CheckCircle, Clock } from 'lucide-react';
+import { Flag, CheckCircle, Clock, Youtube } from 'lucide-react';
 import { useSchedule } from '../hooks/useSupabase';
 import TrackIcon from '../components/TrackIcon';
 
@@ -70,12 +70,25 @@ export default function Schedule() {
       </div>
 
       {race.status === 'completed' && (
-        <Link
-          to="/results"
-          className="mt-4 block text-center bg-[#ffffff] border border-[#e0e0e0] text-[#003DA5] px-4 py-2 rounded text-sm font-bold hover:border-[#003DA5] transition"
-        >
-          View Results
-        </Link>
+        <div className="mt-4 flex gap-2">
+          <Link
+            to="/results"
+            className="flex-1 block text-center bg-[#ffffff] border border-[#e0e0e0] text-[#003DA5] px-4 py-2 rounded text-sm font-bold hover:border-[#003DA5] transition"
+          >
+            View Results
+          </Link>
+          {race.youtube_url && (
+            <a
+              href={race.youtube_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-1 bg-[#ffffff] border border-[#e0e0e0] text-[#ff0000] px-4 py-2 rounded text-sm font-bold hover:border-[#ff0000] transition"
+              title="Watch Highlights"
+            >
+              <Youtube size={14} /> Highlights
+            </a>
+          )}
+        </div>
       )}
     </div>
   );

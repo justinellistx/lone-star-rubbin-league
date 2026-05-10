@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Flag, Clock, Trophy, Users, Mic } from 'lucide-react';
+import { ChevronRight, Flag, Clock, Trophy, Users, Mic, Youtube } from 'lucide-react';
 import { PodcastMiniPlayer } from './Podcast';
 import TrackIcon from '../components/TrackIcon';
 import {
@@ -184,12 +184,23 @@ export default function Home() {
                     <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#008564' }}>{r.totalPoints} pts</span>
                   </div>
                 ))}
-                <Link to="/results" style={{
-                  display: 'block', textAlign: 'center', padding: '0.5rem', backgroundColor: '#f4f4f4',
-                  fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', color: '#003DA5', textDecoration: 'none', borderTop: '1px solid #e0e0e0',
-                }}>
-                  View Complete Results
-                </Link>
+                <div style={{ display: 'flex', borderTop: '1px solid #e0e0e0' }}>
+                  {latestRace.youtubeUrl && (
+                    <a href={latestRace.youtubeUrl} target="_blank" rel="noopener noreferrer" style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem',
+                      padding: '0.5rem', backgroundColor: '#f4f4f4', flex: 1,
+                      fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', color: '#ff0000', textDecoration: 'none', borderRight: '1px solid #e0e0e0',
+                    }}>
+                      <Youtube size={12} /> Highlights
+                    </a>
+                  )}
+                  <Link to="/results" style={{
+                    display: 'block', textAlign: 'center', padding: '0.5rem', backgroundColor: '#f4f4f4', flex: 1,
+                    fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', color: '#003DA5', textDecoration: 'none',
+                  }}>
+                    View Complete Results
+                  </Link>
+                </div>
               </div>
             ) : (
               <div style={{ padding: '2rem', color: '#6c6d6f', backgroundColor: '#fff', textAlign: 'center', border: '1px solid #e0e0e0', borderRadius: '0.25rem' }}>No completed races yet</div>

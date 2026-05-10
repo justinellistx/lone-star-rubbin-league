@@ -1,14 +1,25 @@
 import React, { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { ArrowLeft } from 'lucide-react';
-import { useComputedStandings, useAllRaceResults } from '../hooks/useSupabase';
+import { ArrowLeft, Youtube } from 'lucide-react';
+import { useComputedStandings, useAllRaceResults, useSchedule } from '../hooks/useSupabase';
 import TrackIcon from '../components/TrackIcon';
 
 export default function DriverProfile() {
   const { id } = useParams();
   const { standings, loading: sLoading } = useComputedStandings();
   const { data: allResults, loading: rLoading } = useAllRaceResults();
+  const { data: schedule } = useSchedule();
+
+  // Build youtube URL map from schedule (race_id → youtube_url)
+  const youtubeMap = useMemo(() => {
+    if (!schedule) return {};
+    const map = {};
+    schedule.forEach(s => {
+      if (s.race_id && s.youtube_url) map[s.race_id] = s.youtube_url;
+    });
+    return map;
+  }, [schedule]);
 
   // Find driver in computed standings (has drop-adjusted stats)
   const driver = useMemo(() => {
@@ -307,6 +318,17 @@ export default function DriverProfile() {
                         <div className="flex items-center gap-2">
                           <TrackIcon track={result.track} size={28} />
                           <span className="text-[#1a1a2e]">{result.track}</span>
+                          {youtubeMap[result.id] && (
+                            <a
+                              href={youtubeMap[result.id]}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              title="Watch Highlights"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <Youtube size={14} className="text-[#ff0000] hover:text-[#cc0000] transition" />
+                            </a>
+                          )}
                         </div>
                       </td>
                       <td className="px-4 py-4 text-right text-[#1a1a2e]">{result.startPosition}</td>

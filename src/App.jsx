@@ -36,6 +36,7 @@ import ManageInterviews from './pages/admin/ManageInterviews';
 import ManagePodcasts from './pages/admin/ManagePodcasts';
 import ManageFantasy from './pages/admin/ManageFantasy';
 import ManageTrophyRoom from './pages/admin/ManageTrophyRoom';
+import ManageHighlights from './pages/admin/ManageHighlights';
 
 function App() {
   return (
@@ -81,6 +82,7 @@ function App() {
         <Route path="podcasts" element={<ManagePodcasts />} />
         <Route path="fantasy" element={<ManageFantasy />} />
         <Route path="trophy-room" element={<ManageTrophyRoom />} />
+        <Route path="highlights" element={<ManageHighlights />} />
       </Route>
     </Routes>
   );

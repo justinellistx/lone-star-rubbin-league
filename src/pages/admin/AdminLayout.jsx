@@ -12,6 +12,7 @@ import {
   Headphones,
   DollarSign,
   Trophy,
+  Youtube,
   Menu,
   X,
   Home,
@@ -89,6 +90,7 @@ export default function AdminLayout() {
     { icon: Headphones, label: 'Podcasts', path: '/admin/podcasts' },
     { icon: DollarSign, label: 'Fantasy', path: '/admin/fantasy' },
     { icon: Trophy, label: 'Trophy Room', path: '/admin/trophy-room' },
+    { icon: Youtube, label: 'Highlights', path: '/admin/highlights' },
   ];
 
   const isActive = (path) => location.pathname === path;
