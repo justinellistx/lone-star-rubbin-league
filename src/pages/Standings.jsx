@@ -240,7 +240,8 @@ export default function Standings() {
                   </thead>
                   <tbody>
                     {displayStandings.map((driver, idx) => {
-                      const gap = idx === 0 ? '—' : `−${leader.points - driver.points}`;
+                      const gapVal = leader.points - driver.points;
+                      const gap = idx === 0 ? '—' : `−${gapVal % 1 === 0 ? gapVal : gapVal.toFixed(1)}`;
                       return (
                       <tr
                         key={driver.id}
@@ -281,12 +282,14 @@ export default function Standings() {
                         </td>
                         {/* Points */}
                         <td style={{ padding: '0.5rem 0.75rem', textAlign: 'right' }}>
-                          <span style={{ fontWeight: 800, color: '#003DA5', fontSize: '1rem' }}>{driver.points}</span>
+                          <span style={{ fontWeight: 800, color: '#003DA5', fontSize: '1rem' }}>
+                            {driver.points % 1 === 0 ? driver.points : driver.points.toFixed(1)}
+                          </span>
                           {driver.stageBonusPoints > 0 && (
                             <div style={{ fontSize: '0.625rem', color: '#008564', fontWeight: 700 }}
                               title={driver.stageBonusList?.join(', ')}
                             >
-                              includes +{driver.stageBonusPoints} stage bonus
+                              includes +{driver.stageBonusPoints % 1 === 0 ? driver.stageBonusPoints : driver.stageBonusPoints.toFixed(1)} stage bonus
                             </div>
                           )}
                           {driver.droppedPoints > 0 && (

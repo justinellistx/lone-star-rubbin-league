@@ -484,31 +484,26 @@ export function useComputedStandings() {
       ? Math.max(...stageStandings.map(d => d.racesEntered), 0)
       : 0;
 
-    // Most Laps Led (from kept races — already computed in standings)
-    const mostLapsLed = stageStandings.length > 0
-      ? stageStandings.reduce((best, d) =>
-          d.lapsLed > (best?.lapsLed || 0) ? d : best, stageStandings[0])
-      : null;
+    // Most Laps Led (check for ties)
+    const maxLapsLed = stageStandings.length > 0
+      ? Math.max(...stageStandings.map(d => d.lapsLed), 0) : 0;
+    const lapsLedLeaders = maxLapsLed > 0
+      ? stageStandings.filter(d => d.lapsLed === maxLapsLed) : [];
 
-    // Lowest Incidents — requires 9+ kept races to qualify
+    // Lowest Incidents — requires 9+ kept races to qualify (check for ties)
     const qualifiedForIncidents = stageStandings.filter(d =>
       d.raceByRace.filter(r => !r.isDropped).length >= MIN_RACES_FOR_INCIDENTS
     );
-    const lowestIncidents = qualifiedForIncidents.length > 0
-      ? qualifiedForIncidents.reduce((best, d) =>
-          d.totalIncidents < (best?.totalIncidents || Infinity) ? d : best, qualifiedForIncidents[0])
-      : null;
+    const minIncidents = qualifiedForIncidents.length > 0
+      ? Math.min(...qualifiedForIncidents.map(d => d.totalIncidents)) : null;
+    const incidentLeaders = minIncidents !== null
+      ? qualifiedForIncidents.filter(d => d.totalIncidents === minIncidents) : [];
 
-    // Most Poles (from kept races — already computed in standings)
-    const mostPoles = stageStandings.length > 0
-      ? stageStandings.reduce((best, d) =>
-          d.poles > (best?.poles || 0) ? d : best, stageStandings[0])
-      : null;
-    // Check for ties in poles
-    const maxPolesValue = mostPoles?.poles || 0;
+    // Most Poles (check for ties)
+    const maxPolesValue = stageStandings.length > 0
+      ? Math.max(...stageStandings.map(d => d.poles), 0) : 0;
     const poleLeaders = maxPolesValue > 0
-      ? stageStandings.filter(d => d.poles === maxPolesValue)
-      : [];
+      ? stageStandings.filter(d => d.poles === maxPolesValue) : [];
 
     // Most Fastest Laps — only count from KEPT races for each driver
     const fastestLapWinnerByRace = {};
@@ -553,23 +548,43 @@ export function useComputedStandings() {
       dropsAllowed: DROPS_ALLOWED,
       bonusValue: STAGE_BONUS_POINTS,
       mostLapsLed: {
-        name: mostLapsLed?.name || '—',
-        value: mostLapsLed?.lapsLed || 0,
-        driverId: mostLapsLed?.id,
+        leaders: lapsLedLeaders.map(d => d.name),
+        value: maxLapsLed,
+        isTied: lapsLedLeaders.length > 1,
+        driverIds: lapsLedLeaders.map(d => d.id),
+        tieCount: lapsLedLeaders.length,
+        // Legacy single-driver fields for backwards compat
+        name: lapsLedLeaders[0]?.name || '—',
+        driverId: lapsLedLeaders[0]?.id,
       },
-      lowestIncidents: lowestIncidents
-        ? { name: lowestIncidents.name, value: lowestIncidents.totalIncidents, qualified: true, driverId: lowestIncidents.id }
-        : { name: 'No one qualifies yet', value: null, qualified: false, minRaces: MIN_RACES_FOR_INCIDENTS },
+      lowestIncidents: incidentLeaders.length > 0
+        ? {
+            leaders: incidentLeaders.map(d => d.name),
+            value: minIncidents,
+            qualified: true,
+            isTied: incidentLeaders.length > 1,
+            driverIds: incidentLeaders.map(d => d.id),
+            tieCount: incidentLeaders.length,
+            name: incidentLeaders[0].name,
+            driverId: incidentLeaders[0].id,
+          }
+        : { name: 'No one qualifies yet', value: null, qualified: false, minRaces: MIN_RACES_FOR_INCIDENTS, leaders: [], driverIds: [], tieCount: 0 },
       mostPoles: {
         leaders: poleLeaders.map(d => d.name),
         value: maxPolesValue,
         isTied: poleLeaders.length > 1,
         driverIds: poleLeaders.map(d => d.id),
+        tieCount: poleLeaders.length,
       },
       mostFastestLaps: {
         leaders: fastestLapLeaders.map(([name]) => name),
         value: maxFastestLaps,
         isTied: fastestLapLeaders.length > 1,
+        driverIds: fastestLapLeaders.map(([name]) => {
+          const driver = stageStandings.find(d => d.name === name);
+          return driver?.id;
+        }).filter(Boolean),
+        tieCount: fastestLapLeaders.length,
       },
     };
   }
@@ -612,56 +627,51 @@ export function useComputedStandings() {
       const standings = computeStageStandings(stageResults, stageRaceIds, driverMap);
       const bonusTracker = computeStageBonuses(standings, stageResults);
 
-      // ─── Apply stage bonus points (+3) to winners' totals ───
-      const bonusRecipients = new Set();
-
-      // Most Laps Led
-      if (bonusTracker.mostLapsLed.driverId && bonusTracker.mostLapsLed.value > 0) {
-        bonusRecipients.add(bonusTracker.mostLapsLed.driverId);
-      }
-      // Lowest Incidents
-      if (bonusTracker.lowestIncidents.qualified && bonusTracker.lowestIncidents.driverId) {
-        bonusRecipients.add(bonusTracker.lowestIncidents.driverId);
-      }
-      // Most Poles (can be tied — all tied leaders get it)
-      if (bonusTracker.mostPoles.value > 0 && bonusTracker.mostPoles.driverIds) {
-        bonusTracker.mostPoles.driverIds.forEach(id => bonusRecipients.add(id));
-      }
-      // Most Fastest Laps (can be tied)
-      if (bonusTracker.mostFastestLaps.value > 0 && bonusTracker.mostFastestLaps.leaders) {
-        // Need to map names back to IDs
-        bonusTracker.mostFastestLaps.leaders.forEach(name => {
-          const driver = standings.find(d => d.name === name);
-          if (driver) bonusRecipients.add(driver.id);
-        });
-      }
+      // ─── Apply stage bonus points (+3, split on ties) to winners' totals ───
+      // Build bonus categories with split values
+      const bonusCategories = [
+        {
+          key: 'Most Laps Led',
+          driverIds: bonusTracker.mostLapsLed.driverIds || [],
+          active: bonusTracker.mostLapsLed.value > 0,
+          tieCount: bonusTracker.mostLapsLed.tieCount || 1,
+        },
+        {
+          key: 'Lowest Incidents',
+          driverIds: bonusTracker.lowestIncidents.driverIds || [],
+          active: bonusTracker.lowestIncidents.qualified,
+          tieCount: bonusTracker.lowestIncidents.tieCount || 1,
+        },
+        {
+          key: 'Most Poles',
+          driverIds: bonusTracker.mostPoles.driverIds || [],
+          active: bonusTracker.mostPoles.value > 0,
+          tieCount: bonusTracker.mostPoles.tieCount || 1,
+        },
+        {
+          key: 'Most Fastest Laps',
+          driverIds: bonusTracker.mostFastestLaps.driverIds || [],
+          active: bonusTracker.mostFastestLaps.value > 0,
+          tieCount: bonusTracker.mostFastestLaps.tieCount || 1,
+        },
+      ];
 
       // Add bonus points and track them per driver
       standings.forEach(d => {
-        let stageBonusCount = 0;
+        let stageBonusPts = 0;
         const stageBonusList = [];
 
-        if (bonusTracker.mostLapsLed.driverId === d.id && bonusTracker.mostLapsLed.value > 0) {
-          stageBonusCount++;
-          stageBonusList.push('Most Laps Led');
-        }
-        if (bonusTracker.lowestIncidents.qualified && bonusTracker.lowestIncidents.driverId === d.id) {
-          stageBonusCount++;
-          stageBonusList.push('Lowest Incidents');
-        }
-        if (bonusTracker.mostPoles.value > 0 && bonusTracker.mostPoles.driverIds?.includes(d.id)) {
-          stageBonusCount++;
-          stageBonusList.push('Most Poles');
-        }
-        if (bonusTracker.mostFastestLaps.value > 0) {
-          const driver = standings.find(s => s.id === d.id);
-          if (driver && bonusTracker.mostFastestLaps.leaders.includes(driver.name)) {
-            stageBonusCount++;
-            stageBonusList.push('Most Fastest Laps');
+        bonusCategories.forEach(cat => {
+          if (cat.active && cat.driverIds.includes(d.id)) {
+            const splitPts = STAGE_BONUS_POINTS / cat.tieCount;
+            stageBonusPts += splitPts;
+            const label = cat.tieCount > 1
+              ? `${cat.key} (split ${cat.tieCount}-way: +${splitPts % 1 === 0 ? splitPts : splitPts.toFixed(1)})`
+              : cat.key;
+            stageBonusList.push(label);
           }
-        }
+        });
 
-        const stageBonusPts = stageBonusCount * STAGE_BONUS_POINTS;
         d.stageBonusPoints = stageBonusPts;
         d.stageBonusList = stageBonusList;
         d.points += stageBonusPts;
