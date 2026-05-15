@@ -151,7 +151,7 @@ export default function Schedule() {
         {/* Stage 1 */}
         {stage1.length > 0 && (
           <section className="mb-16">
-            <h2 className="text-3xl font-bold text-[#1a1a2e] mb-2">Stage 1</h2>
+            <h2 className="text-3xl font-bold text-[#1a1a2e] mb-2">Stage 1: Truck Series</h2>
             <p className="text-[#6c6d6f] mb-8">{stage1.length} races</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {stage1.map((race) => (
@@ -168,7 +168,7 @@ export default function Schedule() {
         {/* Stage 2 */}
         {stage2.length > 0 && (
           <section className="mb-16">
-            <h2 className="text-3xl font-bold text-[#1a1a2e] mb-2">Stage 2</h2>
+            <h2 className="text-3xl font-bold text-[#1a1a2e] mb-2">Stage 2: O'Reilly's Series</h2>
             <p className="text-[#6c6d6f] mb-8">{stage2.length} races</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {stage2.map((race) => (
@@ -185,7 +185,7 @@ export default function Schedule() {
         {/* Stage 3 */}
         {stage3.length > 0 && (
           <section className="mb-16">
-            <h2 className="text-3xl font-bold text-[#1a1a2e] mb-2">Stage 3</h2>
+            <h2 className="text-3xl font-bold text-[#1a1a2e] mb-2">Stage 3: Cup Series</h2>
             <p className="text-[#6c6d6f] mb-8">{stage3.length} races</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {stage3.map((race) => (
