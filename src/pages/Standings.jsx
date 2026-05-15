@@ -282,6 +282,13 @@ export default function Standings() {
                         {/* Points */}
                         <td style={{ padding: '0.5rem 0.75rem', textAlign: 'right' }}>
                           <span style={{ fontWeight: 800, color: '#003DA5', fontSize: '1rem' }}>{driver.points}</span>
+                          {driver.stageBonusPoints > 0 && (
+                            <div style={{ fontSize: '0.625rem', color: '#008564', fontWeight: 700 }}
+                              title={driver.stageBonusList?.join(', ')}
+                            >
+                              includes +{driver.stageBonusPoints} stage bonus
+                            </div>
+                          )}
                           {driver.droppedPoints > 0 && (
                             <div style={{ fontSize: '0.625rem', color: '#6c6d6f' }}>{driver.rawPoints} raw</div>
                           )}

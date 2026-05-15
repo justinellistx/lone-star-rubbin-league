@@ -612,11 +612,63 @@ export function useComputedStandings() {
       const standings = computeStageStandings(stageResults, stageRaceIds, driverMap);
       const bonusTracker = computeStageBonuses(standings, stageResults);
 
-      // Determine stage number from first race result's races data
-      const firstResult = stageResults[0];
-      const stageNumber = firstResult?.races?.stage_id === stageId
-        ? Object.keys(resultsByStage).indexOf(stageId) + 1
-        : null;
+      // ─── Apply stage bonus points (+3) to winners' totals ───
+      const bonusRecipients = new Set();
+
+      // Most Laps Led
+      if (bonusTracker.mostLapsLed.driverId && bonusTracker.mostLapsLed.value > 0) {
+        bonusRecipients.add(bonusTracker.mostLapsLed.driverId);
+      }
+      // Lowest Incidents
+      if (bonusTracker.lowestIncidents.qualified && bonusTracker.lowestIncidents.driverId) {
+        bonusRecipients.add(bonusTracker.lowestIncidents.driverId);
+      }
+      // Most Poles (can be tied — all tied leaders get it)
+      if (bonusTracker.mostPoles.value > 0 && bonusTracker.mostPoles.driverIds) {
+        bonusTracker.mostPoles.driverIds.forEach(id => bonusRecipients.add(id));
+      }
+      // Most Fastest Laps (can be tied)
+      if (bonusTracker.mostFastestLaps.value > 0 && bonusTracker.mostFastestLaps.leaders) {
+        // Need to map names back to IDs
+        bonusTracker.mostFastestLaps.leaders.forEach(name => {
+          const driver = standings.find(d => d.name === name);
+          if (driver) bonusRecipients.add(driver.id);
+        });
+      }
+
+      // Add bonus points and track them per driver
+      standings.forEach(d => {
+        let stageBonusCount = 0;
+        const stageBonusList = [];
+
+        if (bonusTracker.mostLapsLed.driverId === d.id && bonusTracker.mostLapsLed.value > 0) {
+          stageBonusCount++;
+          stageBonusList.push('Most Laps Led');
+        }
+        if (bonusTracker.lowestIncidents.qualified && bonusTracker.lowestIncidents.driverId === d.id) {
+          stageBonusCount++;
+          stageBonusList.push('Lowest Incidents');
+        }
+        if (bonusTracker.mostPoles.value > 0 && bonusTracker.mostPoles.driverIds?.includes(d.id)) {
+          stageBonusCount++;
+          stageBonusList.push('Most Poles');
+        }
+        if (bonusTracker.mostFastestLaps.value > 0) {
+          const driver = standings.find(s => s.id === d.id);
+          if (driver && bonusTracker.mostFastestLaps.leaders.includes(driver.name)) {
+            stageBonusCount++;
+            stageBonusList.push('Most Fastest Laps');
+          }
+        }
+
+        const stageBonusPts = stageBonusCount * STAGE_BONUS_POINTS;
+        d.stageBonusPoints = stageBonusPts;
+        d.stageBonusList = stageBonusList;
+        d.points += stageBonusPts;
+      });
+
+      // Re-sort after adding bonus points
+      standings.sort((a, b) => b.points - a.points);
 
       stages[stageId] = {
         standings,
@@ -658,7 +710,7 @@ export function useComputedStandings() {
           };
         }
         const o = overallMap[d.id];
-        o.points += d.points;
+        o.points += (d.points - (d.stageBonusPoints || 0)); // Exclude stage bonuses from overall
         o.rawPoints += d.rawPoints;
         o.droppedPoints += d.droppedPoints;
         o.posPoints += d.posPoints;
