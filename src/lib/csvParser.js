@@ -112,7 +112,15 @@ export function parseIRacingCSV(csvText) {
             'interval',
           ].includes(header)
         ) {
-          value = value ? parseFloat(value) : null;
+          // Handle M:SS.mmm format (road courses with laps > 60s)
+          if (value && typeof value === 'string' && value.includes(':')) {
+            const parts = value.split(':');
+            const minutes = parseFloat(parts[0]) || 0;
+            const seconds = parseFloat(parts[1]) || 0;
+            value = minutes * 60 + seconds;
+          } else {
+            value = value ? parseFloat(value) : null;
+          }
         }
 
         // Map to normalized keys

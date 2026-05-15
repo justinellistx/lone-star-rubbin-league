@@ -523,6 +523,7 @@ export default function UploadRace() {
                     <th className="px-4 py-3 text-left text-sm font-medium text-[#8a8a9a]">Laps</th>
                     <th className="px-4 py-3 text-left text-sm font-medium text-[#8a8a9a]">Led</th>
                     <th className="px-4 py-3 text-left text-sm font-medium text-[#8a8a9a]">Inc</th>
+                    <th className="px-4 py-3 text-right text-sm font-medium text-[#8a8a9a]">Best Lap</th>
                     <th className="px-4 py-3 text-right text-sm font-medium text-[#8a8a9a]">Points</th>
                     <th className="px-4 py-3 text-center text-sm font-medium text-[#8a8a9a]">Match</th>
                   </tr>
@@ -546,6 +547,11 @@ export default function UploadRace() {
                       <td className="px-4 py-3 text-[#8a8a9a]">{result.lapsCompleted}</td>
                       <td className="px-4 py-3 text-[#8a8a9a]">{result.lapsLed}</td>
                       <td className="px-4 py-3 text-[#8a8a9a]">{result.incidents}</td>
+                      <td className="px-4 py-3 text-right text-[#8a8a9a]">
+                        {result.fastestLapTime ? (
+                          <span>{parseFloat(result.fastestLapTime).toFixed(3)}s</span>
+                        ) : '—'}
+                      </td>
                       <td className="px-4 py-3 text-right">
                         <span className="font-bold text-[#2ec4b6]">{result.totalPts}</span>
                       </td>
