@@ -41,6 +41,38 @@ export function useAllRaceResults() {
 }
 
 /**
+ * Fetch ALL in-race stage caution results (Stage 2 stage points).
+ * Each row: { race_id, driver_id, stage_number (1|2), position, points }
+ */
+export function useAllStageResults() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('race_stage_results')
+          .select('race_id, driver_id, stage_number, position, points');
+        if (error) throw error;
+        setData(data || []);
+      } catch (err) {
+        // Non-fatal: standings still work without stage points
+        setError(err.message);
+        setData([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  return { data, loading, error };
+}
+
+/**
  * Fetch race results for a single race
  */
 export function useRaceResults(raceId) {
@@ -348,6 +380,7 @@ export function useComputedStandings() {
   const { data: allResults, loading: rLoading, error: rError } = useAllRaceResults();
   const { data: drivers, loading: dLoading, error: dError } = useDrivers();
   const { data: teams, error: tError } = useTeams();
+  const { data: stagePointRows } = useAllStageResults();
 
   // Debug logging for data pipeline
   if (!rLoading && !dLoading) {
@@ -401,8 +434,12 @@ export function useComputedStandings() {
       // Sort by total_points ascending — worst races first (DNRs at 0 sink to bottom)
       const sorted = [...allRaces].sort((a, b) => (a.total_points || 0) - (b.total_points || 0));
 
-      // Drop worst N races
-      const dropCount = Math.min(DROPS_ALLOWED, sorted.length);
+      // Graduated drops: drops don't apply until the stage has run more than
+      // DROPS_ALLOWED races, then ramp up by one each race (race 4 → drop 1,
+      // race 5 → 2, race 6+ → 3). A full 12-race stage drops the usual 3.
+      const racesInStage = completedRaceList.length;
+      const effectiveDrops = Math.max(0, Math.min(DROPS_ALLOWED, racesInStage - DROPS_ALLOWED));
+      const dropCount = Math.min(effectiveDrops, sorted.length);
       const dropped = sorted.slice(0, dropCount);
       const kept = sorted.slice(dropCount);
 
@@ -469,7 +506,7 @@ export function useComputedStandings() {
         avgFinish: parseFloat(avgFinish.toFixed(1)),
         racesEntered: enteredRaces.length,
         dnrCount,
-        dropsUsed: DROPS_ALLOWED,
+        dropsUsed: effectiveDrops,
         raceByRace,
         keptRaceIds: new Set(kept.map(r => r.race_id)),
       };
@@ -593,6 +630,25 @@ export function useComputedStandings() {
   const stageData = useMemo(() => {
     if (!allResults || !drivers) return null;
 
+    // Fold in-race stage caution points into each result's totals.
+    // Stored separately in race_stage_results; added here at read time so they
+    // count toward stage totals (and drops) without altering finish/bonus storage.
+    const stageMap = {};
+    (stagePointRows || []).forEach((s) => {
+      const k = `${s.race_id}|${s.driver_id}`;
+      stageMap[k] = (stageMap[k] || 0) + (s.points || 0);
+    });
+    const sourceResults = allResults.map((r) => {
+      const sp = stageMap[`${r.race_id}|${r.driver_id}`] || 0;
+      if (!sp) return r;
+      return {
+        ...r,
+        stage_points: sp,
+        bonus_points: (r.bonus_points || 0) + sp,
+        total_points: (r.total_points || 0) + sp,
+      };
+    });
+
     // Build driver info map
     const driverMap = {};
     drivers.forEach(d => {
@@ -609,7 +665,7 @@ export function useComputedStandings() {
     // Group results by stage_id
     const resultsByStage = {};
     const raceIdsByStage = {};
-    allResults.forEach(r => {
+    sourceResults.forEach(r => {
       const stageId = r.races?.stage_id;
       if (!stageId) return;
       if (!resultsByStage[stageId]) {
@@ -755,7 +811,7 @@ export function useComputedStandings() {
       .sort((a, b) => b.points - a.points);
 
     return { stages, overallStandings };
-  }, [allResults, drivers]);
+  }, [allResults, drivers, stagePointRows]);
 
   // ─── Derive the "active" standings (default: first stage with data) ───
   // Also provide a flat "standings" for backward compatibility

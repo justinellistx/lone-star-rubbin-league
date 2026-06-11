@@ -18,9 +18,9 @@ An ESPN-style iRacing league website for the **Lone Star Rubbin' League**, a com
 ## League Structure
 
 - **Season:** 36 races, divided into 3 stages of 12 races each
-- **Stage 1:** Truck Series (currently in progress — 8 of 12 races completed)
-- **Stage 2:** Xfinity Series
-- **Stage 3:** Next Gen Cup Series
+- **Stage 1:** Truck Series (COMPLETED — 12 of 12 races, champion TBD pending bonus calculation)
+- **Stage 2:** O'Reilly's Series (ACTIVE — starts Race 13 Charlotte, May 24)
+- **Stage 3:** Cup Series
 - **iRacing League ID:** 11660
 - **League Name:** Lone Star Rubbin' (on iRacing)
 - **Season Name:** 2026 Lone Star Rubbin'
@@ -47,25 +47,30 @@ An ESPN-style iRacing league website for the **Lone Star Rubbin' League**, a com
 | Nick+Jordan | c1000000-...-000000000003 | Nick Green2, Jordan Stancil |
 | Ryan+Sam+Ronald | c1000000-...-000000000004 | Ryan Ramsey, Sam Kunnemann, Ronald Ramsey |
 
-### Completed Races (Stage 1) — 52 race_results rows in Supabase
-| # | Track | Date | Race UUID |
-|---|-------|------|-----------|
-| 1 | Daytona | Feb 12, 2026 | e1000000-...-000000000001 |
-| 2 | Atlanta | Feb 26, 2026 | e1000000-...-000000000002 |
-| 3 | COTA | Mar 5, 2026 | e1000000-...-000000000003 |
-| 4 | Phoenix | Mar 12, 2026 | e1000000-...-000000000004 |
-| 5 | Las Vegas | Mar 19, 2026 | e1000000-...-000000000005 |
-| 6 | Darlington | Mar 26, 2026 | e1000000-...-000000000006 |
-| 7 | Martinsville | Apr 3, 2026 | e1000000-...-000000000007 |
+### Completed Races (Stage 1) — 12 of 12 COMPLETE
+| # | Track | Date | Winner |
+|---|-------|------|--------|
+| 1 | Daytona | Feb 12, 2026 | (No league winner — best P15 Blaine) |
+| 2 | Atlanta | Feb 26, 2026 | Jordan Stancil |
+| 3 | COTA | Mar 5, 2026 | Nathan Becker |
+| 4 | Phoenix | Mar 12, 2026 | Nathan Becker |
+| 5 | Las Vegas | Mar 19, 2026 | Nick Green |
+| 6 | Darlington | Mar 26, 2026 | Nick Green |
+| 7 | Martinsville | Apr 3, 2026 | Nathan Becker |
+| 8 | Bristol | Apr 16, 2026 | Terry Domino |
+| 9 | Kansas | Apr 24, 2026 | Nathan Becker |
+| 10 | Talladega | Apr 30, 2026 | Terry Domino |
+| 11 | Texas | May 8, 2026 | Nathan Becker |
+| 12 | Watkins Glen | May 15, 2026 | Nick Green |
 
-**Next race:** Race 9 — TBD (check schedule table)
-**Last race uploaded:** Race 7 — Martinsville (Bristol race 8 may have been raced Apr 16)
+**Next race:** Race 13 — Charlotte (May 24, 2026) — STAGE 2 OPENER
+**Last race uploaded:** Race 12 — Watkins Glen
 
-### Drivers Who Missed Races
-- Ronald Ramsey: only raced Martinsville (race 7)
-- Sam Kunnemann: raced Phoenix, Las Vegas, Darlington, Martinsville (races 4-7)
-- Terry Domino: missed Darlington (race 6)
-- Jordan Stancil: missed Martinsville (race 7)
+### Drivers Who Missed Races (Stage 1 final)
+- Ronald Ramsey: raced Martinsville (7), Bristol (8), Kansas (9), Talladega (10), Texas (11) — 5 of 12 (removed from Watkins Glen — logged in but did not race, 0 laps)
+- Sam Kunnemann: raced Phoenix–Martinsville (4-7), Kansas (9), Talladega (10), Texas (11), Watkins Glen (12) — 9 of 12
+- Terry Domino: missed Darlington (6) — 11 of 12
+- Jordan Stancil: missed Martinsville (7) — 11 of 12
 
 ---
 
@@ -75,6 +80,16 @@ An ESPN-style iRacing league website for the **Lone Star Rubbin' League**, a com
 1st = 40, 2nd = 35, 3rd = 34, 4th = 33, 5th = 32 ... down to 40th = 1
 
 Points are based on **true finishing position** (including AI cars in the field).
+
+### Stage 2 Scoring Changes (effective Race 13, Charlotte)
+Stage-aware logic added June 2026. Controlled by `stages.stage_number` and threaded
+through `UploadRace.jsx` → `points.js`. Stage 1 is unchanged.
+
+- **Finish points:** winner bumped 40 → **45**. P2=35, P3=34, −1 from there (same as Stage 1 below P1). True position.
+- **Incident penalties (UNCAPPED):** −1 at 20, −2 at 30, −3 at 40, −4 at 50, −5 at 60 … (every 10 = one more). Stage 1 stays capped at −3.
+- **In-race stage points (NEW):** each race has a Stage 1 caution + Stage 2 caution + finish. Top 5 at each caution earn **+5 / +4 / +3 / +2 / +1** (max +10/race). Entered manually in **Admin → Stage Points** (`/admin/stage-points`), stored in the `race_stage_results` table, and folded into each race's total in `useComputedStandings()` (so they count toward stage totals and drops; they appear within the "bonus" column).
+- **Per-race +2 bonuses and end-of-stage +3 bonuses:** unchanged (still apply).
+- **Drops:** still "worst 3 of 12," but now ramp in early in a stage — 0 drops through race 3, then 1 at race 4, 2 at race 5, 3 from race 6 on (`effectiveDrops = clamp(racesInStage − 3, 0, 3)` in `useComputedStandings`). Fixes the bug where a single Stage 2 race was dropped to 0.
 
 ### Bonus Points (per race, among league drivers only)
 | Bonus | Points | Condition |
@@ -104,25 +119,30 @@ Only the highest applicable tier applies (not cumulative).
 - Driver Profile shows DROPPED/COUNTED badges per race
 - Standings page shows dropped points, DNR count, raw vs kept totals
 
-### Stage Bonuses (end of 12-race stage)
+### Stage Bonuses (end of 12-race stage — added to standings automatically)
 | Bonus | Points | Qualification |
 |-------|--------|---------------|
 | Most Laps Led | +3 | Open to ALL drivers |
 | Most Fastest Laps | +3 | Open to ALL drivers |
 | Lowest Total Incidents | +3 | **Requires 9+ races entered to qualify** |
+| Most Poles | +3 | Open to ALL drivers |
 
-### Current Standings (after drops, 7 races)
-| Pos | Driver | Points (kept) | Raw Points | Dropped |
-|-----|--------|---------------|------------|---------|
-| 1 | Nick Green2 | 162 | 205 | 43 |
-| 2 | Nathan Becker | 156 | 203 | 47 |
-| 3 | Justin Ellis4 | 139 | 193 | 54 |
-| 4 | Blaine Carnes | 133 | 187 | 54 |
-| 5 | Jordan Stancil | 124 | 142 | 18 (1 DNR) |
-| 6 | Ryan Ramsey | 90 | 128 | 38 |
-| 7 | Terry Domino | 82 | 101 | 19 (1 DNR) |
-| 8 | Sam Kunnemann | 47 | 47 | 0 (3 DNRs) |
-| 9 | Ronald Ramsey | 10 | 10 | 0 (6 DNRs) |
+**Tie rule:** If multiple drivers tie for a bonus, the +3 points are split evenly (e.g., 2-way tie = +1.5 each, 3-way tie = +1 each). This matches how per-race bonuses handle ties.
+
+**Implementation:** Stage bonuses are computed client-side in `useComputedStandings()` from kept races only (post-drop). Points are added to each driver's standings total and the standings are re-sorted. The `stageBonusPoints` and `stageBonusList` fields on each driver track the breakdown. Overall Season standings exclude stage bonuses.
+
+**Stage bonuses do NOT carry over to overall standings** — they only affect the individual stage leaderboard.
+
+### Stage 1 Final Standings (12 races, best 9 of 12 kept, + stage bonuses)
+*Note: Exact numbers depend on Watkins Glen fastest lap data being correct in DB. Stage bonuses are computed client-side and split on ties.*
+
+**Stage 1 Bonus Leaders (through 12 races):**
+- Most Laps Led: Nick Green (440+)
+- Lowest Incidents (9+ races): Nick Green or Ryan Ramsey (depends on kept races after drops)
+- Most Poles: Nathan Becker (4)
+- Most Fastest Laps: TBD (depends on Watkins Glen fastest lap data fix)
+
+**Championship: Nick Green leads. Becker in 2nd. 3rd-place battle between Blaine/Jordan/Justin.**
 
 ---
 
@@ -136,35 +156,43 @@ Only the highest applicable tier applies (not cumulative).
 | Backend/DB | Supabase (PostgreSQL + Auth + RLS) |
 | Charts | Recharts |
 | Icons | Lucide React |
-| CSV Parsing | Custom parser (csvParser.js) — handles iRacing paired-row metadata format |
+| CSV Parsing | Custom parser (csvParser.js) — handles iRacing paired-row metadata format + M:SS.mmm road course lap times |
 | Hosting | Vercel (free tier) |
 | Domain | TBD (using .vercel.app for now) |
 
 ---
 
-## Design Theme (ESPN Light — redesigned Apr 18, 2026)
+## Design Theme (NASCAR.com — redesigned Apr 30, 2026)
 
 | Token | Value | Usage |
 |-------|-------|-------|
-| bg-primary | `#f5f5f5` | Page backgrounds |
+| bg-primary | `#ffffff` | Page backgrounds (clean white) |
 | bg-secondary (card) | `#ffffff` | Card backgrounds |
-| bg-hover | `#f0f0f0` | Card hover states |
-| espn-red | `#d00000` | Primary accent, active tabs, buttons, section headers |
-| espn-black | `#131313` | Nav bar, table headers, footer |
+| bg-hover | `#f7f7f7` | Card hover states |
+| nascar-blue | `#003DA5` | Primary accent, active tabs, buttons, links |
+| navy | `#1a1a2e` | Nav bar, table headers, text primary |
+| nascar-yellow | `#ffcf00` | Nav active indicators, brand icon, Next Race banner |
+| nascar-red | `#c8102e` | Penalties, incidents, semantic warnings |
 | green | `#008564` | Positive stats, gains, bonuses |
-| red-negative | `#cc0000` | Incidents, penalties, negatives |
-| blue-link | `#004b8d` | Links, "view all" CTAs |
-| text-primary | `#131313` | Main text |
+| text-primary | `#1a1a2e` | Main text (navy) |
 | text-secondary | `#6c6d6f` | Labels, subtitles |
 | borders | `#e0e0e0` | Card borders, dividers |
 
-### ESPN Layout Features
-- **Nav bar:** Black (#131313) fixed top bar, red bottom-border on active tab, compact 48px height
-- **Ticker strip:** Live standings ticker below nav (driver rank, name, points), scrollable, 40px
-- **Home page:** 2-column layout — left: headlines + results + schedule; right: standings widget + quick links
-- **Section headers:** Bold uppercase with 3px red or black bottom border
-- **Tables:** Dark header row (#131313) with 3px red bottom border, white body rows
-- **Previous dark theme colors archived:** bg #0a0a0f/#14141f/#1a1a2e, gold #f5a623, teal #2ec4b6, red #e63946
+### NASCAR.com Layout Features
+- **Nav bar:** Navy (#1a1a2e) fixed top bar, yellow (#ffcf00) active indicators, 52px height
+- **Ticker strip:** Blue STANDINGS label with points gap, scrollable
+- **Footer:** Blue (#003DA5) top border accent
+- **Home page:** Left-border section headers (NASCAR.com pattern), yellow-accented Next Race banner, sidebar with gap-to-leader column
+- **Standings page:** Tab strip instead of button pills, points gap column, position badges (blue P1, navy top 3), left-border info callout, 2x2 grid points breakdown
+- **Section headers:** Bold uppercase with left-border accent (blue/yellow)
+- **Tables:** Navy header row with blue accent, white body rows
+- **Previous themes:** ESPN light (Apr 18), ESPN dark (original Apr 7) — both fully replaced
+
+### Redesign Files (staged in /Desktop/redesign/, deployed via PUSH-REDESIGN-FULL.command)
+- Phase 1: index.css, layout.css, Layout.jsx (foundation)
+- Phase 2: 17 page files + 2 table CSS + FantasyDraft.jsx (color swap)
+- Phase 3: HeadToHead, PowerRankings, News, Timeline + storyGenerator.js (cleanup)
+- Phase 4: Standings.jsx and Home.jsx structural redesigns (pages-v2/)
 
 ---
 
@@ -284,8 +312,15 @@ iracing-league-hub/
 ├── NotebookLM-League-Context.md     # Persistent NotebookLM source (NO sim references)
 ├── NotebookLM-Weekly-Prompt.md      # Weekly Customize field template (post-race episodes)
 ├── NotebookLM-Midweek-Update-Prompt.md  # Midweek Customize field template (Wednesday shows)
-├── Midweek-Update-Week9-Kansas.md   # Example filled-in midweek prompt (Week 9)
+├── Midweek-Update-Week9-Kansas.md   # Filled-in midweek prompt (Week 9)
+├── Midweek-Update-Week10-Talladega.md  # Filled-in midweek prompt (Week 10)
+├── RaceDay-Week10-Talladega.md      # Filled-in pre-race prompt (Week 10)
+├── RaceDay-Week11-Texas.md          # Filled-in pre-race prompt (Week 11)
+├── PostRace-Week10-Talladega.md     # Filled-in post-race prompt (Week 10)
+├── PostRace-Week11-Texas.md         # Filled-in post-race prompt (Week 11)
+├── Midweek-Update-Week11-Texas.md   # Filled-in midweek prompt (Week 11)
 ├── PUSH-PODCAST.command             # Push script for podcast files
+├── PUSH-REDESIGN-FULL.command       # Push script for NASCAR.com redesign (all 26 files)
 ├── MEMORY.md                        # THIS FILE
 ├── supabase-schema.sql
 ├── seed-data.sql
@@ -347,12 +382,16 @@ The sandbox cannot `git push` (network blocked), so `.command` scripts are creat
 | Apr 17, 2026 | Incident penalty thresholds off by one tier | Changed `<=` to `<` in calculateIncidentPenalty. Retroactively fixed 7 rows via SQL UPDATE |
 | Apr 17, 2026 | Rivalries page missing Bristol data | Compared drivers by array index instead of race_number. Fixed with raceMap keyed by raceNum |
 | Apr 17, 2026 | CSV metadata parsing broken for iRacing format | Rewrote to handle paired-row format (keys line, values line) using parseCSVLine |
+| May 14, 2026 | Stage bonus points not added to standings totals | `computeStageBonuses()` identified leaders but never added +3 pts. Fixed: bonuses now applied to standings with tie-splitting |
+| May 14, 2026 | Road course fastest lap times parsed as "1" | iRacing exports road course laps as `M:SS.mmm` (e.g. `1:44.738`). `parseFloat()` stopped at colon → returned 1. Fixed: parser now detects colon format and converts to total seconds |
+| May 14, 2026 | Admin upload preview missing fastest lap column | Added "Best Lap" column to UploadRace.jsx preview table so fastest lap data is visible before upload |
+| May 14, 2026 | Ronald Ramsey counted in Watkins Glen despite 0 laps | Logged in but disconnected (0 laps, P29). Removed from Race 12 results — was skewing Lowest Incidents bonus |
 
 ---
 
 ## What's NOT Built Yet / Pending
 
-- [ ] Stage filtering in standings (currently shows all races, not per-stage)
+- [x] Stage filtering in standings (DONE — tab per stage, overall, bonuses applied)
 - [ ] Real-time auto-refresh when new results are posted
 - [ ] Social media share cards for race results
 - [ ] Custom domain setup
@@ -394,6 +433,17 @@ The sandbox cannot `git push` (network blocked), so `.command` scripts are creat
 | Apr 20, 2026 | Fantasy Draft DFS system | DraftKings-style: $10k cap, pick 3 drivers, auto-salaries from stats, hidden until results |
 | Apr 20, 2026 | Fantasy salaries auto-calculated client-side | No separate salary table needed — computed from race_results on the fly |
 | Apr 20, 2026 | Fantasy scoring: highest position tier only | Win=10, Top3=7, Top5=5, Top8=3, Top10=1, P11+=-2 (non-stacking) + laps led/incidents/FL |
+| Apr 30, 2026 | NASCAR.com visual redesign (full) | Replaced ESPN light theme with NASCAR.com palette: blue #003DA5, navy #1a1a2e, yellow #ffcf00, red #c8102e. All 26 files updated. Structural redesigns for Standings (tab strip, gap column) and Home (left-border headers, sidebar gap column). Staged in /Desktop/redesign/, deployed via PUSH-REDESIGN-FULL.command |
+| Apr 30, 2026 | OFF-LIMITS: Becker's divorce | Justin's Race 10 interview mentions teammate's divorce — must always be excluded from podcast prompts |
+| Apr 30, 2026 | Post-race podcast prompt includes Stage 1 championship preview | Extended closing segment covering final 2 races, drop math, each host picks Stage 1 winner |
+| May 7, 2026 | Driver nickname corrections confirmed from DB | Nick=Adventure Man, Ryan=Thunder Boy, Jordan=J-Dawg, Becker=Becker Wrecker, Justin=J-Easy, Blaine=Blainetard, Terry=Domino Slices, Sam=Samon, Ronald=The Fuzz |
+| May 9, 2026 | NotebookLM source scrubbing required | Old sources with iRacing URLs/references contaminated podcast output. Fix: delete ALL old sources, use single clean source doc with zero sim references. Sources override Customize prompt. |
+| May 9, 2026 | Podcast tone: drama over science | Less racing science (aero, tires, downforce) unless tied to a specific dramatic moment. Focus on people, rivalries, trash talk, heartbreak, triumph. Quote drivers directly from interviews. |
+| May 9, 2026 | NotebookLM daily generation limit | Audio Overview has a daily cap. Don't waste generations — plan carefully. |
+| May 14, 2026 | Stage bonuses split on ties | +3 pts divided evenly among tied leaders (2-way = +1.5 each). Matches per-race bonus tie behavior. |
+| May 14, 2026 | Stage 2 activated as "O'Reilly's Series" | `stages.is_active = true` for Stage 2. Race 13 Charlotte (May 24) is first race. Stage 2 shows in admin upload dropdown + Standings tabs. |
+| May 14, 2026 | 4th stage bonus: Most Poles (+3) | Added to `computeStageBonuses()`. Becker leads Stage 1 with 4 poles. |
+| May 14, 2026 | Series naming: Trucks → O'Reilly's → Cup | Stage 1 = Truck Series, Stage 2 = O'Reilly's Series, Stage 3 = Cup Series. Updated Standings tabs + Schedule headers. |
 
 ---
 
@@ -453,6 +503,10 @@ A weekly AI-generated two-host podcast covering the league, produced via Google 
 ### CRITICAL TONE RULE (decided Apr 18, 2026)
 **The podcast treats the league as REAL racing. No references to iRacing, simulators, video games, AI drivers, or computers — EVER.** The hosts sound like they're covering a regional NASCAR touring series with real drivers in real stock cars. Incidents are crashes and bent fenders, not sim incident counts. Both the context document and weekly prompt enforce this rule.
 
+### OFF-LIMITS PERSONAL TOPICS (added Apr 30, 2026)
+- **Becker's divorce — NEVER mention.** No references to divorce, ex-wife, personal life changes, or anything related. Keep Becker's persona focused on his aggressive driving style and on-track performance only. NOTE: Justin's Race 10 post-race interview mentions "my teammate who's recently divorced" — this must ALWAYS be excluded/sanitized from podcast prompts.
+- **Ryan Ramsey's deceased father — NEVER mention.** (Existing rule, restated for clarity.)
+
 ### Podcast System (website integration)
 - **Supabase table:** `podcasts` (id, episode_number, title, description, track, race_number, date, audio_url, duration_seconds, highlights TEXT[], published, created_at, updated_at)
 - **Supabase Storage bucket:** `podcasts` (public read, authenticated write)
@@ -464,6 +518,16 @@ A weekly AI-generated two-host podcast covering the league, produced via Google 
 ### Files (in iracing-league-hub/)
 - **`NotebookLM-League-Context.md`** — Persistent source document uploaded to NotebookLM. Contains CRITICAL TONE RULES (no sim references), driver bios/nicknames, team info, all race recaps, current standings, key storylines, host guidance for incorporating website content (news, power rankings, interviews, Pick'em, head-to-head stats, awards), pronunciation guide, and track type reference. **Update this file every week.**
 - **`NotebookLM-Weekly-Prompt.md`** — Reusable template for the Customize field. Contains bracketed blanks for: race data, NEWS FROM THE WEBSITE (pre/post-race articles), POWER RANKINGS, DRIVER INTERVIEWS (quotes with context), PICK'EM PREDICTIONS, HEAD-TO-HEAD MATCHUPS, AWARDS TRACKER, standings, storylines, and next race preview. The more website content pasted in, the richer the podcast.
+- **`NotebookLM-Midweek-Update-Prompt.md`** — Reusable template for midweek Wednesday shows.
+- **`RaceDay-Week10-Talladega.md`** — Filled-in pre-race podcast prompt for Race 10 Talladega.
+- **`PostRace-Week10-Talladega.md`** — Filled-in post-race podcast prompt for Race 10 Talladega. Contains all race data, 9 driver interviews, standings, power rankings, Pick'em, storylines, Texas preview, and Stage 1 championship overview.
+- **`PostRace-Week11-Texas.md`** — Filled-in post-race podcast prompt for Race 11 Texas. Becker's 5th win, Nick's P29-to-P3 comeback, championship gap to 7 pts, Watkins Glen preview.
+- **`Midweek-Update-Week11-Texas.md`** — Filled-in midweek prompt for Texas preview.
+- **`RaceDay-Week11-Texas.md`** — Filled-in pre-race prompt for Race 11 Texas.
+- **`Midweek-Update-Week9-Kansas.md`** — Example filled-in midweek prompt (Week 9).
+- **`Midweek-Update-Week10-Talladega.md`** — Filled-in midweek prompt for Talladega preview.
+- **`Midweek-Update-Week12-WatkinsGlen.md`** — Filled-in midweek prompt for Watkins Glen Stage 1 finale preview.
+- **`RaceDay-Week12-WatkinsGlen.md`** — Filled-in pre-race prompt for Race 12 Watkins Glen Stage 1 finale.
 - **`src/pages/Podcast.jsx`** — Public podcast page + PodcastMiniPlayer export
 - **`src/pages/admin/ManagePodcasts.jsx`** — Admin podcast management with MP3 upload
 - **`PUSH-PODCAST.command`** — Git push script for podcast-related files
@@ -505,7 +569,20 @@ A weekly AI-generated two-host podcast covering the league, produced via Google 
 - The steering prompt is the "director" — it tells the hosts what to focus on THIS episode
 - NotebookLM auto-generates the podcast from both inputs combined
 - **Website content is KEY** — interviews, news, power rankings, and Pick'em data create drama and narrative depth
-- Driver nicknames: Nick="The Machine", Nathan="The Flash", Justin="The Commissioner", Blaine="Mr. Consistent", Jordan="The Dark Horse", Ryan="The Veteran", Terry="The Late Bloomer", Sam="The Rookie", Ronald="The Ghost"
+- Driver nicknames: Nick="The Machine" / "Adventure Man", Nathan="The Flash", Justin="The Commissioner", Blaine="Mr. Consistent", Jordan="The Dark Horse" / "J-Dawg", Ryan="The Veteran" / "Thunder Boy", Terry="The Late Bloomer", Sam="The Rookie", Ronald="The Ghost"
+- **CORRECT casual nicknames (confirmed in database):** Nick Green = Adventure Man, Ryan Ramsey = Thunder Boy, Jordan Stancil = J-Dawg. Previous podcasts had these WRONG — do NOT mix them up again.
+
+### CRITICAL: Source Document Hygiene (learned May 9, 2026)
+**NotebookLM sources are MORE influential than the Customize prompt.** If the source documents contain iRacing/sim references, the AI hosts WILL pick them up regardless of what the Customize field says. The Customize prompt is a suggestion; the sources are the truth.
+
+**Rules for every podcast generation:**
+1. **ONLY ONE source document** in the NotebookLM notebook: the clean `NotebookLM-League-Context.md`
+2. **Delete ALL old "Pasted Text" sources** before adding a new one — stale sources with sim language contaminate the output
+3. **The source document must NEVER contain:** the words "iRacing," "sim," "simulation," "virtual," "video game," "AI," "artificial intelligence," or the website URL (which contains "iracing" in the domain)
+4. **After each podcast, update `NotebookLM-League-Context.md`** with the latest race data, standings, and storylines so the context carries forward podcast-to-podcast
+5. **Less racing science** — don't lecture about aerodynamics, tire compounds, or downforce unless it directly ties to a dramatic moment. Keep it about the PEOPLE, the DRAMA, and the STORIES.
+6. **Quote drivers directly** from their interviews — their personalities ARE the show
+7. **NotebookLM has a daily Audio Overview generation limit** — plan accordingly and don't waste generations on tests
 
 ---
 
@@ -550,4 +627,4 @@ A **Wednesday** midweek podcast show (10-15 minutes) that bridges the gap betwee
 
 ---
 
-*Last updated: April 21, 2026*
+*Last updated: May 14, 2026 — Stage 1 COMPLETE (12 races). Race 12 Watkins Glen: Nick Green wins. Stage bonuses now applied to standings with tie-splitting. CSV parser fixed for road course lap times. Stage 2 (O'Reilly's Series) activated — Race 13 Charlotte May 24. Ronald Ramsey removed from Race 12 (0 laps, DNS).*

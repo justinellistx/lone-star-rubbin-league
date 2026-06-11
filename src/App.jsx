@@ -29,6 +29,7 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import UploadRace from './pages/admin/UploadRace';
+import ManageStagePoints from './pages/admin/ManageStagePoints';
 import ManageDrivers from './pages/admin/ManageDrivers';
 import ManageSchedule from './pages/admin/ManageSchedule';
 import ManageNews from './pages/admin/ManageNews';
@@ -75,6 +76,7 @@ function App() {
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminDashboard />} />
         <Route path="upload" element={<UploadRace />} />
+        <Route path="stage-points" element={<ManageStagePoints />} />
         <Route path="drivers" element={<ManageDrivers />} />
         <Route path="schedule" element={<ManageSchedule />} />
         <Route path="news" element={<ManageNews />} />

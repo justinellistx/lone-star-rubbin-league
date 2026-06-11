@@ -35,6 +35,12 @@ export default function UploadRace() {
     fetchStagesAndDrivers();
   }, []);
 
+  // Recompute the preview points when the stage changes (Stage 2 uses different scoring)
+  useEffect(() => {
+    if (parsed) generatePreview(parsed);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedStage]);
+
   const fetchStagesAndDrivers = async () => {
     try {
       const { data: stagesData } = await supabase
@@ -142,6 +148,10 @@ export default function UploadRace() {
     return { driverId: null, matchType: 'unmatched' };
   };
 
+  // Resolve the selected stage's number (1 or 2) — controls Stage 2 scoring rules
+  const getStageNumber = () =>
+    stages.find((s) => s.id === selectedStage)?.stage_number || 1;
+
   const generatePreview = (result) => {
     if (!result.results || result.results.length === 0) {
       setError('No race results found in CSV');
@@ -149,6 +159,7 @@ export default function UploadRace() {
     }
 
     const driverMap = buildDriverMap();
+    const stageNumber = getStageNumber();
 
     // Filter to league members for bonus calculations
     const leagueResults = result.results.filter((r) => {
@@ -158,11 +169,11 @@ export default function UploadRace() {
 
     // Calculate points for ALL results
     const previewResults = result.results.map((r) => {
-      const positionPts = getPositionPoints(r.finPos);
+      const positionPts = getPositionPoints(r.finPos, stageNumber);
       const { driverId, matchType } = resolveDriverId(r, driverMap);
       // Bonuses only among league members; pass full field for fastest lap check
       const bonuses = driverId ? calculateBonuses(r, leagueResults, result.results) : {};
-      const incidentPts = calculateIncidentPenalty(r.incidents || 0);
+      const incidentPts = calculateIncidentPenalty(r.incidents || 0, stageNumber);
       return {
         ...r,
         positionPts,
@@ -219,6 +230,7 @@ export default function UploadRace() {
 
       // Build driver map with cust_id + name fallback
       const driverMap = buildDriverMap();
+      const stageNumber = getStageNumber();
 
       // Filter to only league members for bonus calculations
       const leagueResults = parsed.results.filter((r) => {
@@ -232,11 +244,11 @@ export default function UploadRace() {
           const { driverId } = resolveDriverId(result, driverMap);
           if (!driverId) return null;
 
-          const positionPts = getPositionPoints(result.finPos);
+          const positionPts = getPositionPoints(result.finPos, stageNumber);
           // Calculate bonuses only among league members; pass full field for fastest lap check
           const bonusObj = calculateBonuses(result, leagueResults, parsed.results);
           const bonusPts = Object.values(bonusObj).reduce((a, b) => a + b, 0);
-          const incidentPts = calculateIncidentPenalty(result.incidents || 0);
+          const incidentPts = calculateIncidentPenalty(result.incidents || 0, stageNumber);
 
           return {
             race_id: race.id,

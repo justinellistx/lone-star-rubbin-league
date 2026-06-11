@@ -3,20 +3,23 @@
  */
 
 /**
- * Get points for a finishing position
- * 1st=40, 2nd=35, 3rd=34, 4th=33, 5th=32... down to 40th=1
+ * Get points for a finishing position (by TRUE finishing position, including AI).
+ * Stage 1: 1st=40, 2nd=35, 3rd=34, 4th=33... (−1 per position from P2 down)
+ * Stage 2: 1st=45, 2nd=35, 3rd=30, 4th=29... (−1 per position from P3 down)
  * @param {number} position - Finishing position (1-based)
+ * @param {number} stageNumber - League stage number (1 or 2). Defaults to 1.
  * @returns {number} Points awarded
  */
-export function getPositionPoints(position) {
+export function getPositionPoints(position, stageNumber = 1) {
   if (position < 1 || position > 40) {
     return 0;
   }
 
-  if (position === 1) return 40;
+  // Stage 2 bumps the winner from 40 to 45; P2 and below are identical to Stage 1.
+  if (position === 1) return stageNumber === 2 ? 45 : 40;
   if (position === 2) return 35;
   if (position <= 40) {
-    return 34 - (position - 3);
+    return 34 - (position - 3); // P3=34, P4=33, P5=32 ...
   }
 
   return 0;
@@ -99,14 +102,21 @@ export function calculateBonuses(result, allResults, allFieldResults = null) {
  * 0-19 incidents = 0 penalty
  * 20-29 incidents = -1
  * 30-39 incidents = -2
- * 40+ incidents = -3
+ * Stage 1: 40+ incidents caps at -3.
+ * Stage 2: uncapped — -1 at 20, -2 at 30, -3 at 40, -4 at 50, ... (every 10 = one more)
  * Only the highest applicable tier applies (not cumulative)
  * @param {number} incidents - Number of incidents
+ * @param {number} stageNumber - League stage number (1 or 2). Defaults to 1.
  * @returns {number} Penalty (negative number)
  */
-export function calculateIncidentPenalty(incidents) {
+export function calculateIncidentPenalty(incidents, stageNumber = 1) {
   if (incidents < 20) {
     return 0;
+  }
+
+  if (stageNumber === 2) {
+    // Uncapped: every 10 incidents at/after 20 adds another -1
+    return -(Math.floor(incidents / 10) - 1);
   }
 
   if (incidents < 30) {

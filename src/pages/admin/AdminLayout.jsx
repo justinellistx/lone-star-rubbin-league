@@ -13,6 +13,7 @@ import {
   DollarSign,
   Trophy,
   Youtube,
+  Flag,
   Menu,
   X,
   Home,
@@ -83,6 +84,7 @@ export default function AdminLayout() {
   const menuItems = [
     { icon: BarChart3, label: 'Dashboard', path: '/admin' },
     { icon: Upload, label: 'Upload Race', path: '/admin/upload' },
+    { icon: Flag, label: 'Stage Points', path: '/admin/stage-points' },
     { icon: Users, label: 'Drivers', path: '/admin/drivers' },
     { icon: Calendar, label: 'Schedule', path: '/admin/schedule' },
     { icon: FileText, label: 'News', path: '/admin/news' },
