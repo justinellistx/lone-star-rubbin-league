@@ -76,7 +76,7 @@ export default function Standings() {
             Standings
           </h1>
           <p style={{ color: '#6c6d6f', fontSize: '0.875rem', marginTop: '0.375rem' }}>
-            2026 Season — {selectedStage === 'overall' ? 'Overall Cup Series' : selectedStage === 'stage1' ? 'Stage 1: Trucks' : selectedStage === 'stage2' ? 'Stage 2: O'Reilly's' : 'Stage 3: Cup'}
+            2026 Season — {selectedStage === 'overall' ? 'Overall Cup Series' : selectedStage === 'stage1' ? 'Stage 1: Trucks' : selectedStage === 'stage2' ? "Stage 2: O'Reilly's" : 'Stage 3: Cup'}
           </p>
         </div>
 
@@ -107,7 +107,7 @@ export default function Standings() {
                 disabled={!hasData}
               >
                 {stage === 'stage1' ? 'Stage 1: Trucks'
-                  : stage === 'stage2' ? 'Stage 2: O'Reilly's'
+                  : stage === 'stage2' ? "Stage 2: O'Reilly's"
                   : stage === 'stage3' ? 'Stage 3: Cup'
                   : 'Overall'}
               </button>
