@@ -926,9 +926,17 @@ export function useRaceResultsByRace() {
   const { data: allResults, loading: rLoading, error: rError } = useAllRaceResults();
   const { data: races, loading: racesLoading } = useRaces();
   const { data: schedule, loading: schedLoading } = useSchedule();
+  const { data: stagePointRows } = useAllStageResults();
 
   const raceResults = useMemo(() => {
     if (!allResults || !races) return null;
+
+    // Build a map of in-race stage points: race_id|driver_id → total stage points
+    const stageMap = {};
+    (stagePointRows || []).forEach(s => {
+      const k = `${s.race_id}|${s.driver_id}`;
+      stageMap[k] = (stageMap[k] || 0) + (s.points || 0);
+    });
 
     // Build a map from race_id → youtube_url from schedule
     const youtubeMap = {};
@@ -967,24 +975,28 @@ export function useRaceResultsByRace() {
             driver: fastestResult.drivers?.name,
             time: fastestResult.fastest_lap_time,
           } : null,
-          results: results.map(r => ({
-            id: r.driver_id,
-            name: r.drivers?.name || 'Unknown',
-            number: r.car_number || r.drivers?.car_number,
-            finishPosition: r.finish_position,
-            startPosition: r.start_position,
-            lapsLed: r.laps_led || 0,
-            incidents: r.incidents || 0,
-            bestLap: r.fastest_lap_time,
-            posPoints: r.race_points || 0,
-            bonusPoints: r.bonus_points || 0,
-            penalty: r.penalty_points || 0,
-            totalPoints: r.total_points || 0,
-          })),
+          results: results.map(r => {
+            const stagePoints = stageMap[`${race.id}|${r.driver_id}`] || 0;
+            return {
+              id: r.driver_id,
+              name: r.drivers?.name || 'Unknown',
+              number: r.car_number || r.drivers?.car_number,
+              finishPosition: r.finish_position,
+              startPosition: r.start_position,
+              lapsLed: r.laps_led || 0,
+              incidents: r.incidents || 0,
+              bestLap: r.fastest_lap_time,
+              posPoints: r.race_points || 0,
+              bonusPoints: r.bonus_points || 0,
+              stagePoints,
+              penalty: r.penalty_points || 0,
+              totalPoints: (r.total_points || 0) + stagePoints,
+            };
+          }),
         };
       })
       .sort((a, b) => a.raceNumber - b.raceNumber);
-  }, [allResults, races, schedule]);
+  }, [allResults, races, schedule, stagePointRows]);
 
   return { data: raceResults, loading: rLoading || racesLoading || schedLoading, error: rError };
 }

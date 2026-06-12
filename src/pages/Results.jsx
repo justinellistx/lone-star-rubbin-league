@@ -230,7 +230,7 @@ export default function Results() {
                             <tbody>
                               {race.results.map((result) => {
                                 const bonuses = computeBonusLabels(result, race, race.results);
-                                const totalPts = (result.posPoints || 0) + (result.bonusPoints || 0) + (result.penalty || 0);
+                                const totalPts = (result.posPoints || 0) + (result.bonusPoints || 0) + (result.stagePoints || 0) + (result.penalty || 0);
                                 return (
                                 <tr
                                   key={result.id}
@@ -275,17 +275,25 @@ export default function Results() {
                                       {result.bonusPoints > 0 && (
                                         <span className="text-[#008564]"> +{result.bonusPoints}</span>
                                       )}
+                                      {result.stagePoints > 0 && (
+                                        <span className="text-[#f5a623]"> +{result.stagePoints} stg</span>
+                                      )}
                                       {result.penalty < 0 && (
                                         <span className="text-[#c8102e]"> {result.penalty}</span>
                                       )}
                                     </div>
-                                    {bonuses.length > 0 && (
+                                    {(bonuses.length > 0 || result.stagePoints > 0) && (
                                       <div className="text-xs mt-1">
                                         {bonuses.map((b, i) => (
                                           <span key={i} className="inline-block bg-[#008564]/10 text-[#008564] rounded px-1 mr-1 mb-0.5">
                                             {b.label}
                                           </span>
                                         ))}
+                                        {result.stagePoints > 0 && (
+                                          <span className="inline-block bg-[#f5a623]/15 text-[#b8860b] rounded px-1 mr-1 mb-0.5">
+                                            Stage +{result.stagePoints}
+                                          </span>
+                                        )}
                                       </div>
                                     )}
                                     {result.penalty < 0 && (
