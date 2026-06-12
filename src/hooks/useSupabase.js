@@ -712,21 +712,28 @@ export function useComputedStandings() {
         },
       ];
 
+      // End-of-stage bonuses (+3) are only AWARDED once the full 12-race stage
+      // is complete. Before that, leaders are still tracked (bonusTracker) for a
+      // live preview, but no points are added to standings totals.
+      const stageComplete = stageRaceIds.size >= RACES_PER_STAGE;
+
       // Add bonus points and track them per driver
       standings.forEach(d => {
         let stageBonusPts = 0;
         const stageBonusList = [];
 
-        bonusCategories.forEach(cat => {
-          if (cat.active && cat.driverIds.includes(d.id)) {
-            const splitPts = STAGE_BONUS_POINTS / cat.tieCount;
-            stageBonusPts += splitPts;
-            const label = cat.tieCount > 1
-              ? `${cat.key} (split ${cat.tieCount}-way: +${splitPts % 1 === 0 ? splitPts : splitPts.toFixed(1)})`
-              : cat.key;
-            stageBonusList.push(label);
-          }
-        });
+        if (stageComplete) {
+          bonusCategories.forEach(cat => {
+            if (cat.active && cat.driverIds.includes(d.id)) {
+              const splitPts = STAGE_BONUS_POINTS / cat.tieCount;
+              stageBonusPts += splitPts;
+              const label = cat.tieCount > 1
+                ? `${cat.key} (split ${cat.tieCount}-way: +${splitPts % 1 === 0 ? splitPts : splitPts.toFixed(1)})`
+                : cat.key;
+              stageBonusList.push(label);
+            }
+          });
+        }
 
         d.stageBonusPoints = stageBonusPts;
         d.stageBonusList = stageBonusList;
@@ -736,10 +743,13 @@ export function useComputedStandings() {
       // Re-sort after adding bonus points
       standings.sort((a, b) => b.points - a.points);
 
+      if (bonusTracker) bonusTracker.bonusesApplied = stageComplete;
+
       stages[stageId] = {
         standings,
         bonusTracker,
         raceCount: stageRaceIds.size,
+        stageComplete,
       };
     });
 

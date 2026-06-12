@@ -88,7 +88,8 @@ through `UploadRace.jsx` → `points.js`. Stage 1 is unchanged.
 - **Finish points:** winner bumped 40 → **45**. P2=35, P3=34, −1 from there (same as Stage 1 below P1). True position.
 - **Incident penalties (UNCAPPED):** −1 at 20, −2 at 30, −3 at 40, −4 at 50, −5 at 60 … (every 10 = one more). Stage 1 stays capped at −3.
 - **In-race stage points (NEW):** each race has a Stage 1 caution + Stage 2 caution + finish. Top 5 at each caution earn **+5 / +4 / +3 / +2 / +1** (max +10/race). Entered manually in **Admin → Stage Points** (`/admin/stage-points`), stored in the `race_stage_results` table, and folded into each race's total in `useComputedStandings()` (so they count toward stage totals and drops; they appear within the "bonus" column).
-- **Per-race +2 bonuses and end-of-stage +3 bonuses:** unchanged (still apply).
+- **Per-race +2 bonuses:** unchanged (apply every race).
+- **End-of-stage +3 bonuses:** only AWARDED once all 12 races of the stage are complete (`stageComplete = stageRaceIds.size >= 12` in `useComputedStandings`). Before that, leaders are tracked for a live preview but no points are added to standings totals.
 - **Drops:** still "worst 3 of 12," but now ramp in early in a stage — 0 drops through race 3, then 1 at race 4, 2 at race 5, 3 from race 6 on (`effectiveDrops = clamp(racesInStage − 3, 0, 3)` in `useComputedStandings`). Fixes the bug where a single Stage 2 race was dropped to 0.
 
 ### Bonus Points (per race, among league drivers only)
