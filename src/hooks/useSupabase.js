@@ -381,6 +381,7 @@ export function useComputedStandings() {
   const { data: drivers, loading: dLoading, error: dError } = useDrivers();
   const { data: teams, error: tError } = useTeams();
   const { data: stagePointRows } = useAllStageResults();
+  const { data: stagesList } = useStages();
 
   // Debug logging for data pipeline
   if (!rLoading && !dLoading) {
@@ -841,31 +842,76 @@ export function useComputedStandings() {
   }, [stageData]);
 
   // Team standings (computed from overall)
+  // Overall/season team standings — Stage 1 teams only (the drivers.team_id model).
   const teamStandings = useMemo(() => {
     if (!stageData?.overallStandings || !teams) return null;
 
-    return teams.map(team => {
-      const teamDrivers = stageData.overallStandings.filter(d => d.teamId === team.id);
-      const totalPoints = teamDrivers.reduce((s, d) => s + d.points, 0);
-      const totalLapsLed = teamDrivers.reduce((s, d) => s + d.lapsLed, 0);
-      const totalWins = teamDrivers.reduce((s, d) => s + d.wins, 0);
-      const totalIncidents = teamDrivers.reduce((s, d) => s + d.totalIncidents, 0);
+    return teams
+      .filter(team => (team.stage_number || 1) === 1)
+      .map(team => {
+        const teamDrivers = stageData.overallStandings.filter(d => d.teamId === team.id);
+        const totalPoints = teamDrivers.reduce((s, d) => s + d.points, 0);
+        const totalLapsLed = teamDrivers.reduce((s, d) => s + d.lapsLed, 0);
+        const totalWins = teamDrivers.reduce((s, d) => s + d.wins, 0);
+        const totalIncidents = teamDrivers.reduce((s, d) => s + d.totalIncidents, 0);
 
-      return {
-        id: team.id,
-        name: team.name,
-        drivers: teamDrivers,
-        points: totalPoints,
-        lapsLed: totalLapsLed,
-        wins: totalWins,
-        incidents: totalIncidents,
-      };
-    }).sort((a, b) => b.points - a.points);
+        return {
+          id: team.id,
+          name: team.name,
+          drivers: teamDrivers,
+          points: totalPoints,
+          lapsLed: totalLapsLed,
+          wins: totalWins,
+          incidents: totalIncidents,
+        };
+      }).sort((a, b) => b.points - a.points);
   }, [stageData, teams]);
+
+  // ─── Per-stage team standings (each stage has its own teams + fresh points) ───
+  // Team membership comes from teams.stage_number + driver_1_id/driver_2_id.
+  // Points come from that stage's per-stage driver standings (not the season total).
+  const teamStages = useMemo(() => {
+    if (!stageData?.stages || !teams || !stagesList) return null;
+
+    const stageNumById = {};
+    stagesList.forEach(s => { stageNumById[s.id] = s.stage_number; });
+
+    const out = [];
+    Object.entries(stageData.stages).forEach(([stageId, sd]) => {
+      const stageNumber = stageNumById[stageId];
+      if (stageNumber == null) return;
+
+      const stageTeams = teams.filter(t => t.active && (t.stage_number || 1) === stageNumber);
+      if (stageTeams.length === 0) return;
+
+      const standingById = {};
+      sd.standings.forEach(d => { standingById[d.id] = d; });
+
+      const teamRows = stageTeams.map(t => {
+        const memberIds = [t.driver_1_id, t.driver_2_id].filter(Boolean);
+        const memberStandings = memberIds.map(id => standingById[id]).filter(Boolean);
+        return {
+          id: t.id,
+          name: t.name,
+          drivers: memberStandings,
+          points: memberStandings.reduce((s, d) => s + (d.points || 0), 0),
+          lapsLed: memberStandings.reduce((s, d) => s + (d.lapsLed || 0), 0),
+          wins: memberStandings.reduce((s, d) => s + (d.wins || 0), 0),
+          incidents: memberStandings.reduce((s, d) => s + (d.totalIncidents || 0), 0),
+        };
+      }).sort((a, b) => b.points - a.points);
+
+      out.push({ stageId, stageNumber, raceCount: sd.raceCount, teams: teamRows });
+    });
+
+    out.sort((a, b) => a.stageNumber - b.stageNumber);
+    return out;
+  }, [stageData, teams, stagesList]);
 
   return {
     standings,          // backward compat: stage 1 standings
-    teamStandings,
+    teamStandings,      // overall/season teams (Stage 1)
+    teamStages,         // NEW: per-stage team standings [{ stageNumber, teams: [...] }]
     stageBonusTracker,  // backward compat: stage 1 bonuses
     stageData,          // NEW: { stages: { [stageId]: { standings, bonusTracker } }, overallStandings }
     loading: rLoading || dLoading,

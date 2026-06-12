@@ -32,7 +32,8 @@ function getTeammateH2H(standings, driver1, driver2) {
 
 export default function Teams() {
   const [expandedTeamId, setExpandedTeamId] = useState(null);
-  const { standings, teamStandings, loading } = useComputedStandings();
+  const [selectedStageId, setSelectedStageId] = useState(null);
+  const { standings, teamStages, loading } = useComputedStandings();
   const { data: races } = useRaces();
 
   const toggleExpanded = (teamId) => {
@@ -50,7 +51,7 @@ export default function Teams() {
     );
   }
 
-  if (!teamStandings || teamStandings.length === 0) {
+  if (!teamStages || teamStages.length === 0) {
     return (
       <div className="bg-[#ffffff] min-h-screen py-12 px-4 md:px-8 flex items-center justify-center">
         <div className="text-center">
@@ -61,8 +62,12 @@ export default function Teams() {
     );
   }
 
-  // Build teams — teamStandings.drivers are already full driver standing objects
-  const teams = teamStandings.map((teamData) => ({
+  // Default to the most recent stage that has teams
+  const activeStageId = selectedStageId || teamStages[teamStages.length - 1].stageId;
+  const currentStage = teamStages.find((s) => s.stageId === activeStageId) || teamStages[teamStages.length - 1];
+
+  // Build teams for the selected stage — drivers are full per-stage standing objects
+  const teams = currentStage.teams.map((teamData) => ({
     id: teamData.id,
     name: teamData.name,
     points: teamData.points,
@@ -70,13 +75,34 @@ export default function Teams() {
     drivers: teamData.drivers || [],
   }));
 
+  // Races for the selected stage only (race-by-race columns)
+  const stageRaces = (races || []).filter((r) => r.stage_id === currentStage.stageId);
+
   return (
     <div className="bg-[#ffffff] min-h-screen py-12 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Page Title */}
         <div className="mb-12">
           <h1 className="text-5xl md:text-6xl font-black text-[#1a1a2e] mb-2">TEAM WAR ROOM</h1>
-          <p className="text-[#6c6d6f] text-lg">2026 Season - Stage 1 Team Breakdown</p>
+          <p className="text-[#6c6d6f] text-lg">2026 Season — Stage {currentStage.stageNumber} Team Breakdown</p>
+        </div>
+
+        {/* Stage tabs */}
+        <div className="flex gap-2 mb-10 flex-wrap">
+          {teamStages.map((s) => {
+            const active = s.stageId === activeStageId;
+            return (
+              <button
+                key={s.stageId}
+                onClick={() => setSelectedStageId(s.stageId)}
+                className={`px-5 py-2 rounded-lg font-bold text-sm transition ${
+                  active ? 'bg-[#003DA5] text-white' : 'bg-[#f0f0f0] text-[#1a1a2e] hover:bg-[#e0e0e0]'
+                }`}
+              >
+                Stage {s.stageNumber}
+              </button>
+            );
+          })}
         </div>
 
         {/* Team Power Rankings */}
@@ -268,8 +294,8 @@ export default function Teams() {
                           <thead>
                             <tr className="border-b border-[#e0e0e0]">
                               <th className="px-3 py-2 text-left text-[#6c6d6f] text-xs font-bold uppercase">Driver</th>
-                              {races && races.length > 0 ? (
-                                races.map((race, i) => (
+                              {stageRaces && stageRaces.length > 0 ? (
+                                stageRaces.map((race, i) => (
                                   <th key={i} className="px-3 py-2 text-center text-[#6c6d6f] text-xs font-bold uppercase">
                                     {race.track_name?.slice(0, 3) || `R${race.race_number}`}
                                   </th>
