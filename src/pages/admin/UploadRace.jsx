@@ -171,8 +171,8 @@ export default function UploadRace() {
     const previewResults = result.results.map((r) => {
       const positionPts = getPositionPoints(r.finPos, stageNumber);
       const { driverId, matchType } = resolveDriverId(r, driverMap);
-      // Bonuses only among league members; pass full field for fastest lap check
-      const bonuses = driverId ? calculateBonuses(r, leagueResults, result.results) : {};
+      // Bonuses only among league members; pass full field + stage for stage-aware rules
+      const bonuses = driverId ? calculateBonuses(r, leagueResults, result.results, stageNumber) : {};
       const incidentPts = calculateIncidentPenalty(r.incidents || 0, stageNumber);
       return {
         ...r,
@@ -245,8 +245,8 @@ export default function UploadRace() {
           if (!driverId) return null;
 
           const positionPts = getPositionPoints(result.finPos, stageNumber);
-          // Calculate bonuses only among league members; pass full field for fastest lap check
-          const bonusObj = calculateBonuses(result, leagueResults, parsed.results);
+          // Calculate bonuses only among league members; pass full field + stage for stage-aware rules
+          const bonusObj = calculateBonuses(result, leagueResults, parsed.results, stageNumber);
           const bonusPts = Object.values(bonusObj).reduce((a, b) => a + b, 0);
           const incidentPts = calculateIncidentPenalty(result.incidents || 0, stageNumber);
 

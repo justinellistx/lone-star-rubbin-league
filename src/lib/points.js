@@ -34,7 +34,7 @@ export function getPositionPoints(position, stageNumber = 1) {
  *   if a human actually had the overall fastest lap. If omitted, falls back to league-only comparison.
  * @returns {Object} Bonuses: {pole, fastestLap, mostLapsLed, lowestIncidents}
  */
-export function calculateBonuses(result, allResults, allFieldResults = null) {
+export function calculateBonuses(result, allResults, allFieldResults = null, stageNumber = 1) {
   const bonuses = {
     pole: 0,
     fastestLap: 0,
@@ -46,34 +46,50 @@ export function calculateBonuses(result, allResults, allFieldResults = null) {
     return bonuses;
   }
 
-  // Pole position bonus (2 points) - only awarded if driver started P1
-  if (result.startPos === 1) {
-    bonuses.pole = 2;
+  // ── Pole bonus (2 points) ──
+  if (stageNumber === 2) {
+    // Stage 2: HIGHEST HUMAN QUALIFIER — best (lowest) start position among league drivers,
+    // even if AI cars qualified ahead.
+    const validStarts = allResults.filter((r) => r.startPos != null && r.startPos > 0);
+    if (validStarts.length > 0) {
+      const bestStart = Math.min(...validStarts.map((r) => r.startPos));
+      if (result.startPos != null && result.startPos > 0 && result.startPos === bestStart) {
+        bonuses.pole = 2;
+      }
+    }
+  } else {
+    // Stage 1: actual P1 start only
+    if (result.startPos === 1) {
+      bonuses.pole = 2;
+    }
   }
 
-  // Fastest lap bonus (2 points) - only awarded if a league member had the
-  // overall fastest lap in the race (not just fastest among league members).
-  // When allFieldResults is provided, we compare against the entire field.
+  // ── Fastest lap bonus (2 points) ──
   const fastestLapWinner = allResults.reduce((best, r) => {
     if (!best.fastestLapTime || !r.fastestLapTime) return best;
     return parseFloat(r.fastestLapTime) < parseFloat(best.fastestLapTime) ? r : best;
   });
 
-  // Check if a league member actually had the fastest lap in the full field
-  let leagueHadFastestOverall = true;
-  if (allFieldResults && allFieldResults.length > 0) {
-    const overallFastest = allFieldResults.reduce((best, r) => {
-      if (!best.fastestLapTime || !r.fastestLapTime) return best;
-      return parseFloat(r.fastestLapTime) < parseFloat(best.fastestLapTime) ? r : best;
-    });
-    // Compare the overall fastest lap time to the league fastest lap time
-    if (overallFastest.fastestLapTime && fastestLapWinner.fastestLapTime) {
-      leagueHadFastestOverall = parseFloat(fastestLapWinner.fastestLapTime) <= parseFloat(overallFastest.fastestLapTime);
+  if (stageNumber === 2) {
+    // Stage 2: fastest lap among HUMANS only — AI laps don't matter.
+    if (fastestLapWinner.fastestLapTime && fastestLapWinner.custId === result.custId) {
+      bonuses.fastestLap = 2;
     }
-  }
-
-  if (leagueHadFastestOverall && fastestLapWinner.custId === result.custId) {
-    bonuses.fastestLap = 2;
+  } else {
+    // Stage 1: only if a league member had the overall fastest lap (vs the full field incl. AI).
+    let leagueHadFastestOverall = true;
+    if (allFieldResults && allFieldResults.length > 0) {
+      const overallFastest = allFieldResults.reduce((best, r) => {
+        if (!best.fastestLapTime || !r.fastestLapTime) return best;
+        return parseFloat(r.fastestLapTime) < parseFloat(best.fastestLapTime) ? r : best;
+      });
+      if (overallFastest.fastestLapTime && fastestLapWinner.fastestLapTime) {
+        leagueHadFastestOverall = parseFloat(fastestLapWinner.fastestLapTime) <= parseFloat(overallFastest.fastestLapTime);
+      }
+    }
+    if (leagueHadFastestOverall && fastestLapWinner.custId === result.custId) {
+      bonuses.fastestLap = 2;
+    }
   }
 
   // Most laps led bonus (2 points) - only if someone led at least 1 lap
