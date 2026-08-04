@@ -103,11 +103,17 @@ export function calculateBonuses(result, allResults, allFieldResults = null, sta
     }
   }
 
-  // Lowest incidents bonus (2 points) - split evenly among all tied drivers
-  const minIncidents = Math.min(...allResults.map((r) => r.incidents || 0));
-  const tiedForLowest = allResults.filter((r) => (r.incidents || 0) === minIncidents);
-  if ((result.incidents || 0) === minIncidents) {
-    bonuses.lowestIncidents = parseFloat((2 / tiedForLowest.length).toFixed(2));
+  // Lowest incidents bonus (2 points) - among FINISHERS only, split evenly on ties.
+  // A driver who did not finish the race (DNF — out_reason other than "Running")
+  // is NOT eligible for the clean-driving bonus.
+  const isFinisher = (r) => ((r.outReason || 'Running') === 'Running');
+  const finishers = allResults.filter(isFinisher);
+  if (finishers.length > 0) {
+    const minIncidents = Math.min(...finishers.map((r) => r.incidents || 0));
+    const tiedForLowest = finishers.filter((r) => (r.incidents || 0) === minIncidents);
+    if (isFinisher(result) && (result.incidents || 0) === minIncidents) {
+      bonuses.lowestIncidents = parseFloat((2 / tiedForLowest.length).toFixed(2));
+    }
   }
 
   return bonuses;

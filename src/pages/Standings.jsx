@@ -210,7 +210,10 @@ export default function Standings() {
                         Gap
                       </th>
                       <th style={{ padding: '0.625rem 0.75rem', textAlign: 'right', color: 'rgba(255,255,255,0.6)', fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', width: '52px' }}>
-                        +/-
+                        Bonus
+                      </th>
+                      <th style={{ padding: '0.625rem 0.75rem', textAlign: 'right', color: '#f5a623', fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', width: '52px' }}>
+                        Stg
                       </th>
                       <th style={{ padding: '0.625rem 0.75rem', textAlign: 'right', color: 'rgba(255,255,255,0.6)', fontSize: '0.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', width: '52px' }}>
                         Pen
@@ -305,6 +308,16 @@ export default function Standings() {
                           {driver.bonusPoints > 0 ? (
                             <span style={{ color: '#008564', fontWeight: 600, fontSize: '0.8125rem' }}>
                               +{driver.bonusPoints % 1 === 0 ? driver.bonusPoints : driver.bonusPoints.toFixed(1)}
+                            </span>
+                          ) : (
+                            <span style={{ color: '#ccc' }}>—</span>
+                          )}
+                        </td>
+                        {/* Stage points */}
+                        <td style={{ padding: '0.5rem 0.75rem', textAlign: 'right' }}>
+                          {driver.stagePoints > 0 ? (
+                            <span style={{ color: '#f5a623', fontWeight: 700, fontSize: '0.8125rem' }}>
+                              +{driver.stagePoints}
                             </span>
                           ) : (
                             <span style={{ color: '#ccc' }}>—</span>

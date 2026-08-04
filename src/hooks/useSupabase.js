@@ -458,6 +458,7 @@ export function useComputedStandings() {
       // All stats computed from KEPT races only
       const posPoints = keptEntered.reduce((s, r) => s + (r.race_points || 0), 0);
       const bonusPoints = keptEntered.reduce((s, r) => s + (r.bonus_points || 0), 0);
+      const stagePoints = keptEntered.reduce((s, r) => s + (r.stage_points || 0), 0);
       const penaltyPoints = keptEntered.reduce((s, r) => s + (r.penalty_points || 0), 0);
       const wins = keptEntered.filter(r => r.finish_position === 1).length;
       const top5 = keptEntered.filter(r => r.finish_position <= 5).length;
@@ -497,6 +498,7 @@ export function useComputedStandings() {
         droppedPoints: rawPoints - points,
         posPoints,
         bonusPoints,
+        stagePoints,
         penaltyPoints,
         wins,
         top5,
@@ -645,7 +647,8 @@ export function useComputedStandings() {
       return {
         ...r,
         stage_points: sp,
-        bonus_points: (r.bonus_points || 0) + sp,
+        // Stage points count toward the race total (and drops), but are tracked
+        // separately from the per-race +2 bonuses so standings can show them apart.
         total_points: (r.total_points || 0) + sp,
       };
     });
@@ -772,6 +775,7 @@ export function useComputedStandings() {
             droppedPoints: 0,
             posPoints: 0,
             bonusPoints: 0,
+            stagePoints: 0,
             penaltyPoints: 0,
             wins: 0,
             top5: 0,
@@ -792,6 +796,7 @@ export function useComputedStandings() {
         o.droppedPoints += d.droppedPoints;
         o.posPoints += d.posPoints;
         o.bonusPoints += d.bonusPoints;
+        o.stagePoints += (d.stagePoints || 0);
         o.penaltyPoints += d.penaltyPoints;
         o.wins += d.wins;
         o.top5 += d.top5;
