@@ -11,7 +11,7 @@ import {
 } from '../hooks/useSupabase';
 
 export default function Home() {
-  const { standings, loading: standingsLoading } = useComputedStandings();
+  const { stageData, loading: standingsLoading } = useComputedStandings();
   const { data: raceResults, loading: raceLoading } = useRaceResultsByRace();
   const { data: schedule, loading: scheduleLoading } = useSchedule(null);
   const { data: news, loading: newsLoading } = useNews(5);
@@ -28,8 +28,8 @@ export default function Home() {
 
   const nextRace = upcomingRaces[0] || null;
   const topStandings = useMemo(() => {
-    return standings ? standings.slice(0, 10) : [];
-  }, [standings]);
+    return stageData?.overallStandings ? stageData.overallStandings.slice(0, 10) : [];
+  }, [stageData]);
 
   const displayNews = useMemo(() => {
     if (news && news.length > 0) return news;

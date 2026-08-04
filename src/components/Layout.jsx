@@ -9,7 +9,7 @@ export default function Layout() {
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const moreMenuRef = useRef(null);
   const location = useLocation();
-  const { standings } = useComputedStandings();
+  const { stageData } = useComputedStandings();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -59,7 +59,7 @@ export default function Layout() {
 
   const isMoreActive = moreLinks.some((link) => location.pathname === link.path);
 
-  const topDrivers = standings ? standings.slice(0, 9) : [];
+  const topDrivers = stageData?.overallStandings ? stageData.overallStandings.slice(0, 9) : [];
 
   return (
     <div className="layout-wrapper">
