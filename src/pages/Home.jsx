@@ -296,7 +296,6 @@ export default function Home() {
             <div style={{ border: '1px solid #e0e0e0', borderRadius: '0.25rem', overflow: 'hidden' }}>
               {[
                 { label: "Pick'em Predictions", path: '/pickem', icon: Trophy },
-                { label: 'Power Rankings', path: '/power-rankings', icon: ChevronRight },
                 { label: 'Head-to-Head', path: '/head-to-head', icon: Users },
                 { label: 'Podcast', path: '/podcast', icon: Mic },
                 { label: 'Arcade Game', path: '/game', icon: Flag },

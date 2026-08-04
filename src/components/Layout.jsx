@@ -45,13 +45,10 @@ export default function Layout() {
   ];
 
   const moreLinks = [
-    { label: 'Trophy Room', path: '/trophy-room' },
     { label: 'Head-to-Head', path: '/head-to-head' },
-    { label: 'Power Rankings', path: '/power-rankings' },
     { label: 'Awards', path: '/awards' },
     { label: 'Rivalries', path: '/rivalries' },
     { label: 'What-If Calculator', path: '/what-if' },
-    { label: 'Incident Heatmap', path: '/heatmap' },
     { label: 'Season Timeline', path: '/timeline' },
     { label: "Pick'em", path: '/pickem' },
     { label: 'Arcade', path: '/game' },
