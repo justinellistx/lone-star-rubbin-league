@@ -666,6 +666,19 @@ export function useComputedStandings() {
       };
     });
 
+    // Stage-aware team names: a driver can be on a different team each stage.
+    // Map "stageNumber|driverId" -> team name using the teams table's driver_1/driver_2 + stage_number.
+    const stageNumById = {};
+    (stagesList || []).forEach(s => { stageNumById[s.id] = s.stage_number; });
+    const teamByStageDriver = {};
+    (teams || []).forEach(t => {
+      const sn = t.stage_number || 1;
+      [t.driver_1_id, t.driver_2_id].forEach(did => { if (did) teamByStageDriver[`${sn}|${did}`] = { name: t.name, id: t.id }; });
+    });
+    const currentStageNum = (teams && teams.length)
+      ? Math.max(...teams.map(t => t.stage_number || 1))
+      : 1;
+
     // Group results by stage_id
     const resultsByStage = {};
     const raceIdsByStage = {};
@@ -685,6 +698,14 @@ export function useComputedStandings() {
     Object.entries(resultsByStage).forEach(([stageId, stageResults]) => {
       const stageRaceIds = raceIdsByStage[stageId];
       const standings = computeStageStandings(stageResults, stageRaceIds, driverMap);
+
+      // Override each driver's team with the team they ran for IN THIS STAGE
+      const stageNum = stageNumById[stageId];
+      standings.forEach(d => {
+        const t = teamByStageDriver[`${stageNum}|${d.id}`];
+        if (t) { d.team = t.name; d.teamId = t.id; }
+      });
+
       const bonusTracker = computeStageBonuses(standings, stageResults);
 
       // ─── Apply stage bonus points (+3, split on ties) to winners' totals ───
@@ -768,8 +789,8 @@ export function useComputedStandings() {
             name: d.name,
             number: d.number,
             nickname: d.nickname,
-            team: d.team,
-            teamId: d.teamId,
+            team: teamByStageDriver[`${currentStageNum}|${d.id}`]?.name || d.team,
+            teamId: teamByStageDriver[`${currentStageNum}|${d.id}`]?.id || d.teamId,
             points: 0,
             rawPoints: 0,
             droppedPoints: 0,
@@ -827,7 +848,7 @@ export function useComputedStandings() {
       .sort((a, b) => b.points - a.points);
 
     return { stages, overallStandings };
-  }, [allResults, drivers, stagePointRows]);
+  }, [allResults, drivers, stagePointRows, teams, stagesList]);
 
   // ─── Derive the "active" standings (default: first stage with data) ───
   // Also provide a flat "standings" for backward compatibility

@@ -6,9 +6,9 @@ import { useComputedStandings } from '../hooks/useSupabase';
 export default function Drivers() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('points');
-  const { standings, loading } = useComputedStandings();
+  const { stageData, loading } = useComputedStandings();
 
-  const displayDrivers = standings || [];
+  const displayDrivers = stageData?.overallStandings || [];
 
   const filteredDrivers = useMemo(() => {
     let result = displayDrivers.filter(
@@ -93,10 +93,10 @@ export default function Drivers() {
                   <div className="text-[#003DA5] text-sm font-bold uppercase mb-2">
                     #{driver.number}
                   </div>
-                  <h3 className="text-xl font-bold text-[#1a1a2e] group-hover:text-[#003DA5] transition">
+                  <h3 className="text-xl font-bold text-white group-hover:text-[#ffcf00] transition">
                     {driver.name}
                   </h3>
-                  <p className="text-[#6c6d6f] text-sm mt-2">{driver.team}</p>
+                  <p className="text-[#b8b8c4] text-sm mt-2">{driver.team}</p>
                 </div>
 
                 {/* Card Stats */}
