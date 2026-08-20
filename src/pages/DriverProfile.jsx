@@ -7,7 +7,7 @@ import TrackIcon from '../components/TrackIcon';
 
 export default function DriverProfile() {
   const { id } = useParams();
-  const { standings, loading: sLoading } = useComputedStandings();
+  const { stageData, loading: sLoading } = useComputedStandings();
   const { data: allResults, loading: rLoading } = useAllRaceResults();
   const { data: schedule } = useSchedule();
 
@@ -21,11 +21,11 @@ export default function DriverProfile() {
     return map;
   }, [schedule]);
 
-  // Find driver in computed standings (has drop-adjusted stats)
+  // Find driver in OVERALL standings (both stages, each with its own worst-3 drop applied)
   const driver = useMemo(() => {
-    if (!standings) return null;
-    return standings.find(d => d.id === id) || null;
-  }, [standings, id]);
+    if (!stageData?.overallStandings) return null;
+    return stageData.overallStandings.find(d => d.id === id) || null;
+  }, [stageData, id]);
 
   // Build detailed race results for this driver from raw data
   const raceResults = useMemo(() => {
