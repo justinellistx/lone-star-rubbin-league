@@ -96,6 +96,15 @@ through `UploadRace.jsx` → `points.js`. Stage 1 is unchanged.
 - **Stage 2 teams (fresh):** Stage 1 teams are frozen; Stage 2 has new pairings — Domino+Green, Ellis+Becker, Carnes+Ramsey, Kunnemann+Stancil (Ronald Ramsey independent). Stored in `teams` with `stage_number=2` and `driver_1_id`/`driver_2_id`. The Teams page has a **Stage 1 / Stage 2 tab**; per-stage team standings come from that stage's driver standings (fresh points), computed in `useComputedStandings().teamStages`. Season/overall team standings (`teamStandings`) stay Stage 1 only.
 - **Drops:** still "worst 3 of 12," but now ramp in early in a stage — 0 drops through race 3, then 1 at race 4, 2 at race 5, 3 from race 6 on (`effectiveDrops = clamp(racesInStage − 3, 0, 3)` in `useComputedStandings`). Fixes the bug where a single Stage 2 race was dropped to 0.
 
+### Stage 3 (activated Sep 2026)
+- **Scoring = same as Stage 2.** `points.js` now branches on `stageNumber >= 2` (was `=== 2`), so Stage 3 inherits the full modern ruleset: P1=45, uncapped incident penalties, human-only pole/fastest-lap, finisher-only lowest-incidents, in-race stage points, drops, and end-of-stage +3 bonuses. Stage 1 and Stage 2 behavior is unchanged. If Stage 3 ever needs different scoring, add an explicit `stageNumber === 3` branch.
+- **Admin:** `stages.is_active = true` for Stage 3, so it appears in the Admin → Upload Race stage dropdown. Uploading a race with Stage 3 selected sets `stage_id` to the Stage 3 stage and scores it with Stage 3 (=modern) rules. Stage Points entry works the same.
+- **Stage 3 teams (4 drivers each, NEW):** the `teams` table gained `driver_3_id` and `driver_4_id` (nullable) to hold 4-driver squads. Stage 1/2 teams leave them null (unchanged).
+  - **Becker + Domino + Carnes + Kunnemann** — Nathan Becker, Terry Domino, Blaine Carnes, Sam Kunnemann
+  - **Green + Ellis + Ramsey + Stancil** — Nick Green, Justin Ellis, Ryan Ramsey, Jordan Stancil
+  - `useComputedStandings` reads all four members in both `teamByStageDriver` (driver's current-team label) and `teamStages` (per-stage team standings). Teams page renders any number of drivers; the 1v1 head-to-head + stat-comparison panels only compare the first two members. The Stage 3 team tab appears once Stage 3 has race results.
+  - No 4-driver team-editing UI exists in the admin yet — roster changes are done via SQL/`teams` table directly.
+
 ### Bonus Points (per race, among league drivers only)
 | Bonus | Points | Condition |
 |-------|--------|-----------|

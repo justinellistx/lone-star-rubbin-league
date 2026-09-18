@@ -15,8 +15,8 @@ export function getPositionPoints(position, stageNumber = 1) {
     return 0;
   }
 
-  // Stage 2 bumps the winner from 40 to 45; P2 and below are identical to Stage 1.
-  if (position === 1) return stageNumber === 2 ? 45 : 40;
+  // Stage 2+ bumps the winner from 40 to 45; P2 and below are identical to Stage 1.
+  if (position === 1) return stageNumber >= 2 ? 45 : 40;
   if (position === 2) return 35;
   if (position <= 40) {
     return 34 - (position - 3); // P3=34, P4=33, P5=32 ...
@@ -47,8 +47,8 @@ export function calculateBonuses(result, allResults, allFieldResults = null, sta
   }
 
   // ── Pole bonus (2 points) ──
-  if (stageNumber === 2) {
-    // Stage 2: HIGHEST HUMAN QUALIFIER — best (lowest) start position among league drivers,
+  if (stageNumber >= 2) {
+    // Stage 2+: HIGHEST HUMAN QUALIFIER — best (lowest) start position among league drivers,
     // even if AI cars qualified ahead.
     const validStarts = allResults.filter((r) => r.startPos != null && r.startPos > 0);
     if (validStarts.length > 0) {
@@ -70,8 +70,8 @@ export function calculateBonuses(result, allResults, allFieldResults = null, sta
     return parseFloat(r.fastestLapTime) < parseFloat(best.fastestLapTime) ? r : best;
   });
 
-  if (stageNumber === 2) {
-    // Stage 2: fastest lap among HUMANS only — AI laps don't matter.
+  if (stageNumber >= 2) {
+    // Stage 2+: fastest lap among HUMANS only — AI laps don't matter.
     if (fastestLapWinner.fastestLapTime && fastestLapWinner.custId === result.custId) {
       bonuses.fastestLap = 2;
     }
@@ -136,7 +136,7 @@ export function calculateIncidentPenalty(incidents, stageNumber = 1) {
     return 0;
   }
 
-  if (stageNumber === 2) {
+  if (stageNumber >= 2) {
     // Uncapped: every 10 incidents at/after 20 adds another -1
     return -(Math.floor(incidents / 10) - 1);
   }

@@ -673,7 +673,7 @@ export function useComputedStandings() {
     const teamByStageDriver = {};
     (teams || []).forEach(t => {
       const sn = t.stage_number || 1;
-      [t.driver_1_id, t.driver_2_id].forEach(did => { if (did) teamByStageDriver[`${sn}|${did}`] = { name: t.name, id: t.id }; });
+      [t.driver_1_id, t.driver_2_id, t.driver_3_id, t.driver_4_id].forEach(did => { if (did) teamByStageDriver[`${sn}|${did}`] = { name: t.name, id: t.id }; });
     });
     const currentStageNum = (teams && teams.length)
       ? Math.max(...teams.map(t => t.stage_number || 1))
@@ -894,7 +894,7 @@ export function useComputedStandings() {
   }, [stageData, teams]);
 
   // ─── Per-stage team standings (each stage has its own teams + fresh points) ───
-  // Team membership comes from teams.stage_number + driver_1_id/driver_2_id.
+  // Team membership comes from teams.stage_number + driver_1_id..driver_4_id.
   // Points come from that stage's per-stage driver standings (not the season total).
   const teamStages = useMemo(() => {
     if (!stageData?.stages || !teams || !stagesList) return null;
@@ -914,7 +914,7 @@ export function useComputedStandings() {
       sd.standings.forEach(d => { standingById[d.id] = d; });
 
       const teamRows = stageTeams.map(t => {
-        const memberIds = [t.driver_1_id, t.driver_2_id].filter(Boolean);
+        const memberIds = [t.driver_1_id, t.driver_2_id, t.driver_3_id, t.driver_4_id].filter(Boolean);
         const memberStandings = memberIds.map(id => standingById[id]).filter(Boolean);
         return {
           id: t.id,
