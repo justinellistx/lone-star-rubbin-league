@@ -18,7 +18,7 @@ export default function ManageStagePoints() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // ── Load Stage 2 races + league drivers ──
+  // ── Load stage-points-eligible races (Stage 2+) + league drivers ──
   useEffect(() => {
     const load = async () => {
       try {
@@ -28,9 +28,9 @@ export default function ManageStagePoints() {
           .order('race_number', { ascending: true });
         if (rErr) throw rErr;
 
-        // Stage 2 races only (in-race stage points are a Stage 2 feature)
-        const stage2Races = (raceRows || []).filter((r) => r.stages?.stage_number === 2);
-        setRaces(stage2Races);
+        // In-race stage points apply to Stage 2 and later (Stage 3, etc.)
+        const spRaces = (raceRows || []).filter((r) => (r.stages?.stage_number || 1) >= 2);
+        setRaces(spRaces);
 
         const { data: driverRows, error: dErr } = await supabase
           .from('drivers')
@@ -173,8 +173,8 @@ export default function ManageStagePoints() {
           <div>
             <h1 className="text-4xl font-bold text-white">Stage Points</h1>
             <p className="text-[#8a8a9a]">
-              Enter the in-race Stage 1 &amp; Stage 2 caution top-5 for a Stage 2 race. Finish points are
-              scored separately at upload.
+              Enter the in-race Stage 1 &amp; Stage 2 caution top-5 for a Stage 2 or Stage 3 race. Finish
+              points are scored separately at upload.
             </p>
           </div>
         </div>
@@ -195,15 +195,15 @@ export default function ManageStagePoints() {
         <div className="bg-[#14141f] border border-[#2a2a3e] rounded-lg p-6 mb-6">
           <label className="block text-sm font-medium text-white mb-2">Race</label>
           <select className={selectClass} value={raceId} onChange={(e) => setRaceId(e.target.value)}>
-            <option value="">Select a Stage 2 race...</option>
+            <option value="">Select a race...</option>
             {races.map((r) => (
               <option key={r.id} value={r.id}>
-                Race {String(r.race_number).padStart(2, '0')} — {r.track_name}
+                Stage {r.stages?.stage_number || '?'} · Race {String(r.race_number).padStart(2, '0')} — {r.track_name}
               </option>
             ))}
           </select>
           {races.length === 0 && (
-            <p className="text-[#8a8a9a] text-sm mt-2">No Stage 2 races found yet.</p>
+            <p className="text-[#8a8a9a] text-sm mt-2">No stage-points races found yet.</p>
           )}
         </div>
 
