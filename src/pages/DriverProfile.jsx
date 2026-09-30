@@ -35,10 +35,14 @@ export default function DriverProfile() {
       .filter(r => r.driver_id === id)
       .sort((a, b) => a.races.race_number - b.races.race_number);
 
-    // Get the droppedRaceIds from the driver's raceByRace
-    const droppedTracks = new Set(
-      (driver.raceByRace || []).filter(r => r.isDropped).map(r => r.raceNum)
-    );
+    // Map raceNum -> { points (folded, incl in-race stage points), isDropped } from the
+    // computed standings. The standings drop each driver's lowest TRUE total, which
+    // includes in-race stage points — so we display that folded number here too, or the
+    // profile looks like it dropped a higher race than it kept.
+    const rbrByNum = {};
+    (driver.raceByRace || []).forEach(r => {
+      rbrByNum[r.raceNum] = { points: r.points || 0, isDropped: !!r.isDropped };
+    });
 
     return driverResults.map(r => {
       // Compute bonus labels for this race
@@ -72,6 +76,12 @@ export default function DriverProfile() {
         });
       }
 
+      const rbr = rbrByNum[r.races.race_number];
+      const rawTotal = r.total_points || 0;
+      // Folded total = race points + in-race stage points (what the drop is based on)
+      const foldedTotal = rbr ? rbr.points : rawTotal;
+      const stagePoints = Math.max(0, foldedTotal - rawTotal);
+
       return {
         id: r.race_id,
         raceNumber: r.races.race_number,
@@ -84,10 +94,11 @@ export default function DriverProfile() {
         posPoints: r.race_points || 0,
         bonusPoints: r.bonus_points || 0,
         penaltyPoints: r.penalty_points || 0,
-        totalPoints: r.total_points || 0,
+        stagePoints,
+        totalPoints: foldedTotal,
         bestLap: r.fastest_lap_time,
         bonuses,
-        isDropped: droppedTracks.has(r.races.race_number),
+        isDropped: rbr ? rbr.isDropped : false,
       };
     });
   }, [allResults, driver, id]);
@@ -345,6 +356,7 @@ export default function DriverProfile() {
                           {result.posPoints}p
                           {bonusTotal > 0 && <span className="text-[#008564]"> +{bonusTotal}</span>}
                           {result.penaltyPoints < 0 && <span className="text-[#c8102e]"> {result.penaltyPoints}</span>}
+                          {result.stagePoints > 0 && <span className="text-[#f5a623]"> +{result.stagePoints} stg</span>}
                         </div>
                         {result.bonuses.length > 0 && (
                           <div className="text-xs mt-1">

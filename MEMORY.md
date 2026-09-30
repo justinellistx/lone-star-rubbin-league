@@ -104,6 +104,7 @@ through `UploadRace.jsx` → `points.js`. Stage 1 is unchanged.
   - **Green + Ellis + Ramsey + Stancil** — Nick Green, Justin Ellis, Ryan Ramsey, Jordan Stancil
   - `useComputedStandings` reads all four members in both `teamByStageDriver` (driver's current-team label) and `teamStages` (per-stage team standings). Teams page renders any number of drivers; the 1v1 head-to-head + stat-comparison panels only compare the first two members. The Stage 3 team tab appears once Stage 3 has race results.
   - No 4-driver team-editing UI exists in the admin yet — roster changes are done via SQL/`teams` table directly.
+- **Historical re-score of Races 25–28 (done Sep 24, 2026):** these four Stage 3 races were UPLOADED before the `>= 2` scoring change was deployed, so they were stored with Stage 1 rules (P1=40, non-human bonuses, fastest lap gated on AI). They were re-scored in the DB to Stage 3 (=Stage 2) rules: all four winners bumped 40→45 (R25 Nick, R26 Terry, R27 Justin, R28 Justin), and two human-only fastest-lap bonuses that had been withheld were awarded — Justin at Daytona (R26, +2) and Nick at Darlington (R27, +2, bonus 2→4). Poles, most-laps-led, lowest-incidents, and penalties were already correct. Lesson: upload races only after the scoring code for that stage is deployed, or re-score afterward.
 
 ### Bonus Points (per race, among league drivers only)
 | Bonus | Points | Condition |
